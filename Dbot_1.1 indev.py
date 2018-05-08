@@ -6,11 +6,9 @@ import random
 import asyncio
 import time
 import datetime
-
+dbot_version = "1.1"
 
 bot = commands.Bot(command_prefix='+')
-
-#client = ('bot')
 
 #commands
 
@@ -38,7 +36,6 @@ async def bitchslap(ctx, user: discord.Member):
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got a bitch slap.".format(user.mention) + "\n\n[Image link](https://i.imgur.com/bTGigCv.gif)")
         embed.set_image(url="https://i.imgur.com/bTGigCv.gif")
         await bot.say(embed=embed)
-
 
 
 @bot.group(description="Something Berend says a lot",
@@ -87,10 +84,16 @@ async def cuddle(ctx, user: discord.Member):
            description="Cage someone",
            brief="Cage someone")
 async def cage(ctx, user: discord.Member):
-        await bot.say('**{}** got caged'.format(user.display_name))
-        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got caged.".format(user.mention))
+        possible_responses = [
+              'https://i.imgur.com/VW0qjFL.jpg',
+              'https://i.imgur.com/zn1jItN.jpg',
+              'https://i.imgur.com/WHY04lb.jpg',
+              'https://i.imgur.com/DLcfCy0.jpg'
+                ]
+        chosen = random.choice(possible_responses)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got caged.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
         await bot.say(embed=embed)
-
 
 
 @bot.command(description="Flips a coin",
@@ -106,6 +109,7 @@ async def coinflip():
 @bot.group(description="SAY BLESS YOU TO THE CAT",
            brief="catsneeze",
            aliases=['Cat'])
+@commands.cooldown(3, 60, commands.BucketType.server)
 async def cat():
         await bot.say('<:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633>')
 
@@ -131,6 +135,16 @@ async def dice():
            aliases=['Demon'])
 async def demon():
         await bot.say('Fucking bitch')
+
+        
+@bot.group( hidden = True,
+            aliases=['dtbot'])
+async def DTbot():
+        await bot.say('You found a secret. Good job')
+        await bot.say('this will eventually be used for something')
+        #D:TANYA DO NOT DELETE THIS
+        #D:its for something i wanna do in the future and im just making sure it doesnt get used for a diferent command
+        #T:okay
 
 
 @bot.group(pass_context=True,
@@ -259,12 +273,6 @@ async def pinch(ctx, user: discord.Member):
         await bot.say(embed=embed)
 
 
-#@bot.group(description="I was lazy and didnt add it",
-#           brief="Pong")
-#async def ping():
-#        await bot.say('Sorry, demon was just too lazy to implement this.')
-#        await bot.say('pong :ping_pong:')
-
 @bot.command(pass_context=True,
              description="Pong",
              brief="Pong")
@@ -312,37 +320,45 @@ async def punch(ctx, user: discord.Member):
            brief="Quote me")
 async def quote():
         possible_responses = [
-                'https://imgur.com/60hKnCs',
-                'https://imgur.com/pBGlIed',
-                'https://imgur.com/N3TrhhH',
-                'https://imgur.com/k2Ipuil',
-                'https://imgur.com/ezJb1z1',
-                'https://imgur.com/JXr2X90',
-                'https://imgur.com/rlu9Iyc',
-                'https://imgur.com/Iiwd3wR',                
-                'https://imgur.com/o9n988v',                
-                'https://imgur.com/HQW8qQM',                
-                'https://imgur.com/bdM5nsm',
-                'https://imgur.com/KupYQlU',
-                'https://imgur.com/QCU9WM5',
-                'https://imgur.com/Z1ltrfi',
-                'https://imgur.com/ffMEOLz',
-                'https://imgur.com/Gg06uLg',
-                'https://imgur.com/qX6yi7k',
-                'https://imgur.com/jQuiT9Q',
-                'https://imgur.com/WBay8cY',
-                'https://imgur.com/HD7ZnrH',
-                'https://imgur.com/w6UcH4w',
-                'https://imgur.com/OXOsy2q',
-                'https://imgur.com/IeMI9aW',
-		'https://imgur.com/DQCSglA',
-                'https://imgur.com/qmoirvy',
-                'https://imgur.com/P7lxLp2',
-                'https://imgur.com/sJoTstH',
-                'https://imgur.com/zBWWip7',
-                '<@287727207642693633> This is for you\nhttps://imgur.com/e6i9Y2n'
+                'https://i.imgur.com/60hKnCs.png',
+                'https://i.imgur.com/pBGlIed.png',
+                'https://i.imgur.com/N3TrhhH.png',
+                'https://i.imgur.com/k2Ipuil.png',
+                'https://i.imgur.com/ezJb1z1.png',
+                'https://i.imgur.com/JXr2X90.png',
+                'https://i.imgur.com/rlu9Iyc.png',
+                'https://i.imgur.com/Iiwd3wR.png',                
+                'https://i.imgur.com/o9n988v.png',                
+                'https://i.imgur.com/HQW8qQM.png',                
+                'https://i.imgur.com/bdM5nsm.png',
+                'https://i.imgur.com/KupYQlU.png',
+                'https://i.imgur.com/QCU9WM5.png',
+                'https://i.imgur.com/Z1ltrfi.png',
+                'https://i.imgur.com/ffMEOLz.png',
+                'https://i.imgur.com/Gg06uLg.png',
+                'https://i.imgur.com/qX6yi7k.png',
+                'https://i.imgur.com/jQuiT9Q.png',
+                'https://i.imgur.com/WBay8cY.png',
+                'https://i.imgur.com/HD7ZnrH.png',
+                'https://i.imgur.com/w6UcH4w.png',
+                'https://i.imgur.com/OXOsy2q.png',
+                'https://i.imgur.com/IeMI9aW.png',
+                'https://i.imgur.com/DQCSglA.png',
+                'https://i.imgur.com/qmoirvy.png',
+                'https://i.imgur.com/P7lxLp2.png',
+                'https://i.imgur.com/sJoTstH.png',
+                'https://i.imgur.com/zBWWip7.png',
+                'https://i.imgur.com/e6i9Y2n.png',
+                'https://i.imgur.com/7aYaV7K.png'
                 ]
-        await bot.say(random.choice(possible_responses))
+        chosen = random.choice(possible_responses)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="A quote for you:" + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await bot.say(embed=embed)
+        #that quoute
+        if chosen == 'https://i.imgur.com/e6i9Y2n.png':
+                await bot.say('<@287727207642693633>, this is for you.')
+
 
 @bot.command(description="It's Russian Roulette",
              brief="Play some Russian Roulette",
@@ -357,8 +373,11 @@ async def roulette():
                 ]
         await bot.say(random.choice(possible_responses))
 
+
 @bot.group(description="IT'S JUST A REEE BRO",
            brief="REEEEE")
+@commands.cooldown(3, 120, commands.BucketType.server)
+#cooldown of 2 minutes to prevent massive spams
 async def re():
         await bot.say('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
@@ -468,7 +487,8 @@ async def zeroarmy():
 @bot.group(description="Info about me, Dbot. Please take a look.",
            brief="Info about me")
 async def info():
-        embed=discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any requests or questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.")
+        embed=discord.Embed(title="<@427902715138408458>'s info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any requests or questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.")
+        embed.set_footer(text="**DTbot v." + dbot_version + "**")
         await bot.say(embed=embed)
 
 @bot.group(pass_context=True,
@@ -489,7 +509,6 @@ async def userinfo(ctx, user: discord.Member):
   embed.set_footer(text="{}'s Info".format(user.name), icon_url='{}'.format(user.avatar_url))
   embed.set_thumbnail(url=user.avatar_url)
 
-  
   await bot.say(embed=embed)
 
 
@@ -505,4 +524,3 @@ async def on_ready():
         print('------')
    
 bot.run('')
-
