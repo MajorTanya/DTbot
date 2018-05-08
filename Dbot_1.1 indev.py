@@ -268,7 +268,7 @@ async def pinch(ctx, user: discord.Member):
 @bot.command(pass_context=True,
              description="Pong",
              brief="Pong")
-@commands.has_any_role("The Dark Lords", "Administrator", "Tanya")
+@commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "Tanya")
 @commands.cooldown(3, 30, commands.BucketType.server)
 async def ping(ctx):
         time_then = time.monotonic()
