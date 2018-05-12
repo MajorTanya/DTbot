@@ -1,1 +1,1 @@
-worker: python3 "Dbot_1.1 indev.py"
+worker: python3 "Dbot 1.1.py"
