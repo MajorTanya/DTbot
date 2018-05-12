@@ -8,7 +8,8 @@ import time
 import datetime
 import json
 import os.path
-dbot_version = "1.2"
+dbot_version = "1.2.1"
+xp_timer = 120
 
 bot = commands.Bot(command_prefix='+')
 epoch = datetime.datetime.utcfromtimestamp(0)
@@ -68,7 +69,33 @@ async def bkiss(ctx, user: discord.Member):
         embed.set_image(url="" + chosen + "")
         await bot.say(embed=embed)
 
-    
+
+@bot.group(pass_context=True,
+           description="",
+           brief="",
+           aliases=[''])
+async def blush(ctx):
+        possible_responses = [
+                'https://i.imgur.com/5d4EtC7.gif',
+                'https://i.imgur.com/VlkficM.gif',
+                'https://i.imgur.com/SrBENaT.gif',
+                'https://i.imgur.com/51oJ8DP.gif',
+                'https://i.imgur.com/N4u4D4Q.gif',
+                'https://i.imgur.com/MwMD8Ma.gif',
+                'https://i.imgur.com/jDUYhHe.gif',
+                'https://i.imgur.com/aRbQjjd.gif',
+                'https://i.imgur.com/54lcIDr.gif',
+                'https://i.imgur.com/CTK6JcI.gif',
+                'https://i.imgur.com/etIOF6J.gif',
+                'https://i.imgur.com/9dJjBok.gif',
+                'https://i.imgur.com/CG61JYj.gif'
+                ]
+        chosen = random.choice(possible_responses)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} blushed! How cute!".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await bot.say(embed=embed)
+
+
 @bot.group(description="Try and see",
            brief="Try and see")
 async def bitcoin():
@@ -159,6 +186,32 @@ async def DTbot():
 
 
 @bot.group(pass_context=True,
+           description="High five someone",
+           brief="High five someone",
+           aliases=['5'])
+async def highfive(ctx, user: discord.Member):
+        possible_responses = [
+                'https://i.imgur.com/DdLVhQl.gif',
+                'https://i.imgur.com/DS27ujM.gif',
+                'https://i.imgur.com/zOA0axl.gif',
+                'https://i.imgur.com/1yNYgxt.gif',
+                'https://i.imgur.com/P2bOnRD.gif',
+                'https://i.imgur.com/MmxehbX.gif',
+                'https://i.imgur.com/7D2HdEV.gif',
+                'https://i.imgur.com/wu9fRh7.gif',
+                'https://i.imgur.com/1d7Htb8.gif',
+                'https://i.imgur.com/jLeYpIP.gif',
+                'https://i.imgur.com/AJC39Sj.gif',
+                'https://i.imgur.com/ESmtHHi.gif',
+                'https://i.imgur.com/O5kxmby.gif'
+                ]
+        chosen = random.choice(possible_responses)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + " got a high five from {}.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await bot.say(embed=embed)
+
+
+@bot.group(pass_context=True,
            description="Hug someone",
            brief="Hug someone")
 async def hug(ctx, user: discord.Member):
@@ -187,7 +240,7 @@ async def ian():
            brief="THE JOEY THING",
            aliases=['Joey', 'shadow', 'Shadow'])
 async def joey():
-        await bot.say('<.<\n>.>\n<.>\>.<')
+        await bot.say('<.<\n>.>\n<.>\n>.<')
 
 
 @bot.group(description="Something Josh says a lot",
@@ -277,7 +330,8 @@ async def pinch(ctx, user: discord.Member):
                 'https://i.imgur.com/yEJnATT.gif',
                 'https://i.imgur.com/czAJdZR.gif',
                 'https://i.imgur.com/XUJZJva.gif',
-                'https://i.imgur.com/5MsZXap.gif'
+                'https://i.imgur.com/5MsZXap.gif',
+                'https://i.imgur.com/j1WqEzI.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got their cheeks pinched.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
@@ -342,9 +396,9 @@ async def quote():
                 'https://i.imgur.com/ezJb1z1.png',
                 'https://i.imgur.com/JXr2X90.png',
                 'https://i.imgur.com/rlu9Iyc.png',
-                'https://i.imgur.com/Iiwd3wR.png',                
-                'https://i.imgur.com/o9n988v.png',                
-                'https://i.imgur.com/HQW8qQM.png',                
+                'https://i.imgur.com/Iiwd3wR.png',
+                'https://i.imgur.com/o9n988v.png',
+                'https://i.imgur.com/HQW8qQM.png',
                 'https://i.imgur.com/bdM5nsm.png',
                 'https://i.imgur.com/KupYQlU.png',
                 'https://i.imgur.com/QCU9WM5.png',
@@ -553,7 +607,7 @@ def user_add_xp(user_id, xp):
                 users = json.load(fp)
 
             time_diff = (datetime.datetime.utcnow() - epoch).total_seconds() - users[user_id]['xp_time']
-            if time_diff >= 120:
+            if time_diff >= xp_timer:
                 users[user_id]['xp'] += xp
                 users[user_id]['xp_time'] = (datetime.datetime.utcnow() - epoch).total_seconds()
                 with open('users.json', 'w') as fp:
@@ -670,7 +724,7 @@ async def shutdownbot(passcode: str):
 # online confirmation
 @bot.event
 async def on_ready():
-        await bot.change_presence(game=Game(name="+help"))
+        await bot.change_presence(game=Game(name="+help (v. " + dbot_version + ")"))
         print(bot.user.name)
         print('online')
         print('Logged in as')
