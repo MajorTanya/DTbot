@@ -6,11 +6,21 @@ import random
 import asyncio
 import time
 import datetime
-dbot_version = "1.1"
+import json
+import os.path
+dbot_version = "1.2"
 
 bot = commands.Bot(command_prefix='+')
+epoch = datetime.datetime.utcfromtimestamp(0)
 
 #commands
+
+
+@bot.event
+async def on_message(message):
+        user_add_xp(message.author.id, 2)
+        await bot.process_commands(message)
+
 
 @bot.command(name='8ball',
              description="Answers a yes/no question.",
@@ -110,13 +120,14 @@ async def coinflip():
            brief="catsneeze",
            aliases=['Cat'])
 @commands.cooldown(3, 60, commands.BucketType.server)
+# cooldown of 60 seconds
 async def cat():
         await bot.say('<:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633>')
 
         
 @bot.command(description="Rolls a die",
              brief="Rolls a die",
-             aliases=['roll'])
+             aliases=['roll', '1d6'])
 async def dice():
         possible_responses = [
                 '1',
@@ -137,14 +148,14 @@ async def demon():
         await bot.say('Fucking bitch')
 
         
-@bot.group( hidden = True,
-            aliases=['dtbot'])
+@bot.group(hidden = True,
+           aliases=['dtbot'])
 async def DTbot():
         await bot.say('You found a secret. Good job')
         await bot.say('this will eventually be used for something')
-        #D:TANYA DO NOT DELETE THIS
-        #D:its for something i wanna do in the future and im just making sure it doesnt get used for a diferent command
-        #T:okay
+        # D:TANYA DO NOT DELETE THIS
+        # D:its for something i wanna do in the future and im just making sure it doesnt get used for a diferent command
+        # T:okay
 
 
 @bot.group(pass_context=True,
@@ -176,8 +187,7 @@ async def ian():
            brief="THE JOEY THING",
            aliases=['Joey', 'shadow', 'Shadow'])
 async def joey():
-        await bot.say('<.<')
-        await bot.say('>.>')
+        await bot.say('<.<\n>.>\n<.>\>.<')
 
 
 @bot.group(description="Something Josh says a lot",
@@ -201,7 +211,6 @@ async def kill(ctx, user: discord.Member):
         await bot.say(embed=embed)
 
 
-
 @bot.group(pass_context=True,
            description="Kiss someone",
            brief="Kiss someone")
@@ -220,15 +229,18 @@ async def kiss(ctx, user: discord.Member):
 @bot.group(pass_context=True,
            description="For something LEWD",
            brief="LEWD")
-async def lewd(ctx, user: discord.Member):
-        await bot.say('Why you gotta be so lewd, **{}**?'.format(user.display_name))
+async def lewd(ctx, user: discord.Member = None):
+        if user:
+                await bot.say('Why you gotta be so lewd, **{}**?'.format(user.display_name))
+        else:
+                await bot.say('Why you gotta be so lewd?')
 
 
 @bot.group(description="Something Nishi says a lot",
            brief="THE NISHI THING",
            aliases=['Nishi', 'Nisher', 'nisher', 'Nishnish', 'nishnish'])
 async def nishi():
-        await bot.say('I will peg Berend, Zero, Shaggy, Rech, and Fichte.')
+        await bot.say('I will peg Berend, Zero, Shaggy, Rech, Fichte, and Josh.')
 
 
 @bot.group(description="Something Neo says a lot",
@@ -283,7 +295,6 @@ async def ping(ctx):
         pinger = await bot.say('__*`Pinging...`*__')
         ping = '%.2f' % (1000*(time.monotonic()-time_then))
         await bot.edit_message(pinger, ':ping_pong: \n **Pong!** __**`' + ping + 'ms`**__')
-        ping = 0
 
 
 @bot.group(pass_context=True,
@@ -293,7 +304,11 @@ async def poke(ctx, user: discord.Member):
         possible_responses = [
                 'https://i.imgur.com/bIcjhXJ.gif',
                 'https://i.imgur.com/h6ddy0V.gif',
-                'https://i.imgur.com/7C5jWYq.gif'
+                'https://i.imgur.com/7C5jWYq.gif',
+                'https://i.imgur.com/TgdGQji.gif',
+                'https://i.imgur.com/wfH2tpV.gif',
+                'https://i.imgur.com/wz6netM.gif',
+                'https://i.imgur.com/5WE4RmD.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got poked.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
@@ -355,7 +370,7 @@ async def quote():
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="A quote for you:" + "\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await bot.say(embed=embed)
-        #that quoute
+        # that quote
         if chosen == 'https://i.imgur.com/e6i9Y2n.png':
                 await bot.say('<@287727207642693633>, this is for you.')
 
@@ -377,7 +392,7 @@ async def roulette():
 @bot.group(description="IT'S JUST A REEE BRO",
            brief="REEEEE")
 @commands.cooldown(3, 120, commands.BucketType.server)
-#cooldown of 2 minutes to prevent massive spams
+# cooldown of 2 minutes to prevent massive spams
 async def re():
         await bot.say('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
@@ -407,7 +422,9 @@ async def scenario():
                 'Josh removed a kebab',
                 'You got hacked',
                 '<.<',
-                'Nishi just took over the world'
+                'Nishi just took over the world',
+                'Cutie Joey got his cheeks pinched',
+                'Rech got stepped on'
                 ]
         await bot.say(random.choice(possible_responses))
 
@@ -437,14 +454,14 @@ async def sam():
            brief="THE TANYA THING",
            aliases=['Tanya'])
 async def tanya():
-        await bot.say('Hurt Nishi and I will kill you.')
+        await bot.say('Hurt Nishi and I will kill you.\n<:kuu:347272585568059393> <:kuu:347272585568059393> <:kuu:347272585568059393> <:kuu:347272585568059393> <:kuu:347272585568059393>')
 
 
 @bot.group(description="Something Toasted says a lot",
            brief="THE TOASTED THING",
            aliases=['Toasted'])
 async def toasted():
-        await bot.say(':egg::egg::egg::egg::egg::egg::egg::egg::egg::egg::egg::egg::egg::egg::egg:')
+        await bot.say(':egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg:')
 
 
 @bot.group(pass_context=True,
@@ -470,6 +487,22 @@ async def white():
         await bot.say('The voices in your head never end.')
 
 
+@bot.group(pass_context=True,
+           description="Shows a user's amount of XP (tells the command user's XP if called without mentioning a user)",
+           brief="Show XP",
+           aliases=['XP'])
+async def xp(ctx, user: discord.Member = None):
+        if user:
+                await bot.say('**{}**'.format(ctx.message.mentions[0].display_name) + ' has `{}'.format(get_xp(ctx.message.mentions[0].id)) + ' XP`.')
+        else:
+                await bot.say('You have `{}'.format(get_xp(ctx.message.author.id)) + ' XP`, **{}**.'.format(ctx.message.author.display_name))
+
+
+@xp.error
+async def xp_error(error, ctx):
+        await bot.say('**{}**'.format(ctx.message.mentions[0].display_name) + ' has not said anything yet. <:sad:420377816509710356> `(0 XP)`.')
+
+
 @bot.group(description="Something Zero says a lot",
            brief="THE ZERO THING",
            aliases=['Zero'])
@@ -487,9 +520,10 @@ async def zeroarmy():
 @bot.group(description="Info about me, Dbot. Please take a look.",
            brief="Info about me")
 async def info():
-        embed=discord.Embed(title="<@427902715138408458>'s info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any requests or questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.")
-        embed.set_footer(text="**DTbot v." + dbot_version + "**")
+        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any requests or questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
+        embed.set_footer(text="DTbot v. " + dbot_version)
         await bot.say(embed=embed)
+
 
 @bot.group(pass_context=True,
            description="Shows details on user, such as Name, Join Date, or Highest Role",
@@ -497,22 +531,143 @@ async def info():
            aliases=['uinfo'])
 async def userinfo(ctx, user: discord.Member):
     
-  embed = discord.Embed(title="{}'s info".format(user.name), description='Here is what I could find:', color=ctx.message.author.color)
-  embed.add_field(name='Nickname', value='{}'.format(user.display_name))
-  embed.add_field(name='ID', value='{}'.format(user.id), inline=True)
-  embed.add_field(name='Status', value='{}'.format(user.status), inline=True)
-  embed.add_field(name='Highest Role', value='<@&{}>'.format(user.top_role.id), inline=True)
-  embed.add_field(name='Joined at', value='{:%d. %h \'%y at %H:%M}'.format(user.joined_at), inline=True)
-  embed.add_field(name='Created at', value='{:%d. %h \'%y at %H:%M}'.format(user.created_at), inline=True)
-  embed.add_field(name='Discriminator', value='{}'.format(user.discriminator), inline=True)
-  embed.add_field(name='Playing', value='{}'.format(user.game))
-  embed.set_footer(text="{}'s Info".format(user.name), icon_url='{}'.format(user.avatar_url))
-  embed.set_thumbnail(url=user.avatar_url)
+        embed = discord.Embed(title="{}'s info".format(user.name), description='Here is what I could find:', color=ctx.message.author.color)
+        embed.add_field(name='Nickname', value='{}'.format(user.display_name))
+        embed.add_field(name='ID', value='{}'.format(user.id), inline=True)
+        embed.add_field(name='Status', value='{}'.format(user.status), inline=True)
+        embed.add_field(name='Highest Role', value='<@&{}>'.format(user.top_role.id), inline=True)
+        embed.add_field(name='Joined at', value='{:%d. %h \'%y at %H:%M}'.format(user.joined_at), inline=True)
+        embed.add_field(name='Created at', value='{:%d. %h \'%y at %H:%M}'.format(user.created_at), inline=True)
+        embed.add_field(name='Discriminator', value='{}'.format(user.discriminator), inline=True)
+        embed.add_field(name='Playing', value='{}'.format(user.game))
+        embed.set_footer(text="{}'s Info".format(user.name), icon_url='{}'.format(user.avatar_url))
+        embed.set_thumbnail(url=user.avatar_url)
 
-  await bot.say(embed=embed)
+        await bot.say(embed=embed)
 
 
-#online confirmation
+def user_add_xp(user_id, xp):
+    if os.path.isfile('users.json'):
+        try:
+            with open('users.json', 'r') as fp:
+                users = json.load(fp)
+
+            time_diff = (datetime.datetime.utcnow() - epoch).total_seconds() - users[user_id]['xp_time']
+            if time_diff >= 120:
+                users[user_id]['xp'] += xp
+                users[user_id]['xp_time'] = (datetime.datetime.utcnow() - epoch).total_seconds()
+                with open('users.json', 'w') as fp:
+                    json.dump(users, fp, sort_keys=True, indent=4)
+        except KeyError:
+            with open('users.json', 'r') as fp:
+                users = json.load(fp)
+            users[user_id] = {}
+            users[user_id]['xp'] = xp
+            users[user_id]['xp_time'] = (datetime.datetime.utcnow() - epoch).total_seconds()
+            with open('users.json', 'w') as fp:
+                json.dump(users, fp, sort_keys=True, indent=4)
+    else:
+        users = {user_id: {}}
+        users[user_id]['xp'] = xp
+        users[user_id]['xp_time'] = (datetime.datetime.utcnow() - epoch).total_seconds()
+        with open('users.json', 'w') as fp:
+            json.dump(users, fp, sort_keys=True, indent=4)
+
+
+def get_xp(user_id):
+    if os.path.isfile('users.json'):
+        with open('users.json', 'r') as fp:
+            users = json.load(fp)
+        return users[user_id]['xp']
+    else:
+        return 0
+
+
+@bot.group(description='Convert temperature from °Celsius to °Fahrenheit',
+           brief='°C > °F',
+           aliases=['ctof'])
+async def cf(number):
+        cf_value = round(float(number) * 1.8 + 32, 2)
+        await bot.say(str(cf_value) + '°F')
+
+
+@bot.group(description='Convert temperature from °Fahrenheit to °Celsius',
+           brief='°F > °C',
+           aliases=['ftoc'])
+async def fc(number):
+        fc_value = round((float(number) - 32) / 1.8, 2)
+        await bot.say(str(fc_value) + '°C')
+
+
+@bot.group(description='Calculates the square of a whole number',
+           brief='Square a (whole) number',
+           aliases=['²'])
+async def square(number):
+    squared_value = pow(int(number), 2)
+    await bot.say(str(number) + "² = " + str(squared_value))
+
+
+@bot.group(description='Convert from Centimeters to Inches',
+           brief='cm > in',
+           aliases=['cmtoin'])
+async def cminch(number):
+        cminch_value = int(number) * 0.393701
+        await bot.say(str(cminch_value) + ' inch')
+
+
+@bot.group(description='Convert from Inches to Centimeters',
+           brief='in > cm',
+           aliases=['intocm'])
+async def inchcm(number):
+        inchcm_value = int(number) * 2.54
+        await bot.say(str(inchcm_value) + ' cm')
+
+
+@bot.group(description='Convert from Feet to Meters',
+           brief='ft > m',
+           aliases=['fttom'])
+async def ftm(number):
+        ftm_value = int(number) * 0.3048
+        await bot.say(str(ftm_value) + ' m')
+
+
+@bot.group(description='Convert from Meters to Feet',
+           brief='m > ft',
+           aliases=['mtoft'])
+async def mft(number):
+        mft_value = int(number) / 0.3048
+        await bot.say(str(mft_value) + ' ft')
+
+
+@bot.group(description='Convert from Kilometers to Miles',
+           brief='km > mi',
+           aliases=['kitomi'])
+async def kmmi(number):
+        kmmi_value = int(number) * 0.621371
+        await bot.say(str(kmmi_value) + ' mi')
+
+
+@bot.group(description='Convert Miles to Kilometers',
+           brief='mi > km',
+           aliases=['mitokm'])
+async def mikm(number):
+        mikm_value = int(number) / 0.621371
+        await bot.say(str(mikm_value) + ' km')
+
+
+@bot.group(hidden=True,
+           description='Shutdown command for the bot, only usable by "Dbot Dev" or "Tanya" roles',
+           brief='Shutdown the bot')
+@commands.has_any_role("Dbot Dev", "Tanya")
+async def shutdownbot(passcode: str):
+        if passcode == '':
+                # passcode not in public release
+                await bot.logout()
+        else:
+                pass
+
+
+# online confirmation
 @bot.event
 async def on_ready():
         await bot.change_presence(game=Game(name="+help"))
