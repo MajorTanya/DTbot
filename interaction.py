@@ -349,7 +349,7 @@ class Interaction():
                 'https://i.imgur.com/XBMmfMy.gif'
                 ]
         chosen = random.choice(possible_responses)
-        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got a pat.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + " got a glomp from {}.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 

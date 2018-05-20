@@ -8,7 +8,7 @@ import time
 import datetime
 import json
 import os.path
-dbot_version = "1.3.1"
+dbot_version = "1.3.2"
 xp_timer = 120
 
 startup_extensions = ["conversion", "general", "interaction", "maths", "misc", "people", "rng"]
