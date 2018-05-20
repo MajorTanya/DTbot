@@ -23,7 +23,7 @@ class Misc():
 
     @commands.command(description="Actually you can't",
                       brief="Kill yourself")
-    async def kms():
+    async def kms(self):
         await self.bot.say('NO')
 
 

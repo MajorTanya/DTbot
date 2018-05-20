@@ -7,22 +7,23 @@ class RNG():
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(description="Rolls a dice in NdN format. (1d6 is rolling a standard, six-sided dice once. 3d20 rolls a twenty-sided dice three times.)",
+                      brief="Rolls a dice in NdN format")
     async def roll(self, dice : str):
-        """Rolls a dice in NdN format. (1d6 is rolling a standard, six-sided dice once. 3d20 roll a twenty-sided dice three times.)"""
         try:
             rolls, limit = map(int, dice.split('d'))
         except Exception:
-            await self.bot.say('Format has to be in NdN!')
+            await self.bot.say('Format has to be in NdN.')
             return
 
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await self.bot.say(result)
 
 
-    @commands.command(description='For when you wanna settle the score some other way')
+    @commands.command(description='Choose one of multiple choices. With options containing spaces, use double quotes like:\n+choose "Make Pizza" Fish "Go to the cafeteria"',
+                      brief='Let the bot decide for you',
+                      aliases=['choice'])
     async def choose(self, *choices : str):
-        """Chooses between multiple choices."""
         await self.bot.say(random.choice(choices))
 
 
@@ -82,6 +83,23 @@ class RNG():
                 'Rech got stepped on'
                 ]
         await self.bot.say(random.choice(possible_responses))
+
+
+    @commands.command(description='Says something random',
+                      brief='Says something random')
+    async def random(self):
+        possible_responses = [
+                'Franxx',
+                'Nope',
+                'Mom',
+                'Dead',
+                'Heh',
+                'No u',
+                'Darling'
+                ]
+        await self.bot.say(random.choice(possible_responses))
+    # D:YES I ONLY ADDED IT CUZ I WANTENTED TO ADD SOMETHING ABOUT DARLING IN THE FRANXX
+    # D:TAKE ME TO COURT IF U WANT TO
 
 
 def setup(bot):

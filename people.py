@@ -8,8 +8,8 @@ class People():
         self.bot = bot
 
     @commands.command(description="Something Berend says a lot",
-               brief="THE BEREND THING",
-               aliases=['Berend'])
+                      brief="THE BEREND THING",
+                      aliases=['Berend'])
     async def berend(self):
         await self.bot.say('I am watching porn.')
 
@@ -19,6 +19,17 @@ class People():
                       aliases=['Demon'])
     async def demon(self):
         await self.bot.say('Fucking bitch')
+
+
+    @commands.command(description="Something Exo says a lot",
+                      brief="THE EXO THING",
+                      aliases=['Exo'])
+    async def exo(self):
+        possible_responses = [
+                'Mom',
+                'Major'
+                ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="Something Ian says a lot",
@@ -42,6 +53,20 @@ class People():
         await self.bot.say('Remove kebab')
 
 
+    @commands.command(description="Something Kami says a lot",
+                      brief="THE KAMI THING",
+                      aliases=['Kami'])
+    async def kami(self):
+        await self.bot.say('???')
+
+
+    @commands.command(description="Something Momiji says a lot",
+                      brief="THE MOMIJI THING",
+                      aliases=['Momiji'])
+    async def momiji(self):
+        await self.bot.say('Bunch of weaklings')
+
+
     @commands.command(description="Something Nishi says a lot",
                       brief="THE NISHI THING",
                       aliases=['Nishi', 'Nisher', 'nisher', 'Nishnish', 'nishnish'])
@@ -54,6 +79,13 @@ class People():
                       aliases=['Neo'])
     async def neo(self):
         await self.bot.say('Poof')
+
+
+    @commands.command(description="Something Rech says a lot",
+                      brief="THE RECH THING",
+                      aliases=['Rech'])
+    async def rech(self):
+        await self.bot.say('SIT ON MY FACE!')
 
 
     @commands.command(description="Something Sophie says a lot",
@@ -92,7 +124,7 @@ class People():
 
 
     @commands.command(description="Something White said that one time",
-                      brief="THE WHITE THING SHE SAID",
+                      brief="THE WHITE THING",
                       aliases=['White'])
     async def white(self):
         await self.bot.say('The voices in your head never end.')

@@ -1,18 +1,12 @@
 import discord
 from discord.ext import commands
+from DTbot import dbot_version
 
 class General:
     """General commands."""
 
     def __init__(self, bot):
         self.bot = bot
-
-
-    @commands.command()
-    async def repeat(self, times : int, content='repeating...'):
-        """Repeats a message multiple times."""
-        for i in range(times):
-            await self.bot.say(content)
 
 
     @commands.command(pass_context=True,
@@ -39,7 +33,7 @@ class General:
     @commands.command(description="Info about me, Dbot. Please take a look.",
                       brief="Info about me")
     async def info(self):
-        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any requests or questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
+        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
         embed.set_footer(text="DTbot v. " + dbot_version)
         await self.bot.say(embed=embed)
 
@@ -54,6 +48,21 @@ class General:
         pinger = await self.bot.say('__*`Pinging...`*__')
         ping = '%.2f' % (1000*(time.monotonic()-time_then))
         await self.bot.edit_message(pinger, ':ping_pong: \n **Pong!** __**`' + ping + 'ms`**__')
+
+
+    @commands.command(pass_context=True,
+                      description="Request a command to be added to DTbot. Functionality can be described in detail.\nPlease keep it reasonably concise.\nRestricted to 1 use every 24 hours (reset is NOT at a set time of day but 24 hours after the command is used).\n\nExample use:\n?request burn Burn someone at the stake for being a heretic.",
+                      brief="Request a new command (1x/24hr)",
+                      aliases=['req'])
+    @commands.cooldown(2, 86400, commands.BucketType.user)
+    async def request(self, ctx, command : str, *functionality : str):
+        user = discord.utils.get(self.bot.get_all_members(), id='274684924324347904')
+        embed = discord.Embed(title="New request by {}".format(ctx.message.author.name), description='{} requested the following command:'.format(ctx.message.author.mention), color=ctx.message.author.color)
+        embed.add_field(name='Suggested command name', value='**+' + command + '**')
+        embed.add_field(name='\u200b', value='\u200b')
+        embed.add_field(name='Suggested functionality', value='*' + ' '.join(functionality) + '*')
+        await self.bot.send_message(user, 'New command request!', embed=embed)
+        await self.bot.say("New command request was sent to the developers, {}.".format(ctx.message.author.mention))
 
 
 def setup(bot):

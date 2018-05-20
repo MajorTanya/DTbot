@@ -8,7 +8,7 @@ import time
 import datetime
 import json
 import os.path
-dbot_version = "1.3"
+dbot_version = "1.3.1"
 xp_timer = 120
 
 startup_extensions = ["conversion", "general", "interaction", "maths", "misc", "people", "rng"]
@@ -142,4 +142,5 @@ if __name__ == "__main__":
         except Exception as e:
             exc = '{}: {}'.format(type(e).__name__, e)
             print('Failed to load extension {}\n{}'.format(extension, exc))
-bot.run('')
+
+    bot.run('')

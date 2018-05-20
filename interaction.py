@@ -34,9 +34,8 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
-                      description="",
-                      brief="",
-                      aliases=[''])
+                      description="Blush",
+                      brief="Blush")
     async def blush(self, ctx):
         possible_responses = [
                 'https://i.imgur.com/5d4EtC7.gif',
@@ -65,8 +64,33 @@ class Interaction():
     async def cuddle(self, ctx, user: discord.Member):
         possible_responses = [
                 'https://i.imgur.com/7zdANGl.jpg',
-                'https://i.imgur.com/IFeaAkR.jpg',
-                'https://i.imgur.com/AtEvIWI.jpg'
+                'https://i.imgur.com/Yv1vzs8.gif',
+                'https://i.imgur.com/ssEihPL.gif',
+                'https://i.imgur.com/Smw9dWd.gif',
+                'https://i.imgur.com/VU6ZtyK.gif',
+                'https://i.imgur.com/5UFTH4e.gif',
+                'https://i.imgur.com/3xL3xOp.gif',
+                'https://i.imgur.com/ufyssIG.gif',
+                'https://i.imgur.com/7Gvgzpa.gif',
+                'https://i.imgur.com/QMfcwVh.gif',
+                'https://i.imgur.com/juPh4SS.gif',
+                'https://i.imgur.com/qrE8NgM.gif',
+                'https://i.imgur.com/PnA0l5s.gif',
+                'https://i.imgur.com/3n65uZZ.gif',
+                'https://i.imgur.com/dXcW5FZ.gif',
+                'https://i.imgur.com/GFjVEhK.gif',
+                'https://i.imgur.com/pd60o2N.gif',
+                'https://i.imgur.com/FiVYGOt.gif',
+                'https://i.imgur.com/qMC5eMR.gif',
+                'https://i.imgur.com/QWCjCcS.gif',
+                'https://i.imgur.com/EAjbxc1.gif',
+                'https://i.imgur.com/n2W3s4w.gif',
+                'https://i.imgur.com/9618Een.gif',
+                'https://i.imgur.com/vZrnDMZ.gif',
+                'https://i.imgur.com/P7nr3g7.gif',
+                'https://i.imgur.com/2LMoGHb.gif',
+                'https://i.imgur.com/DGpmONM.gif',
+                'https://i.imgur.com/ikAgEjS.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got cuddled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
@@ -126,7 +150,25 @@ class Interaction():
                 'https://i.imgur.com/kCe5Bcl.jpg',
                 'https://i.imgur.com/BcabNdw.png',
                 'https://i.imgur.com/I6dF7Jk.gif',
-                'https://i.imgur.com/75k34aJ.png'
+                'https://i.imgur.com/75k34aJ.png',
+                'https://i.imgur.com/u7ADDIf.gif',
+                'https://i.imgur.com/MymLTif.gif',
+                'https://i.imgur.com/rYJ7jd1.gif',
+                'https://i.imgur.com/FeRFRdg.gif',
+                'https://i.imgur.com/qGpIWAw.gif',
+                'https://i.imgur.com/PImjH6C.gif',
+                'https://i.imgur.com/Y5FgKIs.gif',
+                'https://i.imgur.com/bEHkvAl.gif',
+                'https://i.imgur.com/WVxUM2i.gif',
+                'https://i.imgur.com/ejJuHlg.gif',
+                'https://i.imgur.com/0aNrj7n.gif',
+                'https://i.imgur.com/4BUS10Z.gif',
+                'https://i.imgur.com/gTgkq5I.gif',
+                'https://i.imgur.com/GTs6esu.gif',
+                'https://i.imgur.com/U1uupRT.gif',
+                'https://i.imgur.com/dkcSG2z.gif',
+                'https://i.imgur.com/5RWjDeE.gif',
+                'https://i.imgur.com/0lavkJS.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got hugged.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
@@ -141,7 +183,8 @@ class Interaction():
         possible_responses = [
                 'https://i.imgur.com/nqyZPn9.jpg',
                 'https://i.imgur.com/EtaXopA.jpg',
-                'https://i.imgur.com/1Suhkjm.jpg'
+                'https://i.imgur.com/1Suhkjm.jpg',
+                'https://i.imgur.com/fleBrUm.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got kissed.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
@@ -252,7 +295,8 @@ class Interaction():
                 'https://i.imgur.com/4sJBxh6.gif',
                 'https://i.imgur.com/MHAdhmy.gif',
                 'https://i.imgur.com/DLLOHhv.gif',
-                'https://i.imgur.com/goFfJot.gif'
+                'https://i.imgur.com/goFfJot.gif',
+                'https://i.imgur.com/0gbigx6.gif'
                 ]
         chosen = random.choice(possible_responses)
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + " got stabbed by {}.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
@@ -292,6 +336,22 @@ class Interaction():
                 await self.bot.say('Why you gotta be so lewd, **{}**?'.format(user.display_name))
         else:
                 await self.bot.say('Why you gotta be so lewd?')
+
+
+    @commands.command(pass_context=True,
+           description="Glomp someone",
+           brief="Glomp someone")
+    async def glomp(self, ctx, user: discord.Member):
+        possible_responses = [
+                'https://i.imgur.com/bTEt1M0.gif',
+                'https://i.imgur.com/EeYf3KO.gif',
+                'https://i.imgur.com/5d61E06.gif',
+                'https://i.imgur.com/XBMmfMy.gif'
+                ]
+        chosen = random.choice(possible_responses)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got a pat.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
 
 
 def setup(bot):
