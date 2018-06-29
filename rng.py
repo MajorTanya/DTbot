@@ -1,4 +1,5 @@
 import random
+import discord
 from discord.ext import commands
 
 class RNG():
@@ -100,6 +101,18 @@ class RNG():
         await self.bot.say(random.choice(possible_responses))
     # D:YES I ONLY ADDED IT CUZ I WANTENTED TO ADD SOMETHING ABOUT DARLING IN THE FRANXX
     # D:TAKE ME TO COURT IF U WANT TO
+
+
+    @commands.command(description='Find out how shippable your ship is',
+                      brief='Ship things')
+    async def ship(self, first : str, distinguisher : str, *second : str):
+        shipping = random.random() * 100
+        if shipping < 50:
+            emote_choice = ":broken_heart:"
+        else:
+            emote_choice = ":heart:"
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="`" + first + "` and `" + " ".join(second) + "`? `{0:.2f}%` shippable. ".format(shipping) + emote_choice)
+        await self.bot.say(embed=embed)
 
 
 def setup(bot):
