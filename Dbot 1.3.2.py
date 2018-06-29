@@ -8,11 +8,12 @@ import time
 import datetime
 import json
 import os.path
-dbot_version = "1.3.2"
+dbot_version = "1.4"
 xp_timer = 120
+command_prefix = '+'
 
 startup_extensions = ["conversion", "general", "interaction", "maths", "misc", "people", "rng"]
-bot = commands.Bot(command_prefix='+')
+bot = commands.Bot(command_prefix)
 epoch = datetime.datetime.utcfromtimestamp(0)
 
 #commands
@@ -126,7 +127,7 @@ async def shutdownbot(passcode: str):
 # online confirmation
 @bot.event
 async def on_ready():
-        await bot.change_presence(game=Game(name="+help (v. " + dbot_version + ")"))
+        await bot.change_presence(game=Game(name=command_prefix + "help (v. " + dbot_version + ")"))
         print(bot.user.name)
         print('online')
         print('Logged in as')

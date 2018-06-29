@@ -21,6 +21,13 @@ class People():
         await self.bot.say('Fucking bitch')
 
 
+    @commands.command(description="Something Eins says a lot",
+                      brief="THE EINS THING",
+                      aliases=['Eins'])
+    async def eins(self):
+        await self.bot.say('Toastie-chan is my waifu :heart:')
+
+
     @commands.command(description="Something Exo says a lot",
                       brief="THE EXO THING",
                       aliases=['Exo'])
@@ -79,6 +86,13 @@ class People():
                       aliases=['Neo'])
     async def neo(self):
         await self.bot.say('Poof')
+
+
+    @commands.command(description="Something Nobody says a lot",
+                      brief="THE NOBODY THING",
+                      aliases=['Nobody', 'noby', 'Noby'])
+    async def nobody(self):
+        await self.bot.say('I HATE DUCKS\n:duck: :duck: :duck: :duck: :duck:')
 
 
     @commands.command(description="Something Rech says a lot",

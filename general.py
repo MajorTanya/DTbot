@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from DTbot import dbot_version
+from DTbot import command_prefix
 
 class General:
     """General commands."""
@@ -51,8 +52,8 @@ class General:
 
 
     @commands.command(pass_context=True,
-                      description="Request a command to be added to DTbot. Functionality can be described in detail.\nPlease keep it reasonably concise.\nRestricted to 1 use every 24 hours (reset is NOT at a set time of day but 24 hours after the command is used).\n\nExample use:\n?request burn Burn someone at the stake for being a heretic.",
-                      brief="Request a new command (1x/24hr)",
+                      description="Request a command to be added to DTbot. Functionality can be described in detail.\nPlease keep it reasonably concise.\nRestricted to 2 uses every 24 hours (reset is NOT at a set time of day but 24 hours after the command is used).\n\nExample use:\n" + command_prefix + "request burn Burn someone at the stake for being a heretic.",
+                      brief="Request a new command (2x/24hr)",
                       aliases=['req'])
     @commands.cooldown(2, 86400, commands.BucketType.user)
     async def request(self, ctx, command : str, *functionality : str):
