@@ -1,7 +1,7 @@
 from discord import Game
 from discord.ext import commands
 
-dbot_version = "1.4.2"
+dbot_version = "1.4.3"
 command_prefix = '+'
 
 startup_extensions = ["conversion", "general", "interaction", "maths", "misc", "people", "rng"]

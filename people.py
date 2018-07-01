@@ -44,6 +44,13 @@ class People():
         await self.bot.say(random.choice(possible_responses))
 
 
+    @commands.command(decription="Something that Fichtenschweif says a lot",
+                      brief="THE FICHTE THING",
+                      aliases=['Fichte', 'fichtenschweif', 'Fichtenschweif'])
+    async def fichte(self):
+        await self.bot.say('Women are superior')
+
+
     @commands.command(description="Something Ian says a lot",
                       brief="THE IAN THING",
                       aliases=['Ian'])
