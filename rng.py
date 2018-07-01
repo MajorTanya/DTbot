@@ -105,13 +105,13 @@ class RNG():
 
     @commands.command(description='Find out how shippable your ship is',
                       brief='Ship things')
-    async def ship(self, first : str, distinguisher : str, *second : str):
+    async def ship(self, first : str, separator : str, *second : str):
         shipping = random.random() * 100
         if shipping < 50:
             emote_choice = ":broken_heart:"
         else:
             emote_choice = ":heart:"
-        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="`" + first + "` and `" + " ".join(second) + "`? `{0:.2f}%` shippable. ".format(shipping) + emote_choice)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="" + first + " and " + " ".join(second) + "? `{0:.2f}%` shippable. ".format(shipping) + emote_choice)
         await self.bot.say(embed=embed)
 
 

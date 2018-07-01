@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import random
 
 class People():
     """Signature things we have said"""
@@ -23,9 +24,13 @@ class People():
 
     @commands.command(description="Something Eins says a lot",
                       brief="THE EINS THING",
-                      aliases=['Eins'])
+                      aliases=['Eins', 'lewis', 'Lewis'])
     async def eins(self):
-        await self.bot.say('Toastie-chan is my waifu :heart:')
+        possible_responses = [
+                'Toastie-chan is my waifu :heart:',
+                'I will lewd all of you'
+                ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="Something Exo says a lot",

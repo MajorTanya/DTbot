@@ -66,5 +66,15 @@ class General:
         await self.bot.say("New command request was sent to the developers, {}.".format(ctx.message.author.mention))
 
 
+    @commands.command(hidden=True,
+                      aliases=['dtbot'])
+    async def DTbot(self):
+        await self.bot.say('You found a secret. Good job')
+        await self.bot.say('this will eventually be used for something')
+        # D:TANYA DO NOT DELETE THIS
+        # D:its for something i wanna do in the future and im just making sure it doesnt get used for a diferent command
+        # T:okay
+
+
 def setup(bot):
     bot.add_cog(General(bot))

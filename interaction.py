@@ -79,14 +79,14 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
-                      description='',
-                      brief='')
+                      description='Confess your feelings to someone',
+                      brief='Confess your feelings to someone')
     async def confess(self, ctx, user: discord.Member):
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + ", you've been confessed to by {}!".format(ctx.message.author.mention) + "\nWill you let the ship set sail or will you sink it before its journey starts? " + u"\u26F5")
         message = await self.bot.say(embed=embed)
         await self.bot.add_reaction(message, u"\u2764")
         await self.bot.add_reaction(message, u"\U0001F494")
-        await asyncio.sleep(2)
+        await asyncio.sleep(1)
         
         def check(reaction, user):
             e = str(reaction.emoji)
@@ -98,7 +98,7 @@ class Interaction():
             if response.reaction.emoji == u"\u2764":
                 await self.bot.say("**{0.user.display_name}** accepted **{1}'s** feelings! The ship has set sail! Congratulations! :heart: :sailboat:".format(response, ctx.message.author.display_name))
             elif response.reaction.emoji == u"\U0001F494":
-                await self.bot.say("**{0.user.display_name}** rejected {1}**! Don't worry, I have ice cream buckets for you. :ice_cream: <:kannahug:461996510637326386>".format(response, ctx.message.author.display_name))
+                await self.bot.say("**{0.user.display_name}** rejected **{1}**! Don't worry, I have ice cream buckets for you. :ice_cream: <:kannahug:461996510637326386>".format(response, ctx.message.author.display_name))
             else:
                 return
         else:
