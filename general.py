@@ -1,4 +1,5 @@
 import discord
+import time
 from discord.ext import commands
 from DTbot import dbot_version
 from DTbot import command_prefix
