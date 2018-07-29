@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class Conversions():
+class Conversion():
     def __init__(self, bot):
         self.bot = bot
 
@@ -136,4 +136,4 @@ class Conversions():
 
 
 def setup(bot):
-    bot.add_cog(Conversions(bot))
+    bot.add_cog(Conversion(bot))

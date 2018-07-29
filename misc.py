@@ -14,12 +14,12 @@ class Misc():
 
 
     @commands.command(description="SAY BLESS YOU TO THE CAT",
-                      brief="catsneeze",
+                      brief="Say bless you to the cat",
                       aliases=['Cat'])
     @commands.cooldown(3, 60, commands.BucketType.server)
     # cooldown of 60 seconds
     async def cat(self):
-        await self.bot.say('<:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633> <:catsneeze:413201357223493633>')
+        await self.bot.say('<:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928>')
 
 
     @commands.command(description="Actually you can't",

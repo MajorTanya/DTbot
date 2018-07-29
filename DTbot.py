@@ -1,17 +1,17 @@
 from discord import Game
 from discord.ext import commands
 
-dbot_version = "1.4.4"
+dbot_version = "1.5"
 command_prefix = '+'
 
-startup_extensions = ["conversion", "general", "interaction", "maths", "misc", "people", "rng"]
+startup_extensions = ["conversion", "general", "interaction", "math", "misc", "people", "rng"]
 bot = commands.Bot(command_prefix)
 
 
 @bot.command(hidden=True,
              description="Can load additional extensions into DTbot (devs, mods and admins only)",
              brief="Load an extension")
-@commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "Tanya")
+@commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "DTbot Dev", "Tanya")
 async def load(extension_name : str):
     try:
         bot.load_extension(extension_name)
@@ -24,7 +24,7 @@ async def load(extension_name : str):
 @bot.command(hidden=True,
              description="Unload an extension (devs, mods, and admins only)",
              brief="Unload an extension")
-@commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "Tanya")
+@commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "DTbot Dev", "Tanya")
 async def unload(extension_name : str):
     bot.unload_extension(extension_name)
     await bot.say("{} unloaded.".format(extension_name))
@@ -33,7 +33,7 @@ async def unload(extension_name : str):
 @bot.command(hidden=True,
              description='Shutdown command for the bot, only usable by developer roles',
              brief='Shutdown the bot')
-@commands.has_any_role("Dbot Dev", "Tanya")
+@commands.has_any_role("Dbot Dev", "DTbot Dev", "Tanya")
 async def shutdownbot(passcode: str):
     if passcode == '':
                 # passcode not in public release

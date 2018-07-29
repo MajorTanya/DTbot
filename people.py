@@ -39,7 +39,7 @@ class People():
     async def exo(self):
         possible_responses = [
                 'Mom',
-                'Major'
+                'Senpai'
                 ]
         await self.bot.say(random.choice(possible_responses))
 
@@ -79,18 +79,11 @@ class People():
         await self.bot.say('???')
 
 
-    @commands.command(description="Something Momiji says a lot",
-                      brief="THE MOMIJI THING",
-                      aliases=['Momiji'])
-    async def momiji(self):
-        await self.bot.say('Bunch of weaklings')
-
-
     @commands.command(description="Something Nishi says a lot",
                       brief="THE NISHI THING",
                       aliases=['Nishi', 'Nisher', 'nisher', 'Nishnish', 'nishnish'])
     async def nishi(self):
-        await self.bot.say('I will peg Berend, Zero, Shaggy, Rech, Fichte, and Josh.')
+        await self.bot.say('I will peg Berend, Zero, Shaggy, Rech, Fichte, Josh, and Ian.')
 
 
     @commands.command(description="Something Neo says a lot",
@@ -147,13 +140,6 @@ class People():
                       aliases=['Toasted'])
     async def toasted(self):
         await self.bot.say(':egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg: :egg:')
-
-
-    @commands.command(description="Something White said that one time",
-                      brief="THE WHITE THING",
-                      aliases=['White'])
-    async def white(self):
-        await self.bot.say('The voices in your head never end.')
 
 
     @commands.command(description="Something Zero says a lot",

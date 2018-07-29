@@ -3,12 +3,22 @@ import time
 from discord.ext import commands
 from DTbot import dbot_version
 from DTbot import command_prefix
+from linklist import changelog_link
 
 class General:
     """General commands."""
 
     def __init__(self, bot):
         self.bot = bot
+
+
+    @commands.command(description="Get an overview over the recentmost update of DTbot",
+                      brief="Recent updates to DTbot",
+                      aliases=['Changelog'])
+    async def changelog(self):
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description='__Recent changes to DTbot:__\nNewest version: ' + dbot_version)
+        embed.set_image(url=changelog_link)
+        await self.bot.say(embed=embed)
 
 
     @commands.command(pass_context=True,
@@ -35,7 +45,7 @@ class General:
     @commands.command(description="Info about me, Dbot. Please take a look.",
                       brief="Info about me")
     async def info(self):
-        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> for one server only.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find a version of the code minus the server specific stuff here: https://github.com/angelgggg/Pbot\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
+        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840>.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find Dbot's GitHub repository here(https://github.com/MajorTanya/DTbot).\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
         embed.set_footer(text="DTbot v. " + dbot_version)
         await self.bot.say(embed=embed)
 
@@ -43,7 +53,7 @@ class General:
     @commands.command(pass_context=True,
                       description="Pong",
                       brief="Pong")
-    @commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "Tanya")
+    @commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "DTbot Dev", "Tanya")
     @commands.cooldown(3, 30, commands.BucketType.server)
     async def ping(self, ctx):
         time_then = time.monotonic()
@@ -71,7 +81,7 @@ class General:
                       aliases=['dtbot'])
     async def DTbot(self):
         await self.bot.say('You found a secret. Good job')
-        await self.bot.say('this will eventually be used for something')
+        await self.bot.say('This will eventually be used for something')
         # D:TANYA DO NOT DELETE THIS
         # D:its for something i wanna do in the future and im just making sure it doesnt get used for a diferent command
         # T:okay
