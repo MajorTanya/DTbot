@@ -1,6 +1,6 @@
 from discord.ext import commands
 
-class Math():
+class Maths():
     """Some mathematical commands"""
 
     def __init__(self, bot):
@@ -50,4 +50,4 @@ class Math():
             await self.bot.say('{0:.2f}%'.format((part / whole) * 100))
 
 def setup(bot):
-    bot.add_cog(Math(bot))
+    bot.add_cog(Maths(bot))
