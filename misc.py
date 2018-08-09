@@ -22,6 +22,14 @@ class Misc():
         await self.bot.say('<:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928>')
 
 
+    @commands.command(description="The face of craziness",
+                      brief="The face of craziness")
+    @commands.cooldown(3, 60, commands.BucketType.server)
+    # cooldown of 60 seconds
+    async def crazy(self):
+        await self.bot.say('<:crazy:476896897286799371> <:crazy:476896897286799371> <:crazy:476896897286799371> <:crazy:476896897286799371> <:crazy:476896897286799371>')
+
+
     @commands.command(description="Actually you can't",
                       brief="Kill yourself")
     async def kms(self):
@@ -77,7 +85,7 @@ class Misc():
     @commands.cooldown(3, 120, commands.BucketType.server)
     # cooldown of 2 minutes to prevent massive spams
     async def re(self):
-        await self.bot.say('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
+        await self.bot.say('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
 
     @commands.command(hidden=True,

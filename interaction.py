@@ -3,7 +3,7 @@ import discord
 import asyncio
 from discord.ext import commands
 from DTbot import bot
-from linklist import baddoggo_links, bkiss_links, blush_links, cage_links, cry_links, cuddle_links, glomp_links, handholding_links, highfive_links, hug_links, kiss_links, kick_links, lewd_links, lick_links, pat_links, pinch_links, poke_links, punch_links, slap_links, stab_links, whip_links
+from linklist import baddoggo_links, bkiss_links, blush_links, cage_links, cry_links, cuddle_links, glomp_links, handholding_links, highfive_links, hug_links, kiss_links, kick_links, lewd_links, lick_links, pat_links, pinch_links, poke_links, punch_links, slap_links, stab_links, tickle_links, whip_links
 
 class Interaction():
     """Commands which interact with others"""
@@ -15,7 +15,7 @@ class Interaction():
     @commands.command(pass_context=True,
                       description="Call someone a bad doggo",
                       brief="Call someone a bad doggo",
-                      aliases=['Baddoggo', 'shame', 'Shame', 'baddog', 'Baddog'])
+                      aliases=['shame', 'baddog'])
     async def baddoggo(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} called themselves a bad doggo. I think they just misspoke. Because if they were a doggo, they'd be a good one. A very good one.".format(ctx.message.author.mention))
@@ -29,8 +29,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Bitch slaps someone",
-                      brief="Bitch slaps someone",
-                      aliases=['Bitchslap'])
+                      brief="Bitch slaps someone")
     async def bitchslap(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tried to give themselves a mean bitch slap. All they decide to do is rub their cheeks.".format(ctx.message.author.mention))
@@ -42,8 +41,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Kiss someone the non-romantic way",
-                      brief="A non-romantic kiss",
-                      aliases=['Bkiss'])
+                      brief="A non-romantic kiss")
     async def bkiss(self, ctx, user: discord.Member):
         possible_responses = bkiss_links
         chosen = random.choice(possible_responses)
@@ -57,8 +55,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Blush\nCan be given a reason",
-                      brief="Blush",
-                      aliases=['Blush'])
+                      brief="Blush")
     async def blush(self, ctx, *reason: str):
         possible_responses = blush_links
         chosen = random.choice(possible_responses)
@@ -72,8 +69,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Cuddle someone",
-                      brief="Cuddle someone",
-                      aliases=['Cuddle'])
+                      brief="Cuddle someone")
     async def cuddle(self, ctx, user: discord.Member):
         possible_responses = cuddle_links
         chosen = random.choice(possible_responses)
@@ -87,8 +83,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Cage someone",
-                      brief="Cage someone",
-                      aliases=['Cage'])
+                      brief="Cage someone")
     async def cage(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="Just as {} tried to enter the cage, their friends surprised them with a party. Hooray!".format(ctx.message.author.mention))
@@ -102,8 +97,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Confess your feelings to someone",
-                      brief="Confess your feelings to someone",
-                      aliases=['Confess'])
+                      brief="Confess your feelings to someone")
     async def confess(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} confessed their love for themselves! Aww, what a great example of self-love.".format(user.mention))
@@ -134,8 +128,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Cry\nCan be given a reason",
-                      brief="Cry",
-                      aliases=['Cry'])
+                      brief="Cry")
     async def cry(self, ctx, *reason: str):
         possible_responses = cry_links
         chosen = random.choice(possible_responses)
@@ -150,8 +143,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Glomp someone",
-                      brief="Glomp someone",
-                      aliases=['Glomp'])
+                      brief="Glomp someone")
     async def glomp(self, ctx, user: discord.Member):
         possible_responses = glomp_links
         chosen = random.choice(possible_responses)
@@ -166,7 +158,7 @@ class Interaction():
     @commands.command(pass_context=True,
                       description="Hold someone's hand",
                       brief="Hold someone's hand",
-                      aliases=['handhold', 'Handhold', 'holdhand', 'Holdhand'])
+                      aliases=['handhold', 'holdhand'])
     async def handholding(self, ctx, user: discord.Member):
         possible_responses = handholding_links
         chosen = random.choice(possible_responses)
@@ -181,7 +173,7 @@ class Interaction():
     @commands.command(pass_context=True,
                       description="High five someone",
                       brief="High five someone",
-                      aliases=['5', 'Highfive'])
+                      aliases=['5'])
     async def highfive(self, ctx, user: discord.Member):
         possible_responses = highfive_links
         chosen = random.choice(possible_responses)
@@ -195,8 +187,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Hug someone",
-                      brief="Hug someone",
-                      aliases=['Hug'])
+                      brief="Hug someone")
     async def hug(self, ctx, user: discord.Member):
         possible_responses = hug_links
         chosen = random.choice(possible_responses)
@@ -210,8 +201,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="What do you think it does",
-                      brief="It's in the name",
-                      aliases=['Kill'])
+                      brief="It's in the name")
     async def kill(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tried to kill themselves. Luckily, they changed their mind and went to get food instead.".format(ctx.message.author.mention))
@@ -222,8 +212,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Kiss someone",
-                      brief="Kiss someone",
-                      aliases=['Kiss'])
+                      brief="Kiss someone")
     async def kiss(self, ctx, user: discord.Member):
         possible_responses = kiss_links
         chosen = random.choice(possible_responses)
@@ -237,8 +226,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="KICK THEIR ASS\n\n(This is NOT a moderation command to kick a user from a server.)",
-                      brief="Kick someone",
-                      aliases=['Kick'])
+                      brief="Kick someone")
     async def kick(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} aimed to kick themselves. As they noticed, it's quite hard to actually do. So they didn't and went to watch their favorite show.".format(ctx.message.author.mention))
@@ -252,8 +240,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="For something LEWD",
-                      brief="LEWD",
-                      aliases=['Lewd'])
+                      brief="LEWD")
     async def lewd(self, ctx, user: discord.Member = None):
         possible_responses = lewd_links
         chosen = random.choice(possible_responses)
@@ -270,23 +257,21 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Lick someone",
-                      brief="Lick someone",
-                      aliases=['Lick'])
+                      brief="Lick someone")
     async def lick(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} licked themselves. Maybe they are secretly a cat and value personal hygiene?".format(ctx.message.author.mention))
         else:
             possible_responses = lick_links
             chosen = random.choice(possible_responses)
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{0} licked {1}.".format(ctx.message.author.mention, user.mention))
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{0} licked {1}.".format(ctx.message.author.mention, user.mention) + "\n\n[Image link](" + chosen + ")")
             embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
     @commands.command(pass_context=True,
                       description="Notice someone",
-                      brief="Notice someone",
-                      aliases=['Notice'])
+                      brief="Notice someone")
     async def notice(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} noticed themselves. Yes, you are here, and yes, it's good you are.".format(ctx.message.author.mention))
@@ -297,8 +282,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Pat someone",
-                      brief="Pat someone",
-                      aliases=['Pat'])
+                      brief="Pat someone")
     async def pat(self, ctx, user: discord.Member):
         possible_responses = pat_links
         chosen = random.choice(possible_responses)
@@ -312,8 +296,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Pinch someone's cheeks",
-                      brief="Pinch someone's cheeks",
-                      aliases=['Pinch'])
+                      brief="Pinch someone's cheeks")
     async def pinch(self, ctx, user: discord.Member):
         possible_responses = pinch_links
         chosen = random.choice(possible_responses)
@@ -327,8 +310,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Poke someone",
-                      brief="Poke someone",
-                      aliases=['Poke'])
+                      brief="Poke someone")
     async def poke(self, ctx, user: discord.Member):
         possible_responses = poke_links
         chosen = random.choice(possible_responses)
@@ -342,8 +324,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Someone gonna get punched",
-                      brief="Punch club",
-                      aliases=['Punch'])
+                      brief="Punch club")
     async def punch(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} wanted to punch themselves. But they only lightly rubbed their belly.".format(ctx.message.author.mention))
@@ -357,8 +338,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Slap 'em hard",
-                      brief="Slap someone",
-                      aliases=['Slap'])
+                      brief="Slap someone")
     async def slap(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tried to slap themselves. 'Twas but a gentle caressing.".format(ctx.message.author.mention))
@@ -372,8 +352,7 @@ class Interaction():
 
     @commands.command(pass_context=True,
                       description="Stab someone",
-                      brief="Stab someone",
-                      aliases=['Stab'])
+                      brief="Stab someone")
     async def stab(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tried to stab themselves. Fortunately, their aim was off.".format(ctx.message.author.mention))
@@ -386,9 +365,22 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
+                      description="Tickle someone",
+                      brief="Tickle someone")
+    async def tickle(self, ctx, user: discord.Member):
+        possible_responses = tickle_links
+        chosen = random.choice(possible_responses)
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tickled themselves. They must be really ticklish if they can do that!".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got tickled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
                       description="Whip someone (rather kinky)",
-                      brief="Whip someone",
-                      aliases=['Whip'])
+                      brief="Whip someone")
     async def whip(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} wants to whip themselves. They must be really kinky.".format(ctx.message.author.mention))

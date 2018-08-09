@@ -1,4 +1,5 @@
 from discord.ext import commands
+import re
 
 class Maths():
     """Some mathematical commands"""
@@ -48,6 +49,14 @@ class Maths():
             await self.bot.say("Can't have a percentage of an empty whole")
         else:
             await self.bot.say('{0:.2f}%'.format((part / whole) * 100))
+
+
+    @commands.command(description="Calculate how much a percentage equates to",
+                      brief="Percent of")
+    async def percentof(self, percentage, whole: float):
+        percentage_re = float(re.sub('[^0-9.]', '', percentage))
+        await self.bot.say(round((percentage_re / 100) * whole, 2))
+
 
 def setup(bot):
     bot.add_cog(Maths(bot))

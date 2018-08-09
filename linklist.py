@@ -16,7 +16,12 @@ baddoggo_links = [
 bkiss_links = [
     'https://i.imgur.com/AtEvIWI.jpg',
     'https://i.imgur.com/IFeaAkR.jpg',
-    'https://i.imgur.com/izMq23l.jpg'
+    'https://i.imgur.com/izMq23l.jpg',
+    'https://i.imgur.com/WPvWDEQ.jpg',
+    'https://i.imgur.com/c0ad7kF.jpg',
+    'https://i.imgur.com/9tNoCZh.jpg',
+    'https://i.imgur.com/0NmoWAq.jpg',
+    'https://i.imgur.com/A8fCySs.jpg'
     ]
 
 blush_links = [
@@ -290,6 +295,31 @@ stab_links = [
     'https://i.imgur.com/dum1ERk.jpg'
     'https://i.imgur.com/Qgk7a6e.jpg',
     'https://i.imgur.com/WinHS4W.jpg'
+    ]
+
+tickle_links = [
+    'https://i.imgur.com/Q9rUyKD.gif',
+    'https://i.imgur.com/8lKCGis.gif',
+    'https://i.imgur.com/gvP6yz9.gif',
+    'https://i.imgur.com/Koy6iIY.gif',
+    'https://i.imgur.com/Yr3AtuA.gif',
+    'https://i.imgur.com/4cuzNGi.gif',
+    'https://i.imgur.com/7W6ibcT.gif',
+    'https://i.imgur.com/mj0wMJU.gif',
+    'https://i.imgur.com/y3hTxWb.gif',
+    'https://i.imgur.com/6NAVDex.gif',
+    'https://i.imgur.com/vcaDObo.gif',
+    'https://i.imgur.com/SfZ8uti.gif',
+    'https://i.imgur.com/fWogar8.gif',
+    'https://i.imgur.com/v8lcveM.gif',
+    'https://i.imgur.com/0pZjcPL.gif',
+    'https://i.imgur.com/1ps4YBX.gif',
+    'https://i.imgur.com/aCF0QDW.gif',
+    'https://i.imgur.com/IE7hKVO.gif',
+    'https://i.imgur.com/sv6kF8U.gif',
+    'https://i.imgur.com/T53zKgO.gif',
+    'https://i.imgur.com/BnW2qrf.gif',
+    'https://i.imgur.com/BRhhHyq.gif'
     ]
 
 whip_links = [

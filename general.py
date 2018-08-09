@@ -13,8 +13,7 @@ class General:
 
 
     @commands.command(description="Get an overview over the recentmost update of DTbot",
-                      brief="Recent updates to DTbot",
-                      aliases=['Changelog'])
+                      brief="Recent updates to DTbot")
     async def changelog(self):
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description='__Recent changes to DTbot:__\nNewest version: ' + dbot_version)
         embed.set_image(url=changelog_link)
@@ -45,7 +44,7 @@ class General:
     @commands.command(description="Info about me, Dbot. Please take a look.",
                       brief="Info about me")
     async def info(self):
-        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840>.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find Dbot's GitHub repository here(https://github.com/MajorTanya/DTbot).\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
+        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> in cooperation with <@274684924324347904>.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find Dbot's GitHub repository [here](https://github.com/MajorTanya/DTbot).\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
         embed.set_footer(text="DTbot v. " + dbot_version)
         await self.bot.say(embed=embed)
 
