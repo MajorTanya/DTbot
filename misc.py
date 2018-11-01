@@ -1,6 +1,8 @@
 import random
+
 import discord
 from discord.ext import commands
+
 
 class Misc():
     def __init__(self, bot):
@@ -14,8 +16,7 @@ class Misc():
 
 
     @commands.command(description="SAY BLESS YOU TO THE CAT",
-                      brief="Say bless you to the cat",
-                      aliases=['Cat'])
+                      brief="Say bless you to the cat")
     @commands.cooldown(3, 60, commands.BucketType.server)
     # cooldown of 60 seconds
     async def cat(self):
@@ -33,7 +34,16 @@ class Misc():
     @commands.command(description="Actually you can't",
                       brief="Kill yourself")
     async def kms(self):
-        await self.bot.say('NO')
+        possible_responses = [
+            'NO',
+            'NEVER',
+            'HOW ABOUT NO',
+            'Need a hug?',
+            'Yeah sure, if you can do it in the next nanosecond.\nWell, you failed',
+            'NOPE',
+            'What would you say if I told you that it is impossible'
+            ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="A random quote from the server",

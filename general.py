@@ -1,9 +1,12 @@
-import discord
+import datetime
 import time
+
+import discord
 from discord.ext import commands
-from DTbot import dbot_version
-from DTbot import command_prefix
+
 from linklist import changelog_link
+from DTbot import command_prefix, dbot_version, last_updated, startup_time
+
 
 class General:
     """General commands."""
@@ -12,10 +15,19 @@ class General:
         self.bot = bot
 
 
+    @commands.command(description="Gives the bot's uptime since the last restart.",
+                      brief="DTbot's uptime")
+    async def uptime(self):
+        now = datetime.datetime.utcnow()
+        tdelta = now - startup_time
+        tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+        await self.bot.say(self.bot.user.name + "'s uptime is: `" + str(tdelta) + "`")
+
+
     @commands.command(description="Get an overview over the recentmost update of DTbot",
                       brief="Recent updates to DTbot")
     async def changelog(self):
-        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description='__Recent changes to DTbot:__\nNewest version: ' + dbot_version)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description='__Recent changes to DTbot:__\nNewest version: ' + dbot_version + " (" + last_updated + ")")
         embed.set_image(url=changelog_link)
         await self.bot.say(embed=embed)
 
@@ -25,7 +37,7 @@ class General:
                       brief="Get info on a user",
                       aliases=['uinfo'])
     async def userinfo(self, ctx, user: discord.Member):
-    
+
         embed = discord.Embed(title="{}'s info".format(user.name), description='Here is what I could find:', color=ctx.message.author.color)
         embed.add_field(name='Nickname', value='{}'.format(user.display_name))
         embed.add_field(name='ID', value='{}'.format(user.id), inline=True)
@@ -44,7 +56,22 @@ class General:
     @commands.command(description="Info about me, Dbot. Please take a look.",
                       brief="Info about me")
     async def info(self):
-        embed = discord.Embed(title="Dbot's info", description="Hello, I'm <@427902715138408458>, a bot created by <@327763028701347840> in cooperation with <@274684924324347904>.\nIf you have any command requests, use +request (do +help request first).\nFor questions, please primarily ask <@274684924324347904>.\nYou can find Dbot's GitHub repository [here](https://github.com/MajorTanya/DTbot).\nThank you and have a good day.", colour=discord.Colour(0x5e51a8))
+        now = datetime.datetime.utcnow()
+        tdelta = now - startup_time
+        tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+
+        total_users = 0
+        for server in self.bot.servers:
+            for member in server.members:
+                total_users += 1
+        embed = discord.Embed(title=self.bot.user.name + "'s info", description="Hello, I'm " + self.bot.user.name + ", a multipurpose bot for your Discord server.\n\nIf you have any command requests, use +request (do +help request first).\n\nThank you and have a good day.\n\n[__**" + self.bot.user.name + " Support Server**__](https://discord.gg/kSPMd2v)", colour=discord.Colour(0x5e51a8))
+        embed.add_field(name="Authors", value="Major Tanya#7318 aka Tanya\nangelgggg#7374 aka Demon")
+        embed.add_field(name="GitHub repository", value="Find me [here](https://github.com/MajorTanya/DTbot)")
+        embed.add_field(name="Twitter", value="[Tweet @DTbotDiscord](https://twitter.com/DTbotDiscord)", inline=True)
+        embed.add_field(name="Stats", value="In "f"{len(self.bot.servers)} servers with " + str(total_users) + " members")
+        embed.add_field(name="\u200b", value="\u200b")
+        embed.add_field(name="Uptime", value=tdelta)
+        embed.add_field(name="Avatar by", value="[Kokoyabubu](http://kokoyabubu.tumblr.com/)", inline=False)
         embed.set_footer(text="DTbot v. " + dbot_version)
         await self.bot.say(embed=embed)
 
@@ -66,18 +93,18 @@ class General:
                       brief="Request a new command (2x/24hr)",
                       aliases=['req'])
     @commands.cooldown(2, 86400, commands.BucketType.user)
-    async def request(self, ctx, command : str, *functionality : str):
-        user = discord.utils.get(self.bot.get_all_members(), id='274684924324347904')
+    async def request(self, ctx, command: str, *functionality: str):
+        reqhall = self.bot.get_channel('477250023713800193')
+        tanyadm = discord.utils.get(self.bot.get_all_members(), id='274684924324347904')
         embed = discord.Embed(title="New request by {}".format(ctx.message.author.name), description='{} requested the following command:'.format(ctx.message.author.mention), color=ctx.message.author.color)
         embed.add_field(name='Suggested command name', value='**+' + command + '**')
-        embed.add_field(name='\u200b', value='\u200b')
-        embed.add_field(name='Suggested functionality', value='*' + ' '.join(functionality) + '*')
-        await self.bot.send_message(user, 'New command request!', embed=embed)
+        embed.add_field(name='Suggested functionality', value='*' + ' '.join(functionality) + '*', inline=False)
+        await self.bot.send_message(reqhall, 'New command request!', embed=embed)
+        await self.bot.send_message(tanyadm, 'New command request!', embed=embed)
         await self.bot.say("New command request was sent to the developers, {}.".format(ctx.message.author.mention))
 
 
-    @commands.command(hidden=True,
-                      aliases=['dtbot'])
+    @commands.command(hidden=True)
     async def DTbot(self):
         await self.bot.say('You found a secret. Good job')
         await self.bot.say('This will eventually be used for something')

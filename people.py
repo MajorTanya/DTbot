@@ -1,6 +1,7 @@
-import discord
-from discord.ext import commands
 import random
+
+from discord.ext import commands
+
 
 class People():
     """Signature things we have said"""
@@ -8,11 +9,14 @@ class People():
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command(description="Something Berend says a lot",
                       brief="THE BEREND THING")
     async def berend(self):
-        await self.bot.say('I am watching porn.')
+        possible_responses = [
+            'I am watching porn.',
+            'I will rape your ears'
+            ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="Something Demon says a lot",
@@ -31,9 +35,9 @@ class People():
                       aliases=['lewis'])
     async def eins(self):
         possible_responses = [
-                'Toastie-chan is my waifu :heart:',
-                'I will lewd all of you'
-                ]
+            'Toastie-chan is my waifu :heart:',
+            'I will lewd all of you'
+            ]
         await self.bot.say(random.choice(possible_responses))
 
 
@@ -41,9 +45,9 @@ class People():
                       brief="THE EXO THING")
     async def exo(self):
         possible_responses = [
-                'Mom',
-                'Senpai'
-                ]
+            'Mom',
+            'Senpai'
+            ]
         await self.bot.say(random.choice(possible_responses))
 
 
@@ -52,6 +56,17 @@ class People():
                       aliases=['fichtenschweif'])
     async def fichte(self):
         await self.bot.say('Women are superior')
+
+
+    @commands.command(description="Something Faye says a lot",
+                      brief="THE FAYE THING")
+    async def faye(self):
+        possible_responses = [
+            'Angel is a cutie',
+            'Should I pinch Angel?',
+            'wut whyyyyyy'
+            ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="Something Ian says a lot",
@@ -84,7 +99,11 @@ class People():
                       brief="THE NISHI THING",
                       aliases=['nisher', 'nishnish'])
     async def nishi(self):
-        await self.bot.say('I will peg Berend, Zero, Shaggy, Rech, Fichte, Josh, Ian, and Eins.')
+        possible_responses = [
+            'I will peg Berend, Zero, Shaggy, Rech, Fichte, Josh, Ian, and Eins.',
+            'I will take over every server'
+            ]
+        await self.bot.say(random.choice(possible_responses))
 
 
     @commands.command(description="Something Neo says a lot",
@@ -139,7 +158,11 @@ class People():
     @commands.command(description="Something Zero says a lot",
                       brief="THE ZERO THING")
     async def zero(self):
-        await self.bot.say('Even if I drink all the water in the universe, I will still be thirsty.')
+        possible_responses = [
+            'Even if I drink all the water in the universe, I will still be thirsty.',
+            "It's not illegal if you don't get caught"
+            ]
+        await self.bot.say(random.choice(possible_responses))
 
 
 def setup(bot):

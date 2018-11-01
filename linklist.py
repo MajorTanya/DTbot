@@ -10,7 +10,10 @@ baddoggo_links = [
     'https://i.imgur.com/sWvUhff.gif',
     'https://i.imgur.com/aXq0i8d.gif',
     'https://i.imgur.com/PA6UoH3.gif',
-    'https://i.imgur.com/vOT5YYF.gif'
+    'https://i.imgur.com/vOT5YYF.gif',
+    'https://i.imgur.com/MchLOjW.gif',
+    'https://i.imgur.com/xhLK0hp.gif',
+    'https://i.imgur.com/czfLhs0.gif'
     ]
 
 bkiss_links = [
@@ -21,7 +24,12 @@ bkiss_links = [
     'https://i.imgur.com/c0ad7kF.jpg',
     'https://i.imgur.com/9tNoCZh.jpg',
     'https://i.imgur.com/0NmoWAq.jpg',
-    'https://i.imgur.com/A8fCySs.jpg'
+    'https://i.imgur.com/A8fCySs.jpg',
+    'https://i.imgur.com/58AHb8S.gif',
+    'https://i.imgur.com/4dydHid.jpg',
+    'https://i.imgur.com/YOFPi4V.jpg',
+    'https://i.imgur.com/8BFLUUv.jpg',
+    'https://i.imgur.com/p7zwVzW.jpg'
     ]
 
 blush_links = [
@@ -40,11 +48,21 @@ blush_links = [
     'https://i.imgur.com/CG61JYj.gif'
     ]
 
+boop_links = [
+    'https://i.imgur.com/Hg6wAJl.gif',
+    'https://i.imgur.com/GEclLDI.gif',
+    'https://i.imgur.com/blzW8qY.gif',
+    'https://i.imgur.com/oxbhshW.png'
+    ]
+
 cage_links = [
     'https://i.imgur.com/VW0qjFL.jpg',
     'https://i.imgur.com/zn1jItN.jpg',
     'https://i.imgur.com/WHY04lb.jpg',
-    'https://i.imgur.com/DLcfCy0.jpg'
+    'https://i.imgur.com/DLcfCy0.jpg',
+    'https://i.imgur.com/1cZlOGy.jpg',
+    'https://i.imgur.com/BVfcWF9.jpg',
+    'https://i.imgur.com/JyYj5WB.jpg'
     ]
 
 cry_links = [
@@ -96,6 +114,13 @@ cuddle_links = [
     'https://i.imgur.com/2LMoGHb.gif',
     'https://i.imgur.com/DGpmONM.gif',
     'https://i.imgur.com/ikAgEjS.gif'
+    ]
+
+choke_links = [
+    'https://i.imgur.com/1c5UWvY.jpg',
+    'https://i.imgur.com/GSz5SrN.jpg',
+    'https://i.imgur.com/d3bMiuk.jpg',
+    'https://i.imgur.com/TFcPBks.jpg'
     ]
 
 glomp_links = [
@@ -167,7 +192,10 @@ kiss_links = [
     'https://i.imgur.com/EtaXopA.jpg',
     'https://i.imgur.com/1Suhkjm.jpg',
     'https://i.imgur.com/fleBrUm.gif',
-    'https://i.imgur.com/XouvDH4.jpg'
+    'https://i.imgur.com/XouvDH4.jpg',
+    'https://i.imgur.com/f2VRjqk.jpg',
+    'https://i.imgur.com/twPHGWc.jpg',
+    'https://i.imgur.com/EwT7wlo.gif'
     ]
 
 kick_links = [
@@ -242,6 +270,12 @@ pat_links = [
     'https://i.imgur.com/PU2VUwS.gif'
     ]
 
+patback_links = [
+    'https://i.imgur.com/Q8AQcRO.gif',
+    'https://i.imgur.com/6EYP1U1.gif',
+    'https://i.imgur.com/XhZjBlx.jpg'
+    ]
+
 pinch_links = [
     'https://i.imgur.com/i18Rwv9.gif',
     'https://i.imgur.com/KpJfzMb.gif',
@@ -251,6 +285,21 @@ pinch_links = [
     'https://i.imgur.com/XUJZJva.gif',
     'https://i.imgur.com/5MsZXap.gif',
     'https://i.imgur.com/j1WqEzI.gif'
+    ]
+
+pout_links = [
+    'https://imgur.com/KrHCnVQ.jpg',
+    'https://i.imgur.com/ChiSR6j.gif',
+    'https://i.imgur.com/8WqBS0c.gif',
+    'https://i.imgur.com/cI9zAoA.gif',
+    'https://i.imgur.com/KlhcfvS.gif',
+    'https://i.imgur.com/R4ozNxC.gif',
+    'https://i.imgur.com/qCI3l1u.gif',
+    'https://i.imgur.com/OLDc9OG.png',
+    'https://i.imgur.com/yfKOs0P.gif',
+    'https://i.imgur.com/NQgPY6B.gif',
+    'https://i.imgur.com/qxBrS9C.gif',
+    'https://i.imgur.com/YJ6Zq9t.gif'
     ]
 
 poke_links = [
@@ -263,6 +312,19 @@ poke_links = [
     'https://i.imgur.com/5WE4RmD.gif'
     ]
 
+smug_links = [
+    'https://i.imgur.com/Acm9Ee6.jpg',
+    'https://i.imgur.com/7SEhbdN.jpg',
+    'https://i.imgur.com/5KDj9wa.jpg',
+    'https://i.imgur.com/OO1VvLb.jpg',
+    'https://i.imgur.com/FHbD6Ci.jpg',
+    'https://i.imgur.com/c8wZ38A.jpg',
+    'https://i.imgur.com/E0OVO91.jpg',
+    'https://i.imgur.com/lDQGeni.png',
+    'https://i.imgur.com/SpfU9Uj.jpg',
+    'https://i.imgur.com/cq3MSpF.jpg'
+    ]
+
 punch_links = [
     'https://i.imgur.com/xw9CG0q.gif',
     'https://i.imgur.com/sgXNkUd.gif',
@@ -271,7 +333,9 @@ punch_links = [
 
 slap_links = [
     'https://i.imgur.com/DfRsmUY.gif',
-    'https://i.imgur.com/yTTzzKv.gif'
+    'https://i.imgur.com/yTTzzKv.gif',
+    'https://i.imgur.com/77DY4CF.jpg',
+    'https://i.imgur.com/2PZxr7X.gif'
     ]
 
 stab_links = [
@@ -326,5 +390,8 @@ whip_links = [
     'https://i.imgur.com/GBp5khP.gif',
     'https://i.imgur.com/kAtQ5oB.gif',
     'https://i.imgur.com/0LU52nw.gif',
-    'https://i.imgur.com/9SbK1p7.gif'
+    'https://i.imgur.com/9SbK1p7.gif',
+    'https://i.imgur.com/ivi6lAO.gif',
+    'https://i.imgur.com/SU0uAUb.gif',
+    'https://i.imgur.com/f0QAJk8.gif',
     ]
