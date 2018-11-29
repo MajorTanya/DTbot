@@ -2,6 +2,7 @@ import asyncio
 import datetime
 from configparser import ConfigParser
 
+import discord
 from discord import Game
 from discord.ext import commands
 from pytz import timezone
@@ -19,7 +20,9 @@ dbot_version = config.get('Info', 'dbot_version')
 last_updated = config.get('Info', 'last_updated')
 ger_tz = config.get('Heartbeat', 'ger_tz')
 ger_tz = timezone(ger_tz)
+
 human_startup_time = datetime.datetime.now(ger_tz)
+human_startup_time = human_startup_time.strftime('%d-%m-%Y - %H:%M:%S %Z')
 startup_time = datetime.datetime.utcnow()
 
 authlist = open('./config/authlist.txt', 'r')
@@ -36,7 +39,9 @@ async def heartbeat():
     hb_chamber = heartbeat_config.get('Heartbeat', 'hb_chamber')
     hb_chamber = bot.get_channel(hb_chamber)
 
-    await bot.send_message(hb_chamber, "Starting up at: `" + str(startup_time) + "`")
+    startup_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=bot.user.name + "'s Heartbeat", description=bot.user.name + " is starting up!")
+    startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
+    await bot.send_message(hb_chamber, embed=startup_embed)
     await asyncio.sleep(hb_freq)
     while not bot.is_closed:
         now = datetime.datetime.utcnow()
@@ -44,7 +49,12 @@ async def heartbeat():
         now_timezone = ger_time.strftime('%d-%m-%Y - %H:%M:%S %Z')
         tdelta = now - startup_time
         tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
-        beat = await bot.send_message(hb_chamber, "Alive and still running since: `" + str(human_startup_time) + "`.\nTime now: `" + str(now_timezone) + "`.\nCurrent uptime: `" + str(tdelta) + "`\n:heart:")
+        beat_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=bot.user.name + "'s Heartbeat", description=bot.user.name + " is still alive and running!")
+        beat_embed.add_field(name="Startup time:", value=str(human_startup_time))
+        beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)
+        beat_embed.add_field(name="Uptime:", value=str(tdelta))
+        beat_embed.set_footer(text="DTbot v. " + dbot_version)
+        beat = await bot.send_message(hb_chamber, embed=beat_embed)
         await asyncio.sleep(hb_freq)
         await bot.delete_message(beat)
 

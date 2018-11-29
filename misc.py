@@ -39,7 +39,7 @@ class Misc():
             'NEVER',
             'HOW ABOUT NO',
             'Need a hug?',
-            'Yeah sure, if you can do it in the next nanosecond.\nWell, you failed',
+            'Yeah, sure. *If* you can do it in the next nanosecond.\nWell, you failed. Then my answer is no.',
             'NOPE',
             'What would you say if I told you that it is impossible'
             ]

@@ -86,19 +86,6 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
-                      description="Cuddle someone",
-                      brief="Cuddle someone")
-    async def cuddle(self, ctx, user: discord.Member):
-        chosen = random.choice(cuddle_links)
-        if user.id == ctx.message.author.id:
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} cuddled themselves! They seem so happy about being here.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
-        else:
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got cuddled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
-        embed.set_image(url="" + chosen + "")
-        await self.bot.say(embed=embed)
-
-
-    @commands.command(pass_context=True,
                       description="Cage someone",
                       brief="Cage someone")
     async def cage(self, ctx, user: discord.Member):
@@ -117,10 +104,10 @@ class Interaction():
     async def choke(self, ctx, user: discord.Member):
         chosen = random.choice(choke_links)
         if user.id == ctx.message.author.id:
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} wanted to choke themselves. They stopped when they remembered their favorite food.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} wanted to choke themselves. They stopped when they remembered their favorite food.".format(user.mention))
         else:
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} chocked.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
-        embed.set_image(url="" + chosen + "")
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} was choked by {}.".format(user.mention, ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+            embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
@@ -166,6 +153,19 @@ class Interaction():
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is crying. Someone, comfort them. <:kannahug:461996510637326386>\n\n[Image link](" + chosen + ")")
             embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Cuddle someone",
+                      brief="Cuddle someone")
+    async def cuddle(self, ctx, user: discord.Member):
+        chosen = random.choice(cuddle_links)
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} cuddled themselves! They seem so happy about being here.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got cuddled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
@@ -224,6 +224,19 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
+                      description="KICK THEIR ASS\n\n(This is NOT a moderation command to kick a user from a server.)",
+                      brief="Kick someone")
+    async def kick(self, ctx, user: discord.Member):
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} aimed to kick themselves. As they noticed, it's quite hard to actually do. So they didn't and went to watch their favorite show.".format(ctx.message.author.mention))
+        else:
+            chosen = random.choice(kick_links)
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got kicked.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+            embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
                       description="What do you think it does",
                       brief="It's in the name")
     async def kill(self, ctx, user: discord.Member):
@@ -244,19 +257,6 @@ class Interaction():
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got kissed.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
-        await self.bot.say(embed=embed)
-
-
-    @commands.command(pass_context=True,
-                      description="KICK THEIR ASS\n\n(This is NOT a moderation command to kick a user from a server.)",
-                      brief="Kick someone")
-    async def kick(self, ctx, user: discord.Member):
-        if user.id == ctx.message.author.id:
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} aimed to kick themselves. As they noticed, it's quite hard to actually do. So they didn't and went to watch their favorite show.".format(ctx.message.author.mention))
-        else:
-            chosen = random.choice(kick_links)
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got kicked.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
-            embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
@@ -393,6 +393,16 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
+                      description="Be the smuggest of them all",
+                      brief="Be smug")
+    async def smug(self, ctx):
+        chosen = random.choice(smug_links)
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} is being smug.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
                       description="Stab someone",
                       brief="Stab someone")
     async def stab(self, ctx, user: discord.Member):
@@ -402,16 +412,6 @@ class Interaction():
             chosen = random.choice(stab_links)
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + " got stabbed by {}.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
             embed.set_image(url="" + chosen + "")
-        await self.bot.say(embed=embed)
-
-
-    @commands.command(pass_context=True,
-                      description="Be the smuggest of them all",
-                      brief="Be smug")
-    async def smug(self, ctx):
-        chosen = random.choice(smug_links)
-        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} is being smug.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
-        embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 

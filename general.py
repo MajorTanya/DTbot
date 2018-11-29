@@ -59,6 +59,7 @@ class General:
         now = datetime.datetime.utcnow()
         tdelta = now - startup_time
         tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+        server_amount = len(self.bot.servers)
 
         total_users = 0
         for server in self.bot.servers:
@@ -68,7 +69,7 @@ class General:
         embed.add_field(name="Authors", value="Major Tanya#7318 aka Tanya\nangelgggg#7374 aka Demon")
         embed.add_field(name="GitHub repository", value="Find me [here](https://github.com/MajorTanya/DTbot)")
         embed.add_field(name="Twitter", value="[Tweet @DTbotDiscord](https://twitter.com/DTbotDiscord)", inline=True)
-        embed.add_field(name="Stats", value="In "f"{len(self.bot.servers)} servers with " + str(total_users) + " members")
+        embed.add_field(name="Stats", value="In {} servers with ".format(server_amount) + str(total_users) + " members")
         embed.add_field(name="\u200b", value="\u200b")
         embed.add_field(name="Uptime", value=tdelta)
         embed.add_field(name="Avatar by", value="[Kokoyabubu](http://kokoyabubu.tumblr.com/)", inline=False)
