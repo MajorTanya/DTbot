@@ -4,16 +4,10 @@ import random
 import discord
 from discord.ext import commands
 
-from linklist import (baddoggo_links, bkiss_links, blush_links, boop_links,
-                      cage_links, choke_links, cry_links, cuddle_links,
-                      glomp_links, handholding_links, highfive_links,
-                      hug_links, kick_links, kiss_links, lewd_links,
-                      lick_links, pat_links, patback_links, pinch_links,
-                      poke_links, pout_links, punch_links, slap_links,
-                      smug_links, stab_links, tickle_links, whip_links)
+from linklist import *
 
 
-class Interaction():
+class Interaction:
     """Commands which interact with others"""
 
     def __init__(self, bot):
@@ -35,6 +29,19 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
+                      description="Go full Tsundere and call someone a BAKA",
+                      brief="Call someone a BAKA")
+    async def baka(self, ctx, user: discord.Member):
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} called themselves a baka? You're not a baka though, you're adorable.".format(ctx.message.author.mention))
+        else:
+            chosen = random.choice(baka_links)
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} called {} a baka. Are they a Tsundere? :thinking:".format(ctx.message.author.mention, user.mention) + "\n\n[Image link](" + chosen + ")")
+            embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
                       description="Bitch slaps someone",
                       brief="Bitch slaps someone")
     async def bitchslap(self, ctx, user: discord.Member):
@@ -43,6 +50,19 @@ class Interaction():
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got a bitch slap.".format(user.mention) + "\n\n[Image link](https://i.imgur.com/bTGigCv.gif)")
             embed.set_image(url="https://i.imgur.com/bTGigCv.gif")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Bite someone",
+                      brief="Bite someone")
+    async def bite(self, ctx, user: discord.Member):
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} thought about biting themselves. You're not you when you're hungry, so how about a snack instead?".format(ctx.message.author.mention))
+        else:
+            chosen = random.choice(bite_links)
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got bitten by {}.".format(user.mention, ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+            embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
@@ -117,7 +137,7 @@ class Interaction():
     async def confess(self, ctx, user: discord.Member):
         if user.id == ctx.message.author.id:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} confessed their love for themselves! Aww, what a great example of self-love.".format(user.mention))
-            message = await self.bot.say(embed=embed)
+            await self.bot.say(embed=embed)
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(user.mention) + ", you've been confessed to by {}!".format(ctx.message.author.mention) + "\nWill you let the ship set sail or will you sink it before its journey starts? " + u"\u26F5")
             message = await self.bot.say(embed=embed)
@@ -125,7 +145,7 @@ class Interaction():
             await self.bot.add_reaction(message, u"\U0001F494")
             await asyncio.sleep(1)
 
-            def check(reaction, user):
+            def check(reaction):
                 e = str(reaction.emoji)
                 return e.startswith((u"\u2764", u"\U0001F494"))
 
@@ -149,10 +169,9 @@ class Interaction():
         chosen = random.choice(cry_links)
         if reason:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is crying because of " + ' '.join(reason) + ". Someone, comfort them. <:kannahug:461996510637326386>\n\n[Image link](" + chosen + ")")
-            embed.set_image(url="" + chosen + "")
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is crying. Someone, comfort them. <:kannahug:461996510637326386>\n\n[Image link](" + chosen + ")")
-            embed.set_image(url="" + chosen + "")
+        embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
 
@@ -165,6 +184,25 @@ class Interaction():
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} cuddled themselves! They seem so happy about being here.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got cuddled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Dance with someone",
+                      brief="Dance with someone")
+    async def dance(self, ctx, *target: str):
+        chosen = random.choice(dance_links)
+        if target:
+            if ctx.message.mentions:
+                if ctx.message.mentions[0].id == ctx.message.author.id:
+                    embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} started dancing by themselves! Everyone, come and join them! DANCE PARTY!".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+                else:
+                    embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " started dancing with {}".format(ctx.message.mentions[0].mention) + ".\n\n[Image link](" + chosen + ")")
+            else:
+                embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} started dancing by themselves! Everyone, come and join them! DANCE PARTY!".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} started dancing by themselves! Everyone, come and join them! DANCE PARTY!".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
@@ -192,6 +230,19 @@ class Interaction():
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tried to hold their own hand. Aww. Come here, I'll hold it for you.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is holding {}'s hand! How lewd!".format(user.mention) + "\n\n[Image Link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Hide yourself",
+                      brief="Hide yourself")
+    async def hide(self, ctx, *reason: str):
+        chosen = random.choice(hide_links)
+        if reason:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is hiding from " + ' '.join(reason) + ".\n\n[Image link](" + chosen + ")")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{}".format(ctx.message.author.mention) + " is hiding. Are they embarrassed?\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 
@@ -380,6 +431,22 @@ class Interaction():
 
 
     @commands.command(pass_context=True,
+                      description="Salute someone\nCan be given a reason",
+                      brief="Salute someone")
+    async def salute(self, ctx, *reason: str):
+        chosen = random.choice(salute_links)
+        if reason:
+            if ctx.message.author in ctx.message.mentions:
+                embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} saluted themselves. They must be really proud of what they did. And I am proud of them too.".format(ctx.message.author.mention))
+            else:
+                embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} saluted ".format(ctx.message.author.mention) + ' '.join(reason) + ".")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} saluted someone or something. Ask them about it.".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
                       description="Slap 'em hard",
                       brief="Slap someone")
     async def slap(self, ctx, user: discord.Member):
@@ -424,6 +491,19 @@ class Interaction():
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} tickled themselves. They must be really ticklish if they can do that!".format(user.mention) + "\n\n[Image link](" + chosen + ")")
         else:
             embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} got tickled.".format(user.mention) + "\n\n[Image link](" + chosen + ")")
+        embed.set_image(url="" + chosen + "")
+        await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Wave at someone",
+                      brief="Wave at someone")
+    async def wave(self, ctx, user: discord.Member):
+        chosen = random.choice(wave_links)
+        if user.id == ctx.message.author.id:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} waved at themselves. They seem incredibly happy and energetic today. How cute!".format(ctx.message.author.mention) + "\n\n[Image link](" + chosen + ")")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="{} waved at {}.".format(ctx.message.author.mention, user.mention) + "\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 

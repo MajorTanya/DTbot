@@ -3,7 +3,7 @@ import re
 from discord.ext import commands
 
 
-class Maths():
+class Maths:
     """Some mathematical commands"""
 
     def __init__(self, bot):

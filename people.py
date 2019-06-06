@@ -3,7 +3,7 @@ import random
 from discord.ext import commands
 
 
-class People():
+class People:
     """Signature things we have said"""
 
     def __init__(self, bot):

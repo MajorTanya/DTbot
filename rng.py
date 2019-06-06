@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 
-class RNG():
+class RNG:
     """Randomness commands"""
 
     def __init__(self, bot):
@@ -92,26 +92,111 @@ class RNG():
         await self.bot.say(random.choice(possible_responses))
 
 
-    @commands.command(pass_context=True,
-                      brief="Play some Roulette",
-                      description="Play some French Roulette (bet optional)\n\nRed:       1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36\nBlack:     2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35\nNo colour: 0\n\nUsage:\n+roulette OR +roulette Red 3 OR +roulette 0")
-    async def roulette(self, ctx, bet=None):
+    @commands.command(description="Play some French Roulette (bet optional)\n\n"
+                                  "For a nicer overview of the distribution of numbers across the colors, use "
+                                  "+show roulette\n\n"
+                                  "Red:       1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36\n"
+                                  "Black:     2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35\n"
+                                  "No colour: 0\n\n"
+                                  "Bet options: No Bet / Straight bet (Red 3) / Color Bet (Red) / Even/Odd Bet (Odd)"
+                                  "\n\nUsage:\n+roulette OR +roulette Red 3 OR +roulette 0 OR +roulette Odd",
+                      brief="Play some Roulette")
+    async def roulette(self, *bet):
         black = (2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35)
         red = (1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36)
         randnum = random.randint(0, 36)
-        if randnum not in black:
-            if randnum not in (red):
-                result = "0"
+        if not randnum == 0:
+            result_even = (randnum % 2) == 0
+            if result_even:
+                result_eo = "Even"
             else:
-                result = "Red " + str(randnum)
+                result_eo = "Odd"
         else:
-            result = "Black " + str(randnum)
-        if bet is not None:
-            if bet.lower() == result.lower():
-                result = result + "\n**You win!**"
+            result_even = None
+            result_eo = None
+        result_n = str(randnum)
+        win_type = None
+        if randnum not in black:
+            if randnum not in red:
+                result_n = "0"
+                result_c = None
             else:
-                result = result + "\n**You lose!**"
-        await self.bot.say(result)
+                result_c = "Red"
+        else:
+            result_c = "Black"
+
+        if result_c:
+            full_result_no_eo = result_c + " " + result_n
+        else:
+            full_result_no_eo = result_n
+        if result_eo:
+            full_result_eo = full_result_no_eo + " ({})".format(result_eo)
+        else:
+            full_result_eo = full_result_no_eo
+
+        if bet:
+            user_bet = ' '.join(bet).strip().lower()
+            if "even" in user_bet:
+                if result_even:
+                    win_type = "n Even Bet"
+                else:
+                    win_type = None
+            elif "odd" in user_bet:
+                if result_even is False:
+                    win_type = "n Odd Bet"
+                else:
+                    win_type = None
+
+            else:
+                user_bet_n = ''.join(x for x in user_bet if x.isdigit())
+                if user_bet_n == '':
+                    user_bet_n = None
+                    user_bet_c = user_bet
+                elif user_bet_n == '0':
+                    user_bet_c = None
+                else:
+                    user_bet_c = user_bet.split(" ", 1)
+                    user_bet_c = user_bet_c[0]
+
+                if result_c:
+                    if user_bet_c:
+                        full_bet = user_bet_c + " " + str(user_bet_n)
+                    else:
+                        full_bet = user_bet_n
+
+                    if user_bet_n:
+                        if full_result_no_eo.lower() == full_bet:
+                            win_type = " Straight Bet"
+                    else:
+                        if result_c.lower() == user_bet_c.lower():
+                            win_type = " Bet on " + result_c
+                else:
+                    if full_result_no_eo == user_bet_n:
+                        win_type = " Straight Bet"
+            print(str(win_type))
+            if win_type:
+                message = full_result_eo + "\n**You win with a{}!**".format(win_type)
+            else:
+                message = full_result_eo + "\n**You lost!**"
+        else:
+            message = full_result_eo
+        await self.bot.say(message)
+
+
+    @commands.group(hidden=True,
+                    pass_context=True,
+                    description="")
+    async def show(self, ctx):
+        if ctx.invoked_subcommand is None:
+            return
+
+    @show.command(pass_context=True,
+                  name="roulette",
+                  description="")
+    async def _roulette(self, ctx):
+        embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="Distribution of numbers and colors on the French Roulette table:\n")
+        embed.set_image(url="https://i.imgur.com/jtMZJXR.png")
+        await self.bot.say(embed=embed)
 
 
     @commands.command(description="Gives you a random scenario",
@@ -145,6 +230,7 @@ class RNG():
             emote_choice = ":heart:"
         embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="" + split[0] + " and " + split[1] + "? `{0:.2f}%` shippable. ".format(shipping) + emote_choice)
         await self.bot.say(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(RNG(bot))

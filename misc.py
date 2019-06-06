@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 
-class Misc():
+class Misc:
     def __init__(self, bot):
         self.bot = bot
 
