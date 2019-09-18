@@ -2,6 +2,7 @@ import random
 import re
 
 import discord
+import rolldice
 from discord.ext import commands
 
 
@@ -31,7 +32,9 @@ class RNG:
         await self.bot.say(random.choice(possible_responses))
 
 
-    @commands.command(description='Choose one of multiple choices. With options containing spaces, use double quotes like:\n+choose "Make Pizza" Fish "Go to the cafeteria"',
+    @commands.command(description='Choose one of multiple choices.'
+                                  'With options containing spaces, use double quotes like:\n'
+                                  '+choose "Make Pizza" Fish "Go to the cafeteria"',
                       brief='Let the bot decide for you',
                       aliases=['choice'])
     async def choose(self, *choices: str):
@@ -65,17 +68,49 @@ class RNG:
     # D:TAKE ME TO COURT IF U WANT TO
 
 
-    @commands.command(description="Rolls a dice in NdN format. (1d6 is rolling a standard, six-sided die once. 3d20 rolls a twenty-sided die three times.)",
+    @commands.command(pass_context=True,
+                      description="Rolls a dice in NdN format. (1d6 is rolling a standard, six-sided die once. "
+                                  "3d20 rolls a twenty-sided die three times.)\n\n"
+                                  "Supports NdNx format for 'Drop Lowest' style. The x needs to be lowercase.\n"
+                                  "(4d6x rolls 4 six-sided dice and removes the lowest roll from the sum.)\n"
+                                  "Supports NdN + N format for adding modifiers.\n"
+                                  "(1d12 + 2 rolls a 12-sided die once and adds 2 to the sum.)\n\n"
+                                  "NdNx + N is supported. "
+                                  "Does NOT currently support any other CritDice formats.",
                       brief="Rolls a die in NdN format")
-    async def roll(self, dice: str):
+    async def roll(self, ctx, *, dice):
+        total = 0
+        modification = ent_modif = ""
         try:
-            rolls, limit = map(int, dice.split('d'))
-        except Exception:
-            await self.bot.say('Format has to be in NdN.')
-            return
+            result, explanation = rolldice.roll_dice("".join(dice))
+            explanation = explanation.replace(",", ", ")
 
-        result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
-        await self.bot.say(result)
+            if "x" in dice:
+                explanation, *modification = explanation.split("] ", 1)
+                if modification:
+                    operator = re.search(r'([+|-])', str(modification).strip())
+                    modifier = re.sub(r'[^0-9]', "", str(modification))
+                    ent_modif = str(operator.group(1)) + str(modifier)
+                explanation += "]"
+                explanation = re.sub(r' ~~ ([0-9]+)', " ~~(\\1)~~", explanation).replace("]]", "]")
+                result = re.sub(r' ~~(\([0-9]\))~~', "", explanation).strip('[]').split(', ')
+                for i in result:
+                    total = total + int(i)
+                result = total
+                if ent_modif:
+                    result = eval(str(result) + ent_modif)
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), title="Result: __" + str(result) + "__",
+                                  description=str(explanation) + " " + str(modification).strip("[']"))
+            embed.set_footer(text="Rolled " + dice)
+            await self.bot.say(embed=embed)
+        except rolldice.DiceGroupException as e:
+            helper = self.bot.formatter.format_help_for(ctx, self.bot.get_command("roll"))
+            for h in helper:
+                em = discord.Embed(title="Format has to be NdN or NdNx or NdN+N or NdNx+N.",
+                                   description=h.strip("```").replace('<', '[').replace('>', ']'),
+                                   color=discord.Color.red())
+                em.set_footer(text=str(e))
+                await self.bot.say(embed=em)
 
 
     @commands.command(description="It's Russian Roulette",
@@ -218,7 +253,8 @@ class RNG:
         await self.bot.say(random.choice(possible_responses))
 
 
-    @commands.command(description='Find out how shippable your ship is\n\nUsage:\n+ship The entire internet and pineapple on pizza',
+    @commands.command(description='Find out how shippable your ship is\n\nUsage:\n'
+                                  '+ship The entire internet and pineapple on pizza',
                       brief='Ship things')
     async def ship(self, *ship):
         ship = ' '.join(ship)

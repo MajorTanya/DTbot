@@ -1,12 +1,18 @@
 import asyncio
 import datetime
-from configparser import ConfigParser
 
 import discord
+from discord import Game
 from discord.ext import commands
+from pytz import timezone
 
-from DTbot import (REPORTS_CH, dev_set, dtbot_version, ger_tz, h_code,
-                  human_startup_time, sdb_code, startup_time)
+from DTbot import config, dev_set, startup_time, command_prefix, dtbot_version
+
+h_code = config.get('Dev', 'h_code')
+sdb_code = config.get('Dev', 'sdb_code')
+REPORTS_CH = config.get('General', 'reports_ch')
+ger_tz = timezone(config.get('Heartbeat', 'ger_tz'))
+human_startup_time = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
 
 
 class Dev:
@@ -16,11 +22,8 @@ class Dev:
     async def heartbeat(self):
         await self.bot.wait_until_ready()
 
-        heartbeat_config = ConfigParser()
-        heartbeat_config.read('./config/config.ini')
-        hb_freq = int(heartbeat_config.get('Heartbeat', 'hb_freq'))
-        hb_chamber = heartbeat_config.get('Heartbeat', 'hb_chamber')
-        hb_chamber = self.bot.get_channel(hb_chamber)
+        hb_freq = int(config.get('Heartbeat', 'hb_freq'))
+        hb_chamber = self.bot.get_channel(config.get('Heartbeat', 'hb_chamber'))
 
         startup_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=self.bot.user.name + "'s Heartbeat",
                                       description=self.bot.user.name + " is starting up!")
@@ -29,8 +32,7 @@ class Dev:
         await asyncio.sleep(hb_freq)
         while not self.bot.is_closed:
             now = datetime.datetime.utcnow()
-            ger_time = datetime.datetime.now(ger_tz)
-            now_timezone = ger_time.strftime('%d-%m-%Y - %H:%M:%S %Z')
+            now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
             tdelta = now - startup_time
             tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
             beat_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=self.bot.user.name + "'s Heartbeat",
@@ -140,6 +142,27 @@ class Dev:
                 await self.bot.say("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
                 return
             await self.bot.say("{} loaded.".format(extension_name))
+
+
+    @commands.command(hidden=True,
+                      pass_context=True,
+                      description="Update / Refresh DTbot's Rich Presence. Developers only.",
+                      brief="Update DTbot's Rich Presence. Developers only.")
+    async def updaterp(self, ctx, *caption: str):
+        userroles = set()
+        for role in ctx.message.author.roles:
+            userroles.add(role.id)
+        if not dev_set.isdisjoint(userroles):
+            if caption:
+                caption = " ".join(caption)
+                if "command_prefix" in caption:
+                    caption = caption.replace("command_prefix", command_prefix)
+                if "dtbot_version" in caption:
+                    caption = caption.replace("dtbot_version", dtbot_version)
+                await self.bot.change_presence(game=Game(name=caption))
+            else:
+                await self.bot.change_presence(game=Game(name=command_prefix + "help (v. " + dtbot_version + ")"))
+            await self.bot.say("Rich Presence updated.")
 
 
     @commands.command(hidden=True,

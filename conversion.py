@@ -101,24 +101,24 @@ class Conversion:
         mft_value = round(float(number) / 0.3048, 2)
         await self.bot.say(str(mft_value) + ' ft')
 
+    @commands.command(name='ftinm',
+                      description='Convert from mixed US Customary length units to Meters\n(no space between number and unit, if unit is given)\n\nUsage:\n+ftinm 6ft 2in\nOr:\n+ftinm 6 2\n',
+                      brief='ft in > m',
+                      aliases=['ftintom'])
+    async def ____ftinm(self, feet, inches):
+        feet_int = re.sub("[^0-9]", '', feet)
+        inches_int = re.sub('[^0-9]', '', inches)
+        await self.bot.say(str(round((int(feet_int) * 0.3048) + (int(inches_int) * 0.0254), 2)) + "m")
 
-    @commands.command(name='kglbs',
-                      description='Convert from Kilograms to Pounds\n\nUsage:\n+kglbs 63.5',
-                      brief='kg    > lbs',
-                      aliases=['kgtolbs'])
-    async def ____kglbs(self, number):
-        kglbs_value = round(float(number) / 0.45359237, 2)
-        await self.bot.say(str(kglbs_value) + ' lbs')
-
-
-    @commands.command(name='lbskg',
-                      description='Convert from Pounds to Kilograms\n\nUsage:\n+lbskg 140',
-                      brief='lbs   > kg',
-                      aliases=['lbstokg'])
-    async def ____lbskg(self, number):
-        lbskg_value = round(float(number) * 0.45359237, 2)
-        await self.bot.say(str(lbskg_value) + ' kg')
-
+    @commands.command(name='mftin',
+                      description='Convert from Meters to mixed US Customary length units\n\nUsage:\n+mftin 1.88m \nOr:\n+mftin 1.88',
+                      brief='m     > ft in',
+                      aliases=['mtoftin'])
+    async def ____mftin(self, meters):
+        meters_int = re.sub('[^0-9.]', '', meters)
+        feetfrommeters = divmod(float(meters_int), 0.3048)
+        inchesfrommeters = divmod(feetfrommeters[1], 0.0254)
+        await self.bot.say(str(int(feetfrommeters[0])) + "ft " + str(int(inchesfrommeters[0])) + "in")
 
     @commands.command(name='kmmi',
                       description='Convert from Kilometers to Miles\n\nUsage:\n+kmmi 128.75',
@@ -128,7 +128,6 @@ class Conversion:
         kmmi_value = round(float(number) * 0.621371, 2)
         await self.bot.say(str(kmmi_value) + ' mi')
 
-
     @commands.command(name='mikm',
                       description='Convert Miles to Kilometers\n\nUsage:\n+mikm 80',
                       brief='mi    > km',
@@ -137,26 +136,22 @@ class Conversion:
         mikm_value = round(float(number) / 0.621371, 2)
         await self.bot.say(str(mikm_value) + ' km')
 
-
-    @commands.command(name='ftinm',
-                      description='Convert from mixed US Customary length units to Meters\n(no space between number and unit, if unit is given)\n\nUsage:\n+ftinm 6ft 2in\nOr:\n+ftinm 6 2\n',
-                      brief='ft in > m',
-                      aliases=['ftintom'])
-    async def __ftinm(self, feet, inches):
-        feet_int = re.sub("[^0-9]", '', feet)
-        inches_int = re.sub('[^0-9]', '', inches)
-        await self.bot.say(str(round((int(feet_int) * 0.3048) + (int(inches_int) * 0.0254), 2)) + "m")
+    @commands.command(name='kglbs',
+                      description='Convert from Kilograms to Pounds\n\nUsage:\n+kglbs 63.5',
+                      brief='kg    > lbs',
+                      aliases=['kgtolbs'])
+    async def __kglbs(self, number):
+        kglbs_value = round(float(number) / 0.45359237, 2)
+        await self.bot.say(str(kglbs_value) + ' lbs')
 
 
-    @commands.command(name='mftin',
-                      description='Convert from Meters to mixed US Customary length units\n\nUsage:\n+mftin 1.88m \nOr:\n+mftin 1.88',
-                      brief='m     > ft in',
-                      aliases=['mtoftin'])
-    async def __mftin(self, meters):
-        meters_int = re.sub('[^0-9.]', '', meters)
-        feetfrommeters = divmod(float(meters_int), 0.3048)
-        inchesfrommeters = divmod(feetfrommeters[1], 0.0254)
-        await self.bot.say(str(int(feetfrommeters[0])) + "ft " + str(int(inchesfrommeters[0])) + "in")
+    @commands.command(name='lbskg',
+                      description='Convert from Pounds to Kilograms\n\nUsage:\n+lbskg 140',
+                      brief='lbs   > kg',
+                      aliases=['lbstokg'])
+    async def __lbskg(self, number):
+        lbskg_value = round(float(number) * 0.45359237, 2)
+        await self.bot.say(str(lbskg_value) + ' kg')
 
 
     @commands.command(name='flozml',

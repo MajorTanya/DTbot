@@ -322,7 +322,7 @@ class Interaction:
             else:
                 embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="Why you gotta be so lewd, **{}**?".format(user.mention) + "\n\n[Image link](" + chosen + ")")
         else:
-                embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="Why you gotta be so lewd?\n\n[Image link](" + chosen + ")")
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="Why you gotta be so lewd?\n\n[Image link](" + chosen + ")")
         embed.set_image(url="" + chosen + "")
         await self.bot.say(embed=embed)
 

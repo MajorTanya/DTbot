@@ -3,27 +3,13 @@ from configparser import ConfigParser
 
 from discord import Game
 from discord.ext import commands
-from pytz import timezone
-
-epoch = datetime.datetime.utcfromtimestamp(0)
 
 config = ConfigParser()
 config.read('./config/config.ini')
-h_code = config.get('Dev', 'h_code')
-sdb_code = config.get('Dev', 'sdb_code')
 command_prefix = config.get('General', 'prefix')
-main_dev_id = config.get('General', 'main_dev_id')
-INVITE = config.get('General', 'invite')
-REQHALL = config.get('General', 'reqhall')
-REPORTS_CH = config.get('General', 'reports_ch')
 TOKEN = config.get('General', 'token')
 dtbot_version = config.get('Info', 'dtbot_version')
-last_updated = config.get('Info', 'last_updated')
-ger_tz = config.get('Heartbeat', 'ger_tz')
-ger_tz = timezone(ger_tz)
 
-human_startup_time = datetime.datetime.now(ger_tz)
-human_startup_time = human_startup_time.strftime('%d-%m-%Y - %H:%M:%S %Z')
 startup_time = datetime.datetime.utcnow()
 
 authlist = open('./config/authlist.txt', 'r')
@@ -36,13 +22,14 @@ startup_extensions = []
 for key, ext in extensions:
     startup_extensions.append(ext)
 
-
 bot = commands.Bot(command_prefix)
 
 
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
+        return
+    elif message.author.bot:
         return
     else:
         try:

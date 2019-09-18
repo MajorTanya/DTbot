@@ -18,7 +18,7 @@ class Misc:
     @commands.command(description="SAY BLESS YOU TO THE CAT",
                       brief="Say bless you to the cat")
     @commands.cooldown(3, 60, commands.BucketType.server)
-    # cooldown of 60 seconds
+    # cooldown of 60 seconds after 3 uses across the entire server
     async def cat(self):
         await self.bot.say('<:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928> <:sneezecat:472732802727804928>')
 
@@ -38,10 +38,12 @@ class Misc:
             'NO',
             'NEVER',
             'HOW ABOUT NO',
-            'Need a hug?',
+            'Need a hug? <:kannahug:461996510637326386>',
             'Yeah, sure. *If* you can do it in the next nanosecond.\nWell, you failed. Then my answer is no.',
             'NOPE',
-            'What would you say if I told you that it is impossible'
+            'What would you say if I told you that it is impossible',
+            "Your pet wouldn't know why you didn't come home, so no.",
+            "We would miss you, so don't."
             ]
         await self.bot.say(random.choice(possible_responses))
 
@@ -93,7 +95,7 @@ class Misc:
     @commands.command(description="IT'S JUST A REEE BRO",
                       brief="REEEEE")
     @commands.cooldown(3, 120, commands.BucketType.server)
-    # cooldown of 2 minutes to prevent massive spams
+    # cooldown of 2 minutes after 3 uses across the entire server
     async def re(self):
         await self.bot.say('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
@@ -101,6 +103,8 @@ class Misc:
     @commands.command(hidden=True,
                       description="ZERO SPAM",
                       brief="ZERO TIME")
+    @commands.cooldown(3, 120, commands.BucketType.server)
+    # cooldown of 2 minutes after 3 uses across the entire server
     async def zeroarmy(self):
         await self.bot.say('Zero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero\nZero Zero Zero Zero Zero')
 

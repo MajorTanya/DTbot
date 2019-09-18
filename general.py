@@ -4,9 +4,14 @@ import time
 import discord
 from discord.ext import commands
 
+from database_management import cursor
 from linklist import changelog_link
-from DTbot import (INVITE, REQHALL, command_prefix, dtbot_version, last_updated,
-                  main_dev_id, startup_time)
+from main import config, command_prefix, dtbot_version, startup_time
+
+last_updated = config.get('Info', 'last_updated')
+main_dev_id = config.get('General', 'main_dev_id')
+INVITE = config.get('General', 'invite')
+REQHALL = config.get('General', 'reqhall')
 
 
 class General:
@@ -14,6 +19,29 @@ class General:
 
     def __init__(self, bot):
         self.bot = bot
+
+
+    @commands.command(pass_context=True,
+                      description="Displays a user's avatar. Defaults to command user's avatar when no user is mentioned.",
+                      brief="Show a user's avatar")
+    async def avatar(self, ctx, *user: str):
+        if user:
+            if ctx.message.mentions:
+                embed = discord.Embed(colour=discord.Colour(0x5e51a8),
+                                      description="{}'s avatar".format(ctx.message.mentions[0].mention))
+                if ctx.message.mentions[0].avatar_url is not "":
+                    embed.set_image(url="" + ctx.message.mentions[0].avatar_url + "")
+                else:
+                    embed.set_image(url="" + ctx.message.mentions[0].default_avatar_url + "")
+            else:
+                embed = discord.Embed(colour=discord.Colour(0x5e51a8),
+                                      description="{}'s avatar".format(ctx.message.author.mention))
+                embed.set_image(url="" + ctx.message.author.avatar_url + "")
+        else:
+            embed = discord.Embed(colour=discord.Colour(0x5e51a8),
+                                  description="{}'s avatar".format(ctx.message.author.mention))
+            embed.set_image(url="" + ctx.message.author.avatar_url + "")
+        await self.bot.say(embed=embed)
 
 
     @commands.command(description="Get an overview over the recentmost update of DTbot",
@@ -58,10 +86,8 @@ class General:
         await self.bot.say(embed=embed)
 
 
-    @commands.command(pass_context=True,
-                      description="Pong",
+    @commands.command(description="Pong",
                       brief="Pong")
-    @commands.has_any_role("The Dark Lords", "Administrator", "Dbot Dev", "DTbot Dev", "Tanya")
     @commands.cooldown(3, 30, commands.BucketType.server)
     async def ping(self):
         time_then = time.monotonic()
@@ -129,6 +155,29 @@ class General:
                 role_members.append(member.mention)
         embed = discord.Embed(colour=roled.colour, title='Users with the role ' + role.name, description=str(len(role_members)) + ' members with ' + role.mention + '\n\n' + ', '.join(role_members))
         await self.bot.say(embed=embed)
+
+
+    @commands.command(pass_context=True,
+                      description="Shows a user's XP points. If no user is mentioned, it will default to command user.",
+                      brief="Check user's XP")
+    async def xp(self, ctx, user: discord.Member = None):
+        if user:
+            if user.bot:
+                await self.bot.say("Bots don't get XP. :robot:")
+                return
+            user_id = user.id
+            user_name = user.display_name
+        else:
+            user_id = ctx.message.author.id
+            user_name = ctx.message.author.display_name
+        query = "EXECUTE stmnt6 USING " + str(user_id)
+        cursor.execute(query)
+        xp = cursor.fetchone()
+        if xp:
+            xp = str(xp[0])
+            await self.bot.say("**{}** has `".format(user_name) + xp + "` XP.")
+        else:
+            await self.bot.say("User hasn't talked yet.")
 
 
 def setup(bot):
