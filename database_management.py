@@ -5,7 +5,7 @@ import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import errorcode
 
-from main import config, dev_set
+from DTbot import config, dev_set
 
 DB_USER = config.get('Database', 'db_user')
 DB_PASS = config.get('Database', 'db_pass')

@@ -6,7 +6,7 @@ from discord.ext import commands
 
 from database_management import cursor
 from linklist import changelog_link
-from main import config, command_prefix, dtbot_version, startup_time
+from DTbot import config, command_prefix, dtbot_version, startup_time
 
 last_updated = config.get('Info', 'last_updated')
 main_dev_id = config.get('General', 'main_dev_id')
