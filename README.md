@@ -1,1 +1,2 @@
 "# DTbot" 
+this readme sucks
