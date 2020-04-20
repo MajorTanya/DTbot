@@ -4,180 +4,123 @@ import datetime
 import discord
 from discord import Game
 from discord.ext import commands
-from pytz import timezone
 
-from DTbot import config, dev_set, startup_time, command_prefix, dtbot_version
+from DTbot import config
+from launcher import default_prefixes, dtbot_colour, ger_tz, human_startup_time, logger, startup_time
 
-h_code = config.get('Dev', 'h_code')
-sdb_code = config.get('Dev', 'sdb_code')
-REPORTS_CH = config.get('General', 'reports_ch')
-ger_tz = timezone(config.get('Heartbeat', 'ger_tz'))
-human_startup_time = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
+dtbot_version = config.get('Info', 'dtbot_version')
+h_code = config.get('Developers', 'h_code')
+sdb_code = config.get('Developers', 'sdb_code')
+dev_set = set(config.get('Developers', 'dev_roles').split(', '))
 
 
-class Dev:
+class Dev(commands.Cog, command_attrs=dict(hidden=True)):
+    """Developer Commands and DTbot Management"""
+
     def __init__(self, bot):
         self.bot = bot
+        self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+
+    def cog_unload(self):
+        self.heartbeat_task.cancel()
+
+    async def cog_check(self, ctx):
+        userroles = set()
+        for role in ctx.author.roles:
+            userroles.add(str(role.id))
+        return not dev_set.isdisjoint(userroles)
 
     async def heartbeat(self):
         await self.bot.wait_until_ready()
 
-        hb_freq = int(config.get('Heartbeat', 'hb_freq'))
-        hb_chamber = self.bot.get_channel(config.get('Heartbeat', 'hb_chamber'))
+        hb_freq = config.getint('Heartbeat', 'hb_freq')
+        hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
 
-        startup_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=self.bot.user.name + "'s Heartbeat",
-                                      description=self.bot.user.name + " is starting up!")
+        startup_embed = discord.Embed(colour=dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                      description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
-        await self.bot.send_message(hb_chamber, embed=startup_embed)
+        await hb_chamber.send(embed=startup_embed)
         await asyncio.sleep(hb_freq)
-        while not self.bot.is_closed:
+        while not self.bot.is_closed():
             now = datetime.datetime.utcnow()
             now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
             tdelta = now - startup_time
             tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
-            beat_embed = discord.Embed(colour=discord.Colour(0x5e51a8), title=self.bot.user.name + "'s Heartbeat",
-                                       description=self.bot.user.name + " is still alive and running!")
+            beat_embed = discord.Embed(colour=dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                       description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=str(human_startup_time))
             beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)
             beat_embed.add_field(name="Uptime:", value=str(tdelta))
-            beat_embed.set_footer(text="DTbot v. " + dtbot_version)
-            beat = await self.bot.send_message(hb_chamber, embed=beat_embed)
+            beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
+            await hb_chamber.send(embed=beat_embed, delete_after=hb_freq)
             await asyncio.sleep(hb_freq)
-            await self.bot.delete_message(beat)
 
+    @commands.Cog.listener()
     async def on_ready(self):
-        self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+        await self.bot.change_presence(activity=Game(name=f"with {default_prefixes[0]}help (v. {dtbot_version})"))
 
-
-    @commands.group(hidden=True,
-                    pass_context=True,
-                    description="Manages the heartbeat of DTbot. Developers only.")
+    @commands.group(description="Manages the heartbeat of DTbot. Developers only.")
     async def heart(self, ctx):
         if ctx.invoked_subcommand is None:
-            return
+            pass
 
-    @heart.command(pass_context=True,
-                   description="Stops the heartbeat of DTbot. Developers only.")
+    @heart.command(description="Stops the heartbeat of DTbot. Developers only.")
     async def stop(self, ctx, code=None):
         if code == h_code:
             self.heartbeat_task.cancel()
-            await self.bot.say('Heartbeat stopped by user {}'.format(ctx.message.author.name))
+            logger.info(f'Heartbeat stopped by user {ctx.author}.')
+            await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
-    @heart.command(pass_context=True,
-                   description="Starts the heartbeat of DTbot. Developers only.")
+    @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
     async def start(self, ctx, code=None):
         if code == h_code:
             self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
-            await self.bot.say('Heartbeat started by user {}'.format(ctx.message.author.name))
+            logger.info(f'Heartbeat started by user {ctx.author}.')
+            await ctx.send(f'Heartbeat started by user {ctx.author}.')
 
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description="Lists all servers that DTbot is a member of. Developers only.",
-                      brief="Full server list of DTbot. Developers only.")
-    async def listservers(self, ctx):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            serverlist = list()
-            servers = list(self.bot.servers)
-            server_count = len(servers)
-            reporting_channel = self.bot.get_channel(REPORTS_CH)
-            embed = discord.Embed(colour=discord.Colour(0x5e51a8), description="A list of all the servers " + self.bot.user.name + " is a member of")
-            embed.set_footer(text="Total server count: " + str(server_count))
-            for x in range(server_count):
-                serverlist.append(servers[x - 1].name)
-            stringle = '\n'.join(serverlist)
-            embed.add_field(name="Servers", value=stringle)
-            await self.bot.send_message(reporting_channel, embed=embed)
-
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description="Can load additional extensions into DTbot. Developers only.",
+    @commands.command(description="Can load additional extensions into DTbot. Developers only.",
                       brief="Load an extension. Developers only.")
     async def load(self, ctx, extension_name: str):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            try:
-                self.bot.load_extension(extension_name)
-            except (AttributeError, ImportError) as e:
-                await self.bot.say("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
-                return
-            await self.bot.say("{} loaded.".format(extension_name))
-        else:
-            await self.bot.say("Insufficient permissions to modify the loadout of DTbot.")
+        self.bot.load_extension(extension_name)
+        logger.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
+        await ctx.send(f"Module `{extension_name}` loaded successfully.")
 
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description="Unload an extension. Developers only.",
+    @commands.command(description="Unload an extension. Developers only.",
                       brief="Unload an extension. Developers only.")
     async def unload(self, ctx, extension_name: str):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            self.bot.unload_extension(extension_name)
-            await self.bot.say("Module `{}` unloaded.".format(extension_name))
+        self.bot.unload_extension(extension_name)
+        logger.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
+        await ctx.send(f"Module `{extension_name}` unloaded successfully.")
 
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description="First unload and then immediately reload a module. Developers only.",
+    @commands.command(description="First unload and then immediately reload a module. Developers only.",
                       brief="Reload an extension. Developers only.")
     async def reload(self, ctx, extension_name: str):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            self.bot.unload_extension(extension_name)
-            await self.bot.say("{} unloaded.".format(extension_name))
-            try:
-                self.bot.load_extension(extension_name)
-            except (AttributeError, ImportError) as e:
-                await self.bot.say("```py\n{}: {}\n```".format(type(e).__name__, str(e)))
-                return
-            await self.bot.say("{} loaded.".format(extension_name))
+        self.bot.reload_extension(extension_name)
+        logger.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
+        await ctx.send(f"Module `{extension_name}` reloaded successfully.")
 
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description="Update / Refresh DTbot's Rich Presence. Developers only.",
+    @commands.command(description="Update / Refresh DTbot's Rich Presence. Developers only.",
                       brief="Update DTbot's Rich Presence. Developers only.")
     async def updaterp(self, ctx, *caption: str):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            if caption:
-                caption = " ".join(caption)
-                if "command_prefix" in caption:
-                    caption = caption.replace("command_prefix", command_prefix)
-                if "dtbot_version" in caption:
-                    caption = caption.replace("dtbot_version", dtbot_version)
-                await self.bot.change_presence(game=Game(name=caption))
-            else:
-                await self.bot.change_presence(game=Game(name=command_prefix + "help (v. " + dtbot_version + ")"))
-            await self.bot.say("Rich Presence updated.")
+        if caption:
+            caption = " ".join(caption)
+            caption = caption.replace("default_prefixes", default_prefixes[0])
+            caption = caption.replace("dtbot_version", dtbot_version)
+            await self.bot.change_presence(activity=Game(name=caption))
+        else:
+            caption = f"with {default_prefixes[0]}help (v. {dtbot_version})"
+            await self.bot.change_presence(activity=Game(name=caption))
+        logger.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
+        await ctx.send("Rich Presence updated.")
 
-
-    @commands.command(hidden=True,
-                      pass_context=True,
-                      description='Shutdown command for the bot. Developers only.',
-                      brief='Shutdown the bot. Developers only.')
+    @commands.command(description='Shutdown command for the bot. Developers only.',
+                      brief='Shut the bot down. Developers only.')
     async def shutdownbot(self, ctx, passcode: str):
-        userroles = set()
-        for role in ctx.message.author.roles:
-            userroles.add(role.id)
-        if not dev_set.isdisjoint(userroles):
-            if passcode == sdb_code:
-                await self.bot.logout()
-            else:
-                return
+        if passcode == sdb_code:
+            self.heartbeat_task.cancel()
+            await self.bot.logout()
+        else:
+            return
 
 
 def setup(bot):

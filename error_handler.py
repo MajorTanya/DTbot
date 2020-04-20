@@ -2,37 +2,61 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import CheckFailure
 
+from launcher import logger, dtbot_colour
 
-class ErrorHandler:
+
+class IllegalCustomCommandAccess(commands.CommandError):
+    # raised if custom commands are accessed by users in unauthorized servers
+    def __init__(self, ctx):
+        server = ctx.guild
+        user = ctx.message.author
+        command = ctx.command
+        super().__init__(f"{user} (ID: {user.id}) tried to use \"{command}\" in server \"{server.name}\" "
+                         f"(ID: {server.id})")
+
+
+async def send_cmd_help(bot, ctx, error_msg, delete_after=None):
+    bot.help_command.context = ctx
+    if ctx.invoked_subcommand:
+        command = ctx.subcommand
+    else:
+        command = ctx.command
+    usage = bot.help_command.get_command_signature(command=command)
+    em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
+                       colour=dtbot_colour)
+    em.set_footer(text=error_msg)
+    await ctx.channel.send(embed=em, delete_after=delete_after)
+
+
+class ErrorHandler(commands.Cog):
+    """Handles and logs DTbot's errors and exceptions"""
+
     def __init__(self, bot):
         self.bot = bot
 
-    async def on_command_error(self, error, ctx):
-        channel = ctx.message.channel
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
-            await self.send_cmd_help(ctx, "Error: Missing Required Argument: " + "{}".format(' '.join(error.args)))
+            await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}", 15)
         elif isinstance(error, commands.BadArgument):
-            await self.send_cmd_help(ctx, "Error: Bad Argument")
+            await send_cmd_help(self.bot, ctx, f"Error: Bad Argument ({' '.join(error.args)})", 15)
         elif isinstance(error, commands.CommandOnCooldown):
-            await self.bot.send_message(channel, f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._")
+            await ctx.send(f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._",
+                           delete_after=15)
         elif isinstance(error, commands.CommandNotFound):
             pass
         elif isinstance(error, CheckFailure):
-            await self.bot.send_message(channel, "`Error: You don't have the required permissions to use this command.`")
+            await ctx.send("`Error: You don't seem to have the required permissions to use this command.`")
+        elif isinstance(error, IllegalCustomCommandAccess):
+            pass
         else:
-            print(error)
-
-    async def send_cmd_help(self, ctx, error_msg):
+            pass
         if ctx.invoked_subcommand:
             command = ctx.subcommand
         else:
             command = ctx.command
-        pages = self.bot.formatter.format_help_for(ctx, command)
-        for page in pages:
-            em = discord.Embed(description=page.strip("```").replace('<', '[').replace('>', ']'),
-                               colour=discord.Colour(0x5e51a8))
-            em.set_footer(text=error_msg)
-            await self.bot.send_message(ctx.message.channel, embed=em)
+        logger.error(type(error).__name__)
+        logger.error(f"Command '{command}' raised the following error: '{error}'")
 
 
 def setup(bot):

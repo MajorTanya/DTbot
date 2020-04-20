@@ -1,6 +1,6 @@
 changelog_link = 'https://i.imgur.com/6SfWpaj.jpg'
 
-baddoggo_links = [
+baddog_links = [
     'https://i.imgur.com/8M9gYzk.gif',
     'https://i.imgur.com/hIZIPTr.gif',
     'https://i.imgur.com/Wt6PHwM.gif',
@@ -14,7 +14,7 @@ baddoggo_links = [
     'https://i.imgur.com/MchLOjW.gif',
     'https://i.imgur.com/xhLK0hp.gif',
     'https://i.imgur.com/czfLhs0.gif'
-    ]
+]
 
 baka_links = [
     'https://i.imgur.com/y8NMkkZ.gif',
@@ -24,14 +24,14 @@ baka_links = [
     'https://i.imgur.com/1FXKcQl.gif',
     'https://i.imgur.com/2VLIvKI.gif',
     'https://i.imgur.com/vjXB0hD.gif'
-    ]
+]
 
 bite_links = [
     'https://i.imgur.com/N4Q78iy.gif',
     'https://i.imgur.com/joqVDHt.gif',
     'https://i.imgur.com/uBxpD2x.gif',
     'https://i.imgur.com/2qzI8WI.gif'
-    ]
+]
 
 bkiss_links = [
     'https://i.imgur.com/AtEvIWI.jpg',
@@ -47,7 +47,7 @@ bkiss_links = [
     'https://i.imgur.com/YOFPi4V.jpg',
     'https://i.imgur.com/8BFLUUv.jpg',
     'https://i.imgur.com/p7zwVzW.jpg'
-    ]
+]
 
 blush_links = [
     'https://i.imgur.com/5d4EtC7.gif',
@@ -63,14 +63,14 @@ blush_links = [
     'https://i.imgur.com/etIOF6J.gif',
     'https://i.imgur.com/9dJjBok.gif',
     'https://i.imgur.com/CG61JYj.gif'
-    ]
+]
 
 boop_links = [
     'https://i.imgur.com/Hg6wAJl.gif',
     'https://i.imgur.com/GEclLDI.gif',
     'https://i.imgur.com/blzW8qY.gif',
     'https://i.imgur.com/oxbhshW.png'
-    ]
+]
 
 cage_links = [
     'https://i.imgur.com/VW0qjFL.jpg',
@@ -80,7 +80,7 @@ cage_links = [
     'https://i.imgur.com/1cZlOGy.jpg',
     'https://i.imgur.com/BVfcWF9.jpg',
     'https://i.imgur.com/JyYj5WB.jpg'
-    ]
+]
 
 cry_links = [
     'https://i.imgur.com/ejbWtKk.gif',
@@ -100,7 +100,7 @@ cry_links = [
     'https://i.imgur.com/MiRVFMu.gif',
     'https://i.imgur.com/h2NzBht.gif',
     'https://i.imgur.com/IwO9JEl.gif'
-    ]
+]
 
 cuddle_links = [
     'https://i.imgur.com/7zdANGl.jpg',
@@ -131,14 +131,14 @@ cuddle_links = [
     'https://i.imgur.com/2LMoGHb.gif',
     'https://i.imgur.com/DGpmONM.gif',
     'https://i.imgur.com/ikAgEjS.gif'
-    ]
+]
 
 choke_links = [
     'https://i.imgur.com/1c5UWvY.jpg',
     'https://i.imgur.com/GSz5SrN.jpg',
     'https://i.imgur.com/d3bMiuk.jpg',
     'https://i.imgur.com/TFcPBks.jpg'
-    ]
+]
 
 dance_links = [
     'https://i.imgur.com/VSEGv3R.gif',
@@ -157,14 +157,14 @@ dance_links = [
     'https://i.imgur.com/HeriTXh.gif',
     'https://i.imgur.com/tCzkCBv.gif',
     'https://i.imgur.com/WlqNdTu.gif'
-    ]
+]
 
 glomp_links = [
     'https://i.imgur.com/bTEt1M0.gif',
     'https://i.imgur.com/EeYf3KO.gif',
     'https://i.imgur.com/5d61E06.gif',
     'https://i.imgur.com/XBMmfMy.gif'
-    ]
+]
 
 handholding_links = [
     'https://i.imgur.com/rjFkxJ2.gif',
@@ -178,7 +178,7 @@ handholding_links = [
     'https://i.imgur.com/G4O8WSD.gif',
     'https://i.imgur.com/uKA1F1M.gif',
     'https://i.imgur.com/0WcrQv4.gif'
-    ]
+]
 
 hide_links = [
     'https://i.imgur.com/DY077iP.gif',
@@ -188,7 +188,7 @@ hide_links = [
     'https://i.imgur.com/ZmSuOJQ.gif',
     'https://i.imgur.com/RFsND6d.gif',
     'https://i.imgur.com/Nl6hyu6.gif'
-    ]
+]
 
 highfive_links = [
     'https://i.imgur.com/DdLVhQl.gif',
@@ -204,7 +204,7 @@ highfive_links = [
     'https://i.imgur.com/AJC39Sj.gif',
     'https://i.imgur.com/ESmtHHi.gif',
     'https://i.imgur.com/O5kxmby.gif'
-    ]
+]
 
 hug_links = [
     'https://i.imgur.com/wiAW9r6.gif',
@@ -231,7 +231,7 @@ hug_links = [
     'https://i.imgur.com/dkcSG2z.gif',
     'https://i.imgur.com/5RWjDeE.gif',
     'https://i.imgur.com/0lavkJS.gif'
-    ]
+]
 
 kiss_links = [
     'https://i.imgur.com/nqyZPn9.jpg',
@@ -242,7 +242,7 @@ kiss_links = [
     'https://i.imgur.com/f2VRjqk.jpg',
     'https://i.imgur.com/twPHGWc.jpg',
     'https://i.imgur.com/EwT7wlo.gif'
-    ]
+]
 
 kick_links = [
     'https://i.imgur.com/OKR8Eki.jpg',
@@ -264,7 +264,7 @@ kick_links = [
     'https://i.imgur.com/fCKaqpC.gif',
     'https://i.imgur.com/3ZxvXcb.gif',
     'https://i.imgur.com/qm3ZjUh.gif'
-    ]
+]
 
 lewd_links = [
     'https://i.imgur.com/IcMGS2q.jpg',
@@ -273,7 +273,7 @@ lewd_links = [
     'https://i.imgur.com/vXhFMFb.png',
     'https://i.imgur.com/bD9Sdfl.png',
     'https://i.imgur.com/b2rYsyJ.png'
-    ]
+]
 
 lick_links = [
     'https://i.imgur.com/x7tkfTl.gif',
@@ -284,7 +284,7 @@ lick_links = [
     'https://i.imgur.com/vFX6BhR.gif',
     'https://i.imgur.com/ywCQMH6.gif',
     'https://i.imgur.com/2P0IUp4.gif'
-    ]
+]
 
 pat_links = [
     'https://i.imgur.com/OtW9yBs.gif',
@@ -314,13 +314,13 @@ pat_links = [
     'https://i.imgur.com/Q9PXI2X.gif',
     'https://i.imgur.com/TBmptbH.gif',
     'https://i.imgur.com/PU2VUwS.gif'
-    ]
+]
 
 patback_links = [
     'https://i.imgur.com/Q8AQcRO.gif',
     'https://i.imgur.com/6EYP1U1.gif',
     'https://i.imgur.com/XhZjBlx.jpg'
-    ]
+]
 
 pinch_links = [
     'https://i.imgur.com/i18Rwv9.gif',
@@ -331,7 +331,7 @@ pinch_links = [
     'https://i.imgur.com/XUJZJva.gif',
     'https://i.imgur.com/5MsZXap.gif',
     'https://i.imgur.com/j1WqEzI.gif'
-    ]
+]
 
 pout_links = [
     'https://imgur.com/KrHCnVQ.jpg',
@@ -346,7 +346,7 @@ pout_links = [
     'https://i.imgur.com/NQgPY6B.gif',
     'https://i.imgur.com/qxBrS9C.gif',
     'https://i.imgur.com/YJ6Zq9t.gif'
-    ]
+]
 
 poke_links = [
     'https://i.imgur.com/bIcjhXJ.gif',
@@ -356,7 +356,7 @@ poke_links = [
     'https://i.imgur.com/wfH2tpV.gif',
     'https://i.imgur.com/wz6netM.gif',
     'https://i.imgur.com/5WE4RmD.gif'
-    ]
+]
 
 smug_links = [
     'https://i.imgur.com/Acm9Ee6.jpg',
@@ -369,13 +369,13 @@ smug_links = [
     'https://i.imgur.com/lDQGeni.png',
     'https://i.imgur.com/SpfU9Uj.jpg',
     'https://i.imgur.com/cq3MSpF.jpg'
-    ]
+]
 
 punch_links = [
     'https://i.imgur.com/xw9CG0q.gif',
     'https://i.imgur.com/sgXNkUd.gif',
     'https://i.imgur.com/eWQQGja.gif'
-    ]
+]
 
 salute_links = [
     "https://i.imgur.com/7pB7tG1.gif",
@@ -391,14 +391,14 @@ salute_links = [
     "https://i.imgur.com/AaqNAV8.gif",
     "https://i.imgur.com/Me9eXCo.gif",
     "https://i.imgur.com/RsdVKGt.gif"
-    ]
+]
 
 slap_links = [
     'https://i.imgur.com/DfRsmUY.gif',
     'https://i.imgur.com/yTTzzKv.gif',
     'https://i.imgur.com/77DY4CF.jpg',
     'https://i.imgur.com/2PZxr7X.gif'
-    ]
+]
 
 stab_links = [
     'https://i.imgur.com/Jf597ta.gif',
@@ -420,7 +420,7 @@ stab_links = [
     'https://i.imgur.com/dum1ERk.jpg'
     'https://i.imgur.com/Qgk7a6e.jpg',
     'https://i.imgur.com/WinHS4W.jpg'
-    ]
+]
 
 tickle_links = [
     'https://i.imgur.com/Q9rUyKD.gif',
@@ -445,7 +445,7 @@ tickle_links = [
     'https://i.imgur.com/T53zKgO.gif',
     'https://i.imgur.com/BnW2qrf.gif',
     'https://i.imgur.com/BRhhHyq.gif'
-    ]
+]
 
 wave_links = [
     'https://i.imgur.com/tKG68a3.gif',
@@ -458,7 +458,7 @@ wave_links = [
     'https://i.imgur.com/OUmcWLY.gif',
     'https://i.imgur.com/PyDJS53.gif',
     'https://i.imgur.com/DtxJ2os.gif'
-    ]
+]
 
 whip_links = [
     'https://i.imgur.com/GBp5khP.gif',
@@ -468,4 +468,4 @@ whip_links = [
     'https://i.imgur.com/ivi6lAO.gif',
     'https://i.imgur.com/SU0uAUb.gif',
     'https://i.imgur.com/f0QAJk8.gif',
-    ]
+]

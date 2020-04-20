@@ -1,65 +1,45 @@
-import datetime
 from configparser import ConfigParser
 
-from discord import Game
 from discord.ext import commands
 
 config = ConfigParser()
 config.read('./config/config.ini')
-command_prefix = config.get('General', 'prefix')
-TOKEN = config.get('General', 'token')
-dtbot_version = config.get('Info', 'dtbot_version')
-
-startup_time = datetime.datetime.utcnow()
-
-authlist = open('./config/authlist.txt', 'r')
-authlist = [x.replace('\n', '') for x in authlist]
-authlist = [line.split(',') for line in authlist[7:]]
-dev_set = set(authlist[-4])
+TOKEN = config.get('General', 'TOKEN')
 
 extensions = config.items('Extensions')
 startup_extensions = []
 for key, ext in extensions:
     startup_extensions.append(ext)
 
-bot = commands.Bot(command_prefix)
 
+class DTbot(commands.Bot):
+    def __init__(self, det_prefixes=None):
+        super().__init__(command_prefix=det_prefixes, case_insensitive=True)
+        self.remove_command('help')
 
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
-    elif message.author.bot:
-        return
-    else:
-        try:
-            triggerinmsg, contentofmsg = message.content.split(' ', 1)
-            triggerinmsg_l = triggerinmsg.lower()
-            message.content = triggerinmsg_l + " " + contentofmsg
-        except ValueError:
-            triggerinmsg = message.content.split(' ', 1)[0]
-            triggerinmsg_l = triggerinmsg.lower()
-            message.content = triggerinmsg_l
-        await bot.process_commands(message)
+        for extension in startup_extensions:
+            try:
+                self.load_extension(extension)
+                print(f'Successfully loaded extension {extension}.')
+            except Exception as e:
+                exc = f'{type(e).__name__}: {e}'
+                print(f'Failed to load extension {extension}\n{exc}.')
 
+    async def process_commands(self, message):
+        ctx = await self.get_context(message)
+        await self.invoke(ctx)
 
-# online confirmation
-@bot.event
-async def on_ready():
-    await bot.change_presence(game=Game(name=command_prefix + "help (v. " + dtbot_version + ")"))
-    print('Logged in as')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        await self.process_commands(message)
 
+    async def on_ready(self):
+        # online confimation
+        print('Logged in as')
+        print(self.user.name)
+        print(self.user.id)
+        print('------')
 
-if __name__ == "__main__":
-    for extension in startup_extensions:
-        try:
-            bot.load_extension(extension)
-            print('Successfully loaded extension {}.'.format(extension))
-        except Exception as e:
-            exc = '{}: {}'.format(type(e).__name__, e)
-            print('Failed to load extension {}\n{}.'.format(extension, exc))
-
-    bot.run(TOKEN)
+    def run(self):
+        super().run(TOKEN)
