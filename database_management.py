@@ -108,6 +108,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
             cursor.callproc('ChangeServerPrefix', (ctx.message.guild.id, newprefix))
             db.commit()
             db.close()
+            await ctx.send(f'Prefix for {ctx.guild} changed to `{newprefix}`.')
         else:
             await ctx.send("Invalid prefix length (max. 3 characters)")
 
@@ -130,6 +131,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         cursor.callproc('ChangeServerPrefix', (ctx.message.guild.id, '+'))
         db.commit()
         db.close()
+        await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
 
 def setup(bot):
