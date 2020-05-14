@@ -29,7 +29,7 @@ dtbot_colour = discord.Colour(0x5e51a8)
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
-handler = logging.FileHandler(filename=f'.\\logs\\{log_startup_time}.log', encoding='utf-8',
+handler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8',
                               mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
 logger.addHandler(handler)
