@@ -8,7 +8,7 @@ from discord.ext import commands
 from mysql.connector import errorcode, pooling
 from pytz import timezone
 
-from bot import DTbot
+from DTbot import DTbot
 
 launch_config = ConfigParser()
 launch_config.read('./config/config.ini')

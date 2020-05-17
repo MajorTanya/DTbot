@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
-from bot import config
+from DTbot import config
 from dev import dtbot_version
 from launcher import cnx, default_prefixes, dtbot_colour, startup_time
 from linklist import changelog_link
