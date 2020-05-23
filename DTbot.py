@@ -25,15 +25,6 @@ class DTbot(commands.Bot):
                 exc = f'{type(e).__name__}: {e}'
                 print(f'Failed to load extension {extension}\n{exc}.')
 
-    async def process_commands(self, message):
-        ctx = await self.get_context(message)
-        await self.invoke(ctx)
-
-    async def on_message(self, message):
-        if message.author.bot:
-            return
-        await self.process_commands(message)
-
     async def on_ready(self):
         # online confimation
         print('Logged in as')
