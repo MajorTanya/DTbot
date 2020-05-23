@@ -1,4 +1,4 @@
-changelog_link = 'https://i.imgur.com/rHDjw3K.png'
+changelog_link = 'https://i.imgur.com/Cbed9t3.png'
 
 baddog_links = [
     'https://i.imgur.com/8M9gYzk.gif',
