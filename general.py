@@ -5,8 +5,9 @@ from discord.ext import commands
 from discord.ext.commands import cooldown
 
 from DTbot import config
+from database_management import dbcallprocedure
 from dev import dtbot_version
-from launcher import cnx, default_prefixes, dtbot_colour, startup_time
+from launcher import default_prefixes, dtbot_colour, startup_time
 from linklist import changelog_link
 
 last_updated = config.get('Info', 'last_updated')
@@ -148,10 +149,7 @@ class General(commands.Cog):
         else:
             user_id = ctx.author.id
             user_name = ctx.author.display_name
-        db = cnx.get_connection()
-        cursor = db.cursor()
-        xp = cursor.callproc('GetUserXp', (user_id, '@res'))[1]
-        db.close()
+        xp = dbcallprocedure('GetUserXp', returns=True, params=(user_id, '@res'))
         if xp > 0:
             await ctx.send(f"**{user_name}** has `{xp}` XP.")
         else:
