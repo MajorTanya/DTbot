@@ -88,30 +88,12 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         except Exception as e:
             logger.error(e)
 
-    @commands.command(description="Manually changes the prefix a server wants to use for DTbot."
-                                  "\nNeeds to be 1-3 characters in length.\nCurrently not in use. Developers only.",
-                      aliases=['csp', 'changeprefix'],
-                      rest_is_raw=True)
-    async def changeserverprefix(self, ctx, *newprefix: str):
-        newprefix = ''.join(newprefix)
-        if len(newprefix) <= 3:
-            dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, newprefix))
-            await ctx.send(f'Prefix for {ctx.guild} changed to `{newprefix}`.')
-        else:
-            await ctx.send("Invalid prefix length (max. 3 characters)")
-
     @commands.command(description="Manually cycles through the bot's servers to refresh the table 'servers' of the "
                                   "database.\nGenerally not required. Developers only.")
     async def refreshservers(self, ctx):
         for guild in self.bot.guilds:
             dbcallprocedure('AddNewServer', commit=True, params=(guild.id, guild.member_count))
         await ctx.send('Server list refreshed.', delete_after=5)
-
-    @commands.command(description="Manually resets the prefix a server wants to use for DTbot to the default."
-                                  "\nCurrently not in use. Developers only.")
-    async def resetserverprefix(self, ctx):
-        dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, '+'))
-        await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
 
 def setup(bot):

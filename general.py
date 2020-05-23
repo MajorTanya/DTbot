@@ -51,6 +51,20 @@ class General(commands.Cog):
         embed.set_image(url=changelog_link)
         await ctx.send(embed=embed)
 
+    @commands.command(description="Manually changes the prefix a server wants to use for DTbot."
+                                  "\nNeeds to be 1-3 characters in length.\nRequires the **manage_guild** permission.",
+                      aliases=['csp', 'changeprefix'])
+    @commands.has_guild_permissions(manage_guild=True)
+    async def changeserverprefix(self, ctx, *newprefix: str):
+        newprefix = ''.join(newprefix)
+        if len(newprefix) <= 3:
+            dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, newprefix))
+            await ctx.send(f"Prefix for {ctx.guild} changed to `{newprefix}`.\nYou can always reach DTbot by "
+                           f"mentioning it. You can also reset the prefix to the default by using "
+                           f"`@DTbot resetserverprefix` if you forget your server's prefix.")
+        else:
+            await ctx.send("Invalid prefix length (max. 3 characters)")
+
     @commands.command(description="Info about me, DTbot. Please take a look.",
                       brief="Info about me")
     async def info(self, ctx):
@@ -99,6 +113,13 @@ class General(commands.Cog):
         await reqhall.send('New command request!', embed=embed)
         await dev_dm.send('New command request!', embed=embed)
         await ctx.send(f'New command request was sent to the developers, {ctx.author.mention}.')
+
+    @commands.command(description="Manually resets the prefix a server wants to use for DTbot to the default."
+                                  "\nRequires the **manage_guild** permission.")
+    @commands.has_guild_permissions(manage_guild=True)
+    async def resetserverprefix(self, ctx):
+        dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, '+'))
+        await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
     @commands.command(description="Gives the bot's uptime since the last restart.",
                       brief="DTbot's uptime")

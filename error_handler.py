@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import CheckFailure
 
 from launcher import logger, dtbot_colour
 
@@ -45,8 +44,11 @@ class ErrorHandler(commands.Cog):
                            delete_after=15)
         elif isinstance(error, commands.CommandNotFound):
             pass
-        elif isinstance(error, CheckFailure):
-            await ctx.send("`Error: You don't seem to have the required permissions to use this command.`")
+        elif isinstance(error, commands.MissingPermissions):
+            await ctx.send(f"`Error: {error.args[0]}`", delete_after=15)
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send("`Error: You don't seem to have the required permissions to use this command.`",
+                           delete_after=15)
         elif isinstance(error, IllegalCustomCommandAccess):
             pass
         else:
