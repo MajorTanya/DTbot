@@ -3,8 +3,12 @@ import time
 
 import mysql.connector as mariadb
 from discord.ext import commands
+from mysql.connector import pooling
 
-from launcher import cnx, logger, DB_NAME
+from launcher import logger, DB_NAME, db_config
+
+# open the pooled connection used for everything but prefix checks
+cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
 
 
 def dbcallprocedure(procedure, *, commit: bool = False, returns: bool = False, params: tuple):
@@ -47,9 +51,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-        elif message.author.bot:
+        if (message.author == self.bot.user) or message.author.bot:
             return
         try:
             checkdbforuser(message)

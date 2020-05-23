@@ -64,35 +64,35 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     async def stop(self, ctx, code=None):
         if code == h_code:
             self.heartbeat_task.cancel()
-            logger.info(f'Heartbeat stopped by user {ctx.author}.')
+            logger.dtbotinfo(logger, f'Heartbeat stopped by user {ctx.author}.')
             await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
     @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
     async def start(self, ctx, code=None):
         if code == h_code:
             self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
-            logger.info(f'Heartbeat started by user {ctx.author}.')
+            logger.dtbotinfo(logger, f'Heartbeat started by user {ctx.author}.')
             await ctx.send(f'Heartbeat started by user {ctx.author}.')
 
     @commands.command(description="Can load additional extensions into DTbot. Developers only.",
                       brief="Load an extension. Developers only.")
     async def load(self, ctx, extension_name: str):
         self.bot.load_extension(extension_name)
-        logger.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
+        logger.dtbotinfo(logger, f"Module `{extension_name}` loaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` loaded successfully.")
 
     @commands.command(description="Unload an extension. Developers only.",
                       brief="Unload an extension. Developers only.")
     async def unload(self, ctx, extension_name: str):
         self.bot.unload_extension(extension_name)
-        logger.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
+        logger.dtbotinfo(logger, f"Module `{extension_name}` unloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` unloaded successfully.")
 
     @commands.command(description="First unload and then immediately reload a module. Developers only.",
                       brief="Reload an extension. Developers only.")
     async def reload(self, ctx, extension_name: str):
         self.bot.reload_extension(extension_name)
-        logger.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
+        logger.dtbotinfo(logger, f"Module `{extension_name}` reloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` reloaded successfully.")
 
     @commands.command(description="Update / Refresh DTbot's Rich Presence. Developers only.",
@@ -106,7 +106,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             caption = f"with {default_prefixes[0]}help (v. {dtbot_version})"
             await self.bot.change_presence(activity=Game(name=caption))
-        logger.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
+        logger.dtbotinfo(logger, f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
         await ctx.send("Rich Presence updated.")
 
     @commands.command(description='Shutdown command for the bot. Developers only.',
