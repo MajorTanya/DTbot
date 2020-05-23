@@ -11,7 +11,6 @@ from launcher import default_prefixes, dtbot_colour, ger_tz, human_startup_time,
 dtbot_version = config.get('Info', 'dtbot_version')
 h_code = config.get('Developers', 'h_code')
 sdb_code = config.get('Developers', 'sdb_code')
-dev_set = set(config.get('Developers', 'dev_roles').split(', '))
 
 
 class Dev(commands.Cog, command_attrs=dict(hidden=True)):
@@ -25,10 +24,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         self.heartbeat_task.cancel()
 
     async def cog_check(self, ctx):
-        userroles = set()
-        for role in ctx.author.roles:
-            userroles.add(str(role.id))
-        return not dev_set.isdisjoint(userroles)
+        return await self.bot.is_owner(ctx.message.author)
 
     async def heartbeat(self):
         await self.bot.wait_until_ready()

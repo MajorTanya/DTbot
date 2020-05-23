@@ -4,7 +4,6 @@ import time
 import mysql.connector as mariadb
 from discord.ext import commands
 
-from dev import dev_set
 from launcher import cnx, logger, DB_NAME
 
 
@@ -44,10 +43,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot = bot
 
     async def cog_check(self, ctx):
-        userroles = set()
-        for role in ctx.author.roles:
-            userroles.add(str(role.id))
-        return not dev_set.isdisjoint(userroles)
+        return await self.bot.is_owner(ctx.message.author)
 
     @commands.Cog.listener()
     async def on_message(self, message):
