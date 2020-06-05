@@ -107,7 +107,7 @@ def run_bot():
 
 
 if __name__ == '__main__':
-# avoid an issue which would sometimes create two log files
+    # avoid an issue which would sometimes create two log files
     handler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8', mode='w')
     handler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
     logger.addHandler(handler)
