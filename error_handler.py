@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from launcher import logger, dtbot_colour
+from launcher import dtbot_colour, logger
 
 
 class IllegalCustomCommandAccess(commands.CommandError):
