@@ -104,16 +104,50 @@ class Conversion(commands.Cog):
         mft_value = round(float(meters) / 0.3048, 2)
         await ctx.send(f'{mft_value} ft')
 
-    @commands.command(name='ftinm',
-                      description='Convert from mixed US Customary length units to Meters\n(no space between number '
-                                  'and unit, if unit is given)\n\nUsage:\n+ftinm 6ft 2in\nOr:\n+ftinm 6 2 '
-                                  '(Return 1.88m)\n',
-                      brief='ft in > m',
-                      aliases=['ftintom'])
-    async def ____ftinm(self, ctx, feet, inches):
-        feet_int = re.sub("[^0-9.]", '', feet)
-        inches_fl = re.sub('[^0-9.]', '', inches)
-        await ctx.send(f"{round((int(feet_int) * 0.3048) + (float(inches_fl) * 0.0254), 2)} m")
+    class FtinmConv(commands.Converter):
+        def __init__(self, ft, inch):
+            self.feet = float(ft)
+            self.inches = float(inch)
+
+        async def convert(self, ctx, argument):
+            argument1, argument2 = argument, 0
+            if "\'" in argument or '\'' in argument or "ft" in argument.lower() or "in" in argument.lower():
+                if "\'" in argument and '\"' in argument:
+                    argument1 = argument.split("\'")[0]
+                    argument2 = argument.split("\'")[1].split('\"')[0]
+                elif "\'" in argument and '\"' not in argument:
+                    argument1, argument2 = argument.split("\'")
+                elif '\"' in argument and "\'" not in argument:
+                    argument1, argument2 = argument.split('\"')
+                if "ft" in argument1.lower():
+                    argument1 = argument1.lower().split("ft")[0]
+                    if not argument2:
+                        argument2 = argument1.lower().split("ft")[1]
+                if "in" in argument2.lower():
+                    argument2 = argument2.split("in")[0]
+            else:
+                try:  # assume that a space separates feet and inches
+                    argument1, argument2 = argument.split(" ")
+                except:
+                    pass
+            try:
+                self.feet = float(argument1)
+                self.inches = float(argument2)
+            except ValueError:
+                raise commands.BadArgument("Only e.g. `6\' 2\"` or `6ft 2in` or `6 2` are valid input formats.")
+            return self
+
+    @commands.group(name='ftinm',
+                    description='Convert from mixed US Customary length units to Meters\n(no space between number '
+                                'and unit, if unit is given)\n\nUsage (spaces between feet and inches optional):\n'
+                                '+ftinm 6ft 2in | +ftinm 6ft2in\nOr:\n+ftinm 6\' 2\" | +ftinm 6\'2\"\nOr:\n+ftinm 6 2'
+                                '\n(Return 1.88m)\n',
+                    brief='ft in > m',
+                    aliases=['ftintom'])
+    async def ____ftinm(self, ctx, *, feet_inches: FtinmConv(0, 0)):
+        # send default values so still stored old ones don't get delivered
+        if isinstance(feet_inches.feet, float) and isinstance(feet_inches.inches, float):
+            await ctx.send(f"{round((feet_inches.feet * 0.3048) + (feet_inches.inches * 0.0254), 2)} m")
 
     @commands.command(name='mftin',
                       description='Convert from Meters to mixed US Customary length units\n\nUsage:\n+mftin 1.88m \n '
