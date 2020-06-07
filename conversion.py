@@ -111,7 +111,7 @@ class Conversion(commands.Cog):
 
         async def convert(self, ctx, argument):
             argument1, argument2 = argument, 0
-            if "\'" in argument or '\'' in argument or "ft" in argument.lower() or "in" in argument.lower():
+            if "\'" in argument or '\"' in argument or "ft" in argument.lower() or "in" in argument.lower():
                 if "\'" in argument and '\"' in argument:
                     argument1 = argument.split("\'")[0]
                     argument2 = argument.split("\'")[1].split('\"')[0]
