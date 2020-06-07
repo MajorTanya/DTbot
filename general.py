@@ -49,6 +49,7 @@ class General(commands.Cog):
                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
                                           f'({last_updated})')
         embed.set_image(url=changelog_link)
+        embed.set_footer(text="Check out our customizable prefixes with '@DTbot help changeserverprefix'!")
         await ctx.send(embed=embed)
 
     @commands.command(description="Manually changes the prefix a server wants to use for DTbot."
