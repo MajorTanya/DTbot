@@ -45,6 +45,8 @@ class Rng(commands.Cog, name='RNG'):
                       brief='Let the bot decide for you',
                       aliases=['choice'])
     async def choose(self, ctx, *choices: str):
+        if choices == '':
+            ctx.send('You have to provide me with something to actually choose from though...')
         await ctx.send(random.choice(choices))
 
     @commands.command(description="Flips a coin",
