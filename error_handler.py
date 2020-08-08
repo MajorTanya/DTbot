@@ -4,6 +4,16 @@ from discord.ext import commands
 from launcher import dtbot_colour, logger
 
 
+class AniMangaLookupError(commands.CommandInvokeError):
+    # raised if something went wrong with the anime/manga lookup with the AL API
+    def __init__(self, *, title, status_code, manga: bool):
+        self.title = title
+        self.status_code = status_code
+        self.isManga = manga
+        self.type = 'a Manga' if self.isManga else 'an Anime'
+        super().__init__(f"Something went wrong when looking up \"{title}\" on AniList.")
+
+
 class IllegalCustomCommandAccess(commands.CommandError):
     # raised if custom commands are accessed by users in unauthorized servers
     def __init__(self, ctx):
@@ -51,6 +61,13 @@ class ErrorHandler(commands.Cog):
                 await ctx.send(f"`Error: {error.args[0]}`", delete_after=15)
         elif isinstance(error, IllegalCustomCommandAccess):
             pass
+        elif isinstance(error, AniMangaLookupError):
+            await ctx.send(f"`Error: Something went wrong when looking up \"{error.title}\" on AniList. Check your "
+                           f"request for typos and make sure that you are looking up {error.type} with the correct "
+                           f"command.\nSometimes, AniList doesn't recognize alternative titles or acronyms. "
+                           f"Please try again with e.g. a different name for \"{error.title}\".`")
+            logger.error(type(error).__name__)
+            logger.error(f'HTML Status Code for the error below: {error.status_code}')
         else:
             pass
         logger.error(type(error).__name__)
