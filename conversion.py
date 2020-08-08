@@ -78,6 +78,22 @@ class Conversion(commands.Cog):
         inchcm_value = round(float(inches) * 2.54, 2)
         await ctx.send(f'{inchcm_value} cm')
 
+    @commands.command(description='Convert from Centimeters to Feet\n\nUsage:\n+cmft 91.44 (Returns 3 ft)',
+                      brief='cm > ft',
+                      aliases=['cmtoft'])
+    async def cmft(self, ctx, centimeters):
+        centimeters = re.sub("[^0-9.]", '', centimeters)
+        cmft_value = round(float(centimeters) / 30.48, 2)
+        await ctx.send(f'{cmft_value} ft')
+
+    @commands.command(description='Convert from Feet to Centimeters\n\nUsage:\n+cmft 3 (Returns 91.44 cm)',
+                      brief='ft > cm',
+                      aliases=['fttocm'])
+    async def ftcm(self, ctx, feet):
+        feet = re.sub("[^0-9.]", '', feet)
+        ftcm_value = round(float(feet) * 30.48, 2)
+        await ctx.send(f'{ftcm_value} cm')
+
     @commands.command(description='Convert from Feet to Meters\n\nUsage:\n+ftm 3.28 (Returns 1.0 m)',
                       brief='ft > m',
                       aliases=['fttom'])
