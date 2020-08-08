@@ -21,7 +21,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
 
     def cog_unload(self):
-        self.heartbeat_task.cancel()
+        if self.heartbeat_task.is_running():
+            self.heartbeat_task.cancel()
 
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.message.author)
@@ -63,14 +64,16 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     @heart.command(description="Stops the heartbeat of DTbot. Developers only.")
     async def stop(self, ctx, code=None):
         if code == h_code:
-            self.heartbeat_task.cancel()
+            if self.heartbeat_task.is_running():
+                self.heartbeat_task.cancel()
             logger.dtbotinfo(logger, f'Heartbeat stopped by user {ctx.author}.')
             await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
     @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
     async def start(self, ctx, code=None):
         if code == h_code:
-            self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+            if not self.heartbeat_task.is_running():
+                self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
             logger.dtbotinfo(logger, f'Heartbeat started by user {ctx.author}.')
             await ctx.send(f'Heartbeat started by user {ctx.author}.')
 
