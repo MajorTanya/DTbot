@@ -104,9 +104,12 @@ class General(commands.Cog):
                       brief="Pong")
     @cooldown(3, 30, commands.BucketType.guild)
     async def ping(self, ctx):
-        embed = discord.Embed(colour=dtbot_colour,
-                              description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
-        await ctx.send(embed=embed)
+        try:
+            embed = discord.Embed(colour=dtbot_colour,
+                                  description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
+            await ctx.send(embed=embed)
+        except discord.Forbidden:  # not allowed to send embeds
+            await ctx.send(f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
 
     @commands.command(description=f"Request a command to be added to DTbot. Functionality can be described in detail."
                                   f"\nPlease keep it reasonably concise.\nRestricted to 2 uses every 24 hours.\n\n"
