@@ -16,10 +16,7 @@ class IllegalCustomCommandAccess(commands.CommandError):
 
 async def send_cmd_help(bot, ctx, error_msg, delete_after=None):
     bot.help_command.context = ctx
-    if ctx.invoked_subcommand:
-        command = ctx.subcommand
-    else:
-        command = ctx.command
+    command = ctx.subcommand if ctx.invoked_subcommand else ctx.command
     usage = bot.help_command.get_command_signature(command=command)
     em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
                        colour=dtbot_colour)
@@ -35,6 +32,7 @@ class ErrorHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        command = ctx.subcommand if ctx.invoked_subcommand else ctx.command
         if isinstance(error, commands.MissingRequiredArgument):
             await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}", 15)
         elif isinstance(error, commands.BadArgument):
@@ -44,19 +42,17 @@ class ErrorHandler(commands.Cog):
                            delete_after=15)
         elif isinstance(error, commands.CommandNotFound):
             pass
-        elif isinstance(error, commands.MissingPermissions):
-            await ctx.send(f"`Error: {error.args[0]}`", delete_after=15)
         elif isinstance(error, commands.CheckFailure):
-            await ctx.send("`Error: You don't seem to have the required permissions to use this command.`",
-                           delete_after=15)
+            if isinstance(error, commands.BotMissingPermissions):
+                await ctx.send(f"`Error: {error.args[0].replace('Bot', 'DTbot').replace('this command', 'properly')} "
+                               f"Please make sure that the missing permissions are granted to the bot.`",
+                               delete_after=30)
+            elif isinstance(error, commands.MissingPermissions):
+                await ctx.send(f"`Error: {error.args[0]}`", delete_after=15)
         elif isinstance(error, IllegalCustomCommandAccess):
             pass
         else:
             pass
-        if ctx.invoked_subcommand:
-            command = ctx.subcommand
-        else:
-            command = ctx.command
         logger.error(type(error).__name__)
         logger.error(f"Command '{command}' raised the following error: '{error}'")
 
