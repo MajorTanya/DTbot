@@ -65,7 +65,10 @@ class General(commands.Cog):
     async def changeserverprefix(self, ctx, *newprefix: str):
         newprefix = ''.join(newprefix)
         if newprefix == '':
-            await send_cmd_help(self.bot, ctx, "")
+            try:
+                await send_cmd_help(self.bot, ctx, "")
+            except discord.Forbidden:  # not allowed to send embeds
+                await send_cmd_help(self.bot, ctx, "", plain=True)
         elif len(newprefix) <= 3:
             dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, newprefix))
             await ctx.send(f"Prefix for {ctx.guild} changed to `{newprefix}`.\nYou can always reach DTbot by "
