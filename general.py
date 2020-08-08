@@ -7,6 +7,7 @@ from discord.ext.commands import cooldown
 from DTbot import config
 from database_management import dbcallprocedure
 from dev import dtbot_version
+from error_handler import send_cmd_help
 from launcher import default_prefixes, dtbot_colour, startup_time
 from linklist import changelog_link
 
@@ -53,13 +54,20 @@ class General(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(description="Manually changes the prefix a server wants to use for DTbot."
-                                  "\nNeeds to be 1-3 characters in length.\nRequires the **manage_guild** permission.",
-                      aliases=['csp', 'changeprefix'])
+                                  "\nNeeds to be 1-3 characters in length.\nUsing @DTbot (command) will always work."
+                                  " (e.g. `@DTbot resetprefix`)\nRequires the user to have the **manage_guild** "
+                                  "permission.\nUsage:\n\n@DTbot changeprefix ! (DTbot now only works with e.g. `!help`"
+                                  ". `+help` won't work anymore. `@DTbot help` will always work.)\nLonger "
+                                  "prefix:\n`@DTbot changeprefix dt!` (`dt!help`)",
+                      brief="Change DTbot's prefix in this server",
+                      aliases=['csp', 'changeprefix', 'prefix'])
     @commands.has_guild_permissions(manage_guild=True)
     async def changeserverprefix(self, ctx, *newprefix: str):
         newprefix = ''.join(newprefix)
-        if len(newprefix) <= 3:
-            dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, newprefix))
+        if newprefix == '':
+            await send_cmd_help(self.bot, ctx, "")
+        elif len(newprefix) <= 3:
+            dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, newprefix))
             await ctx.send(f"Prefix for {ctx.guild} changed to `{newprefix}`.\nYou can always reach DTbot by "
                            f"mentioning it. You can also reset the prefix to the default by using "
                            f"`@DTbot resetserverprefix` if you forget your server's prefix.")
@@ -116,10 +124,12 @@ class General(commands.Cog):
         await ctx.send(f'New command request was sent to the developers, {ctx.author.mention}.')
 
     @commands.command(description="Manually resets the prefix a server wants to use for DTbot to the default."
-                                  "\nRequires the **manage_guild** permission.")
+                                  "\nRequires the **manage_guild** permission.",
+                      brief="Reset DTbot's prefix to `+`",
+                      aliases=['rsp', 'resetprefix'])
     @commands.has_guild_permissions(manage_guild=True)
     async def resetserverprefix(self, ctx):
-        dbcallprocedure('ChangeServerPrefix', commit=True, params=(ctx.message.guild.id, '+'))
+        dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, '+'))
         await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
     @commands.command(description="Gives the bot's uptime since the last restart.",
