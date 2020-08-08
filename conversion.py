@@ -78,9 +78,8 @@ class Conversion(commands.Cog):
         inchcm_value = round(float(inches) * 2.54, 2)
         await ctx.send(f'{inchcm_value} cm')
 
-    @commands.command(name='ftm',
-                      description='Convert from Feet to Meters\n\nUsage:\n+ftm 3.28 (Returns 1.0 m)',
-                      brief='ft    > m',
+    @commands.command(description='Convert from Feet to Meters\n\nUsage:\n+ftm 3.28 (Returns 1.0 m)',
+                      brief='ft > m',
                       aliases=['fttom'])
     async def ftm(self, ctx, feet):
         feet = re.sub("[^0-9.]", '', feet)
