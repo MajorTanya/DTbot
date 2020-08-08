@@ -69,6 +69,7 @@ class Rng(commands.Cog, name='RNG'):
                                   "from the sum of the remaining rolls)\n"
                                   "Does NOT support any other CritDice formats.",
                       brief="Rolls dice in NdN format")
+    @commands.bot_has_permissions(embed_links=True)
     async def roll(self, ctx, *, dice):
         total_rolled = 0
         full_mod = ""
@@ -168,6 +169,7 @@ class Rng(commands.Cog, name='RNG'):
 
     @commands.group(hidden=True,
                     description="")
+    @commands.bot_has_permissions(embed_links=True)
     async def show(self, ctx):
         if ctx.invoked_subcommand is None:
             return
@@ -183,6 +185,7 @@ class Rng(commands.Cog, name='RNG'):
     @commands.command(description='Find out how shippable your ship is\nNeeds to include "and" between ship items.'
                                   '\n\nUsage:\n+ship The entire internet and pineapple on pizza',
                       brief='Ship things')
+    @commands.bot_has_permissions(embed_links=True)
     async def ship(self, ctx, *ship):
         ship = ' '.join(ship)
         ship = re.split(" and ", ship, 1, flags=re.IGNORECASE)

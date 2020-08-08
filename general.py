@@ -34,6 +34,7 @@ class General(commands.Cog):
     @commands.command(description="Displays a user's avatar. Defaults to command user's avatar when "
                                   "no user is mentioned.",
                       brief="Show a user's avatar")
+    @commands.bot_has_permissions(embed_links=True)
     async def avatar(self, ctx, *, user: discord.Member = None):
         if user:
             embed = discord.Embed(colour=dtbot_colour, description=f"{user.mention}'s avatar")
@@ -45,6 +46,7 @@ class General(commands.Cog):
 
     @commands.command(description="Get an overview over the recentmost update of DTbot",
                       brief="Recent updates to DTbot")
+    @commands.bot_has_permissions(embed_links=True)
     async def changelog(self, ctx):
         embed = discord.Embed(colour=dtbot_colour,
                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
@@ -79,6 +81,7 @@ class General(commands.Cog):
 
     @commands.command(description="Info about me, DTbot. Please take a look.",
                       brief="Info about me")
+    @commands.bot_has_permissions(embed_links=True)
     async def info(self, ctx):
         now = datetime.datetime.utcnow()
         tdelta = now - startup_time
@@ -149,6 +152,7 @@ class General(commands.Cog):
     @commands.command(description="Shows details on user, such as Name, Join Date, or Highest Role",
                       brief="Get info on a user",
                       aliases=['uinfo'])
+    @commands.bot_has_permissions(embed_links=True)
     async def userinfo(self, ctx, user: discord.Member):
         embed = discord.Embed(title=f"{user}'s info",
                               description='Here is what I could find:', colour=ctx.author.colour)
@@ -165,6 +169,7 @@ class General(commands.Cog):
 
     @commands.command(description='Shows a list of all users with a particular role (case sensitive)',
                       brief='List all users with this role')
+    @commands.bot_has_permissions(embed_links=True)
     async def whohas(self, ctx, *, role: discord.Role):
         role = discord.utils.get(ctx.guild.roles, name=role.name)
         role_members = list()

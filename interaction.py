@@ -17,6 +17,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Call someone a bad doggo",
                       brief="Call someone a bad doggo",
                       aliases=['shame', 'baddoggo'])
+    @commands.bot_has_permissions(embed_links=True)
     async def baddog(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -33,6 +34,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Go full Tsundere and call someone a BAKA",
                       brief="Call someone a BAKA")
+    @commands.bot_has_permissions(embed_links=True)
     async def baka(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -48,6 +50,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Bitch slaps someone",
                       brief="Bitch slaps someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def bitchslap(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -62,6 +65,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Bite someone",
                       brief="Bite someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def bite(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -77,6 +81,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Kiss someone the non-romantic way",
                       brief="A non-romantic kiss")
+    @commands.bot_has_permissions(embed_links=True)
     async def bkiss(self, ctx, user: discord.Member):
         chosen = random.choice(bkiss_links)
         if user.id == ctx.author.id:
@@ -92,6 +97,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Blush\nCan be given a reason",
                       brief="Blush")
+    @commands.bot_has_permissions(embed_links=True)
     async def blush(self, ctx, *reason: str):
         chosen = random.choice(blush_links)
         if reason:
@@ -106,6 +112,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Boop em good",
                       brief="Boop someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def boop(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -120,6 +127,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Cage someone",
                       brief="Cage someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def cage(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -134,6 +142,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Choke em good",
                       brief="Choke someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def choke(self, ctx, user: discord.Member):
         chosen = random.choice(choke_links)
         if user.id == ctx.author.id:
@@ -149,6 +158,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Confess your feelings to someone",
                       brief="Confess your feelings to someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def confess(self, ctx, crush: discord.Member):
         if crush.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -189,6 +199,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Cry\nCan be given a reason",
                       brief="Cry")
+    @commands.bot_has_permissions(embed_links=True)
     async def cry(self, ctx, *reason: str):
         chosen = random.choice(cry_links)
         if reason:
@@ -205,6 +216,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Cuddle someone",
                       brief="Cuddle someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def cuddle(self, ctx, user: discord.Member):
         chosen = random.choice(cuddle_links)
         if user.id == ctx.author.id:
@@ -219,6 +231,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Dance with someone. Mention multiple users for a big dance party",
                       brief="Dance with someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def dance(self, ctx, *target: str):
         chosen = random.choice(dance_links)
 
@@ -251,6 +264,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Glomp someone",
                       brief="Glomp someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def glomp(self, ctx, user: discord.Member):
         chosen = random.choice(glomp_links)
         if user.id == ctx.author.id:
@@ -282,6 +296,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Hide yourself",
                       brief="Hide yourself")
+    @commands.bot_has_permissions(embed_links=True)
     async def hide(self, ctx, *reason: str):
         chosen = random.choice(hide_links)
         if reason:
@@ -297,6 +312,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="High five someone",
                       brief="High five someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def highfive(self, ctx, user: discord.Member):
         chosen = random.choice(highfive_links)
         if user.id == ctx.author.id:
@@ -312,6 +328,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Hug someone",
                       brief="Hug someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def hug(self, ctx, user: discord.Member):
         chosen = random.choice(hug_links)
         if user.id == ctx.author.id:
@@ -326,6 +343,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="KICK THEIR ASS\n\n(This is NOT a moderation command to kick a user from a server.)",
                       brief="Kick someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def kick(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -341,6 +359,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="What do you think it does",
                       brief="It's in the name")
+    @commands.bot_has_permissions(embed_links=True)
     async def kill(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -353,6 +372,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Kiss someone",
                       brief="Kiss someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def kiss(self, ctx, user: discord.Member):
         chosen = random.choice(kiss_links)
         if user.id == ctx.author.id:
@@ -367,6 +387,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="For something LEWD",
                       brief="LEWD")
+    @commands.bot_has_permissions(embed_links=True)
     async def lewd(self, ctx, user: discord.Member = None):
         chosen = random.choice(lewd_links)
         if user:
@@ -387,6 +408,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Lick someone",
                       brief="Lick someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def lick(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -401,6 +423,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Notice someone",
                       brief="Notice someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def notice(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -413,6 +436,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Give someone a head pat",
                       brief="Pat someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def pat(self, ctx, user: discord.Member):
         chosen = random.choice(pat_links)
         if user.id == ctx.author.id:
@@ -443,6 +467,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Pinch someone's cheeks",
                       brief="Pinch someone's cheeks")
+    @commands.bot_has_permissions(embed_links=True)
     async def pinch(self, ctx, user: discord.Member):
         chosen = random.choice(pinch_links)
         if user.id == ctx.author.id:
@@ -457,6 +482,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Poke someone",
                       brief="Poke someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def poke(self, ctx, user: discord.Member):
         chosen = random.choice(poke_links)
         if user.id == ctx.author.id:
@@ -471,6 +497,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Pout\nCan be given a reason",
                       brief="Pout")
+    @commands.bot_has_permissions(embed_links=True)
     async def pout(self, ctx, *reason: str):
         chosen = random.choice(pout_links)
         if reason:
@@ -485,6 +512,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Someone gonna get punched",
                       brief="Punch someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def punch(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -499,6 +527,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Salute someone\nCan be given a reason",
                       brief="Salute someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def salute(self, ctx, *reason: str):
         chosen = random.choice(salute_links)
         if reason:
@@ -518,6 +547,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Slap 'em hard",
                       brief="Slap someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def slap(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -532,6 +562,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Be the smuggest of them all",
                       brief="Be smug")
+    @commands.bot_has_permissions(embed_links=True)
     async def smug(self, ctx):
         chosen = random.choice(smug_links)
         embed = discord.Embed(colour=dtbot_colour,
@@ -541,6 +572,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Stab someone",
                       brief="Stab someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def stab(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,
@@ -556,6 +588,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Tickle someone",
                       brief="Tickle someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def tickle(self, ctx, user: discord.Member):
         chosen = random.choice(tickle_links)
         if user.id == ctx.author.id:
@@ -570,6 +603,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Wave at someone",
                       brief="Wave at someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def wave(self, ctx, user: discord.Member):
         chosen = random.choice(wave_links)
         if user.id == ctx.author.id:
@@ -585,6 +619,7 @@ class Interaction(commands.Cog):
 
     @commands.command(description="Whip someone (rather kinky)",
                       brief="Whip someone")
+    @commands.bot_has_permissions(embed_links=True)
     async def whip(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
             embed = discord.Embed(colour=dtbot_colour,

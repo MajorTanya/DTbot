@@ -201,6 +201,7 @@ class Help(commands.Cog):
         self.bot = bot
 
     @commands.command(usage='[command or module]')
+    @commands.bot_has_permissions(embed_links=True)
     async def help(self, ctx, *command: str):
         """Shows this message"""
         pages = []
