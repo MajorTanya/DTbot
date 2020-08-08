@@ -5,13 +5,13 @@ import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
 
-from launcher import logger, DB_NAME, db_config
+from launcher import DB_NAME, db_config, logger
 
 # open the pooled connection used for everything but prefix checks
 cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
 
 
-def dbcallprocedure(procedure, *, commit: bool = False, returns: bool = False, params: tuple):
+def dbcallprocedure(procedure, *, returns: bool = False, params: tuple):
     db = cnx.get_connection()
     cursor = db.cursor()
     if returns:
@@ -21,8 +21,7 @@ def dbcallprocedure(procedure, *, commit: bool = False, returns: bool = False, p
         db.close()
         return return_value
     cursor.callproc(procedure, params)
-    if commit:
-        db.commit()
+    db.commit()
     db.close()
 
 
@@ -34,10 +33,10 @@ def checkdbforuser(message):
         unix_now = int(time.time())
         if unix_now - last_xp_gain > 120:
             # user got XP more than two minutes ago, award between 15 and 25 XP and update last XP gain time
-            dbcallprocedure('IncreaseXP', commit=True, params=(message.author.id, random.randint(15, 25), unix_now))
+            dbcallprocedure('IncreaseXP', params=(message.author.id, random.randint(15, 25), unix_now))
     else:
         # user is unknown to the database, add it with user ID and default in the other fields
-        dbcallprocedure('AddNewUser', commit=True, params=(message.author.id,))
+        dbcallprocedure('AddNewUser', params=(message.author.id,))
 
 
 class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
@@ -61,21 +60,21 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        dbcallprocedure('AddNewServer', commit=True, params=(guild.id, guild.member_count))
+        dbcallprocedure('AddNewServer', params=(guild.id, guild.member_count))
 
     @commands.Cog.listener()
     async def on_command_completion(self, ctx):
         result = dbcallprocedure('CheckCommandExist', returns=True, params=(ctx.command.qualified_name, '@res'))
         if result:
-            dbcallprocedure('IncrementCommandUsage', commit=True, params=(ctx.command.qualified_name,))
+            dbcallprocedure('IncrementCommandUsage', params=(ctx.command.qualified_name,))
         else:
             if ctx.command.cog_name is None:
                 cog_name = "main"
             else:
                 cog_name = ctx.command.cog_name
-            dbcallprocedure('AddNewCommand', commit=True, params=(ctx.command.qualified_name, cog_name))
+            dbcallprocedure('AddNewCommand', params=(ctx.command.qualified_name, cog_name))
             # because the command was used this one time, we increment the default value (0) by 1
-            dbcallprocedure('IncrementCommandUsage', commit=True, params=(ctx.command.qualified_name,))
+            dbcallprocedure('IncrementCommandUsage', params=(ctx.command.qualified_name,))
 
     @commands.command(description="Manually adds an entry to the table 'users' of DTbot's database."
                                   "\nGenerally not required. Developers only.")
@@ -83,7 +82,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
                           user_last_rep_awarded: int):
         params = (user_id, user_xp, user_last_xp_gain, user_rep, user_last_rep_awarded)
         try:
-            dbcallprocedure('ManualNewUser', commit=True, params=params)
+            dbcallprocedure('ManualNewUser', params=params)
             await ctx.send(f"Row added successfully to table `users` in database `{DB_NAME}`.")
         except mariadb.Error as err:
             logger.error(err)
@@ -94,7 +93,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
                                   "database.\nGenerally not required. Developers only.")
     async def refreshservers(self, ctx):
         for guild in self.bot.guilds:
-            dbcallprocedure('AddNewServer', commit=True, params=(guild.id, guild.member_count))
+            dbcallprocedure('AddNewServer', params=(guild.id, guild.member_count))
         await ctx.send('Server list refreshed.', delete_after=5)
 
 
