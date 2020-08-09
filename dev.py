@@ -6,7 +6,7 @@ from discord import Game
 from discord.ext import commands
 
 from DTbot import config
-from launcher import default_prefixes, dtbot_colour, ger_tz, human_startup_time, logger, startup_time
+from launcher import dtbot_colour, ger_tz, human_startup_time, logger, startup_time
 
 dtbot_version = config.get('Info', 'dtbot_version')
 h_code = config.get('Developers', 'h_code')
@@ -53,7 +53,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.change_presence(activity=Game(name=f"with {default_prefixes[0]}help (v. {dtbot_version})"))
+        await self.bot.change_presence(activity=Game(name=f"Do @\u200bDTbot help (v. {dtbot_version})"))
 
     @commands.group(description="Manages the heartbeat of DTbot. Developers only.")
     async def heart(self, ctx):
@@ -100,11 +100,11 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     async def updaterp(self, ctx, *caption: str):
         if caption:
             caption = " ".join(caption)
-            caption = caption.replace("default_prefixes", default_prefixes[0])
+            caption = caption.replace("DTbot", "@\u200bDTbot")
             caption = caption.replace("dtbot_version", dtbot_version)
             await self.bot.change_presence(activity=Game(name=caption))
         else:
-            caption = f"with {default_prefixes[0]}help (v. {dtbot_version})"
+            caption = f"Do @\u200bDTbot help (v. {dtbot_version})"
             await self.bot.change_presence(activity=Game(name=caption))
         logger.dtbotinfo(logger, f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
         await ctx.send("Rich Presence updated.")
