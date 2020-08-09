@@ -162,7 +162,7 @@ class Misc(commands.Cog):
             embed.add_field(name='End Date', value=result.endDate)
         if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
             embed.add_field(name='\u200b', value='\u200b')
-            if len(embed.fields) % 3 == 1:
+            if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
                 embed.add_field(name='\u200b', value='\u200b')
         embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
         if result.Kitsu_url:
@@ -202,7 +202,7 @@ class Misc(commands.Cog):
             embed.add_field(name='End Date', value=result.endDate)
         if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
             embed.add_field(name='\u200b', value='\u200b')
-            if len(embed.fields) % 3 == 1:
+            if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
                 embed.add_field(name='\u200b', value='\u200b')
         embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
         if result.Kitsu_url:
