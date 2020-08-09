@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import sys
 
 import discord
 from discord import Game
@@ -18,7 +19,10 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     def __init__(self, bot):
         self.bot = bot
-        self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+        if len(sys.argv) < 2 or sys.argv[1] == '1':
+            # run "python launcher.py 1" to start DTbot with a heartbeat message, 0 if not
+            # if no parameter is provided, defaults to run with a heartbeat
+            self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
 
     def cog_unload(self):
         self.heartbeat_task.cancel()
@@ -113,7 +117,10 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
                       brief='Shut the bot down. Developers only.')
     async def shutdownbot(self, ctx, passcode: str):
         if passcode == sdb_code:
-            self.heartbeat_task.cancel()
+            try:
+                self.heartbeat_task.cancel()
+            except:
+                pass
             await self.bot.logout()
         else:
             return
