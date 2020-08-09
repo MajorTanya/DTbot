@@ -100,11 +100,18 @@ class Misc(commands.Cog):
                     self.year = result['seasonYear']
                     self.season_str = f"{self.season} {self.year}" if self.status != 'NOT_YET_RELEASED' else 'Unknown'
                 if self.status != 'NOT_YET_RELEASED':
-                    start_date = result['startDate']
-                    self.startDate = f"{start_date['year']}-{start_date['month']:02}-{start_date['day']:02}"
+                    # manually assemble the start (and end) date because some entries may be None from the API
+                    date = result['startDate']
+                    year = date['year'] if date['year'] is not None else '????'
+                    month = date['month'] if date['month'] is not None else '??'
+                    day = date['day'] if date['day'] is not None else '??'
+                    self.startDate = f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
                 if self.status == 'FINISHED':
-                    end_date = result['endDate']
-                    self.endDate = f"{end_date['year']}-{end_date['month']:02}-{end_date['day']:02}"
+                    date = result['endDate']
+                    year = date['year'] if date['year'] is not None else '????'
+                    month = date['month'] if date['month'] is not None else '??'
+                    day = date['day'] if date['day'] is not None else '??'
+                    self.endDate = f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
                 self.id = result['id']
                 if result['coverImage']['color']:
                     rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
