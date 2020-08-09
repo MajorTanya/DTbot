@@ -1,6 +1,7 @@
 import json
 import random
 import re
+import urllib.parse
 
 import discord
 import requests
@@ -11,9 +12,15 @@ from DTbot import config
 from error_handler import AniMangaLookupError
 from launcher import dtbot_colour
 
-AL_API_URL = config.get('AL API Queries', 'API_URL')
-anime_query = config.get('AL API Queries', 'anime_query')
-manga_query = config.get('AL API Queries', 'manga_query')
+AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
+KITSU_URL = config.get('AniManga Lookup', 'kitsu_url')
+MAL_URL = config.get('AniManga Lookup', 'mal_url')
+anime_query = config.get('AniManga Lookup', 'anime_query')
+manga_query = config.get('AniManga Lookup', 'manga_query')
+kitsu_query = config.get('AniManga Lookup', 'kitsu_query')
+# Kitsu needs URL encoded strings, except for '&' and '=', which would break the filters if encoded
+kitsu_filters = urllib.parse.quote(config.get('AniManga Lookup', 'kitsu_filters'), safe='&=')
+kitsu_query += kitsu_filters
 
 
 def shared_cooldown(rate, per, type=commands.BucketType.default):
@@ -62,19 +69,26 @@ class Misc(commands.Cog):
 
     class AniListMediaResult(object):
         def __init__(self, title, manga: bool):
+            self.MAL_url = ''
+            self.Kitsu_url = ''
             self.request(title, manga)
 
         def request(self, title, manga: bool):
             query = manga_query if manga else anime_query
-            variables = {
-                'search': title
-            }
-            response = requests.post(AL_API_URL, json={'query': query, 'variables': variables})
+            response = requests.post(AL_API_URL, json={'query': query, 'variables': {'search': title}})
             result = json.loads(response.text)['data']['Page']
             if result['pageInfo']['total'] == 0:  # nothing found
                 raise AniMangaLookupError(title=title, status_code=response.status_code, manga=manga)
             else:
                 result = result['media'][0]
+                mal_id = result['idMal']
+                self.AL_url = result['siteUrl']
+                if mal_id is not None:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
+                    self.MAL_url = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
+                    kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
+                    k_res = json.loads(requests.get(kitsu_req).text)
+                    k_res2 = json.loads(requests.get(k_res['data'][0]['relationships']['item']['links']['self']).text)
+                    self.Kitsu_url = f'{KITSU_URL}/{result["type"].lower()}/{k_res2["data"]["id"]}'
                 self.title = result['title']['romaji']
                 self.description = re.sub('<.*?>', '', result['description'])
                 genres = ""
@@ -146,10 +160,15 @@ class Misc(commands.Cog):
             embed.add_field(name='Start Date', value=result.startDate)
         if result.status == 'FINISHED':
             embed.add_field(name='End Date', value=result.endDate)
-        if len(embed.fields) % 3 == 2:  # even out the last line of embeds
+        if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
             embed.add_field(name='\u200b', value='\u200b')
-        embed.add_field(name='On AniList', value=f"[AniList link](https://anilist.co/anime/{result.id}/)",
-                        inline=False)
+            if len(embed.fields) % 3 == 1:
+                embed.add_field(name='\u200b', value='\u200b')
+        embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
+        if result.Kitsu_url:
+            embed.add_field(name='<:Kitsu:742063838555275337> Kitsu', value=f"[Kitsu]({result.Kitsu_url})")
+        if result.MAL_url:
+            embed.add_field(name='<:MyAnimeList:742063838760927323> MAL', value=f"[MyAnimeList]({result.MAL_url})")
         embed.set_image(url=result.coverImage)
         await ctx.send(embed=embed)
 
@@ -181,10 +200,15 @@ class Misc(commands.Cog):
             embed.add_field(name='Start Date', value=result.startDate)
         if result.status == 'FINISHED':
             embed.add_field(name='End Date', value=result.endDate)
-        if len(embed.fields) % 3 == 2:  # even out the last line of embeds
+        if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
             embed.add_field(name='\u200b', value='\u200b')
-        embed.add_field(name='On AniList', value=f"[AniList link](https://anilist.co/manga/{result.id}/)",
-                        inline=False)
+            if len(embed.fields) % 3 == 1:
+                embed.add_field(name='\u200b', value='\u200b')
+        embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
+        if result.Kitsu_url:
+            embed.add_field(name='<:Kitsu:742063838555275337> Kitsu', value=f"[Kitsu]({result.Kitsu_url})")
+        if result.MAL_url:
+            embed.add_field(name='<:MyAnimeList:742063838760927323> MAL', value=f"[MyAnimeList]({result.MAL_url})")
         embed.set_image(url=result.coverImage)
         await ctx.send(embed=embed)
 
