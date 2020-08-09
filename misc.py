@@ -80,7 +80,7 @@ class Misc(commands.Cog):
                 genres = ""
                 for genre in result['genres']:
                     genres += genre + ', '
-                self.genres = genres[:len(genres) - 2]
+                self.genres = genres[:len(genres) - 2] if result['genres'] != [] else 'N/A'
                 self.format = result['format']
                 self.status = result['status']
                 self.status_str = self.status.replace('_', ' ').title()
