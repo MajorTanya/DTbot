@@ -87,8 +87,12 @@ class Misc(commands.Cog):
                     self.MAL_url = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
                     kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
                     k_res = json.loads(requests.get(kitsu_req).text)
-                    k_res2 = json.loads(requests.get(k_res['data'][0]['relationships']['item']['links']['self']).text)
-                    self.Kitsu_url = f'{KITSU_URL}/{result["type"].lower()}/{k_res2["data"]["id"]}'
+                    try:
+                        k_res2 = requests.get(k_res['data'][0]['relationships']['item']['links']['self'])
+                        k_res2_json = json.loads(k_res2.text)
+                        self.Kitsu_url = f'{KITSU_URL}/{result["type"].lower()}/{k_res2_json["data"]["id"]}'
+                    except IndexError:
+                        pass
                 self.title = result['title']['romaji']
                 self.description = re.sub('<.*?>', '', result['description'])
                 genres = ""
@@ -165,10 +169,10 @@ class Misc(commands.Cog):
             if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
                 embed.add_field(name='\u200b', value='\u200b')
         embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
-        if result.Kitsu_url:
-            embed.add_field(name='<:Kitsu:742063838555275337> Kitsu', value=f"[Kitsu]({result.Kitsu_url})")
-        if result.MAL_url:
-            embed.add_field(name='<:MyAnimeList:742063838760927323> MAL', value=f"[MyAnimeList]({result.MAL_url})")
+        urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu_url})",
+                '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL_url})"]
+        embed.add_field(name=urls[0] if result.Kitsu_url else '\u200b', value=urls[1] if result.Kitsu_url else '\u200b')
+        embed.add_field(name=urls[2] if result.MAL_url else '\u200b', value=urls[3] if result.MAL_url else '\u200b')
         embed.set_image(url=result.coverImage)
         await ctx.send(embed=embed)
 
@@ -205,10 +209,10 @@ class Misc(commands.Cog):
             if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
                 embed.add_field(name='\u200b', value='\u200b')
         embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
-        if result.Kitsu_url:
-            embed.add_field(name='<:Kitsu:742063838555275337> Kitsu', value=f"[Kitsu]({result.Kitsu_url})")
-        if result.MAL_url:
-            embed.add_field(name='<:MyAnimeList:742063838760927323> MAL', value=f"[MyAnimeList]({result.MAL_url})")
+        urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu_url})",
+                '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL_url})"]
+        embed.add_field(name=urls[0] if result.Kitsu_url else '\u200b', value=urls[1] if result.Kitsu_url else '\u200b')
+        embed.add_field(name=urls[2] if result.MAL_url else '\u200b', value=urls[3] if result.MAL_url else '\u200b')
         embed.set_image(url=result.coverImage)
         await ctx.send(embed=embed)
 
