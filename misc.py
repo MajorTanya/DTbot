@@ -146,6 +146,7 @@ class Misc(commands.Cog):
                                   "oregairu 3",
                       brief="Look up an anime title on AniList",
                       aliases=['lookupanime', 'searchanime', 'animesearch'])
+    @commands.bot_has_permissions(embed_links=True)
     @anilist_cooldown
     async def anime(self, ctx, *anime_title):
         anime = ' '.join(anime_title)
@@ -191,6 +192,7 @@ class Misc(commands.Cog):
                                   "akatsuki no yona",
                       brief="Look up a manga title on AniList",
                       aliases=['lookupmanga', 'searchmanga', 'mangasearch'])
+    @commands.bot_has_permissions(embed_links=True)
     @anilist_cooldown
     async def manga(self, ctx, *manga_title):
         manga = ' '.join(manga_title)
