@@ -9,7 +9,7 @@ from discord.ext import commands
 from discord.ext.commands import Cooldown, CooldownMapping, cooldown
 
 from DTbot import config
-from error_handler import AniMangaLookupError
+from error_handler import AniMangaLookupError, send_cmd_help
 from launcher import dtbot_colour
 
 AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
@@ -69,8 +69,8 @@ class Misc(commands.Cog):
 
     class AniListMediaResult(object):
         def __init__(self, title, manga: bool):
-            self.MAL_url = ''
-            self.Kitsu_url = ''
+            self.MAL = ''
+            self.Kitsu = ''
             self.request(title, manga)
 
         def request(self, title, manga: bool):
@@ -84,13 +84,13 @@ class Misc(commands.Cog):
                 mal_id = result['idMal']
                 self.AL_url = result['siteUrl']
                 if mal_id is not None:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
-                    self.MAL_url = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
+                    self.MAL = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
                     kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
                     k_res = json.loads(requests.get(kitsu_req).text)
                     try:
                         k_res2 = requests.get(k_res['data'][0]['relationships']['item']['links']['self'])
                         k_res2_json = json.loads(k_res2.text)
-                        self.Kitsu_url = f'{KITSU_URL}/{result["type"].lower()}/{k_res2_json["data"]["id"]}'
+                        self.Kitsu = f'{KITSU_URL}/{result["type"].lower()}/{k_res2_json["data"]["id"]}'
                     except IndexError:
                         pass
                 self.title = result['title']['romaji']
@@ -149,33 +149,39 @@ class Misc(commands.Cog):
     @anilist_cooldown
     async def anime(self, ctx, *anime_title):
         anime = ' '.join(anime_title)
-        result = Misc.AniListMediaResult(anime, False)
-        ft = result.format
-        ft_str = ft.replace('_', ' ').replace('SHORT', 'Short').replace('SPECIAL', 'Special').replace('MOVIE', 'Movie')
-        embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
-        embed.add_field(name='Genres', value=result.genres)
-        embed.add_field(name='Format', value=ft_str)
-        if result.episodes is not None:
-            embed.add_field(name='Episodes', value=f"{result.ep_str} à {result.duration} {result.duration_str}")
-        embed.add_field(name='Status', value=result.status_str)
-        if result.avgScore is not None:
-            embed.add_field(name='Average Score', value=f"{result.avgScore}%")
-        embed.add_field(name='Season', value=result.season_str)
-        if result.status != 'NOT_YET_RELEASED':
-            embed.add_field(name='Start Date', value=result.startDate)
-        if result.status == 'FINISHED':
-            embed.add_field(name='End Date', value=result.endDate)
-        if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
-            embed.add_field(name='\u200b', value='\u200b')
-            if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+        if anime != '':
+            result = Misc.AniListMediaResult(anime, False)
+            ft = result.format
+            ft_str = ft.replace('_', ' ').title().replace('Tv', 'TV').replace('Ova', 'OVA').replace('Ona', 'ONA')
+            embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
+            embed.add_field(name='Genres', value=result.genres)
+            embed.add_field(name='Format', value=ft_str)
+            if result.episodes is not None:
+                embed.add_field(name='Episodes', value=f"{result.ep_str} à {result.duration} {result.duration_str}")
+            embed.add_field(name='Status', value=result.status_str)
+            if result.avgScore is not None:
+                embed.add_field(name='Average Score', value=f"{result.avgScore}%")
+            embed.add_field(name='Season', value=result.season_str)
+            if result.status != 'NOT_YET_RELEASED':
+                embed.add_field(name='Start Date', value=result.startDate)
+            if result.status == 'FINISHED':
+                embed.add_field(name='End Date', value=result.endDate)
+            if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
                 embed.add_field(name='\u200b', value='\u200b')
-        embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
-        urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu_url})",
-                '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL_url})"]
-        embed.add_field(name=urls[0] if result.Kitsu_url else '\u200b', value=urls[1] if result.Kitsu_url else '\u200b')
-        embed.add_field(name=urls[2] if result.MAL_url else '\u200b', value=urls[3] if result.MAL_url else '\u200b')
-        embed.set_image(url=result.coverImage)
-        await ctx.send(embed=embed)
+                if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+                    embed.add_field(name='\u200b', value='\u200b')
+            embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
+            urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu})",
+                    '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL})"]
+            embed.add_field(name=urls[0] if result.Kitsu else '\u200b', value=urls[1] if result.Kitsu else '\u200b')
+            embed.add_field(name=urls[2] if result.MAL else '\u200b', value=urls[3] if result.MAL else '\u200b')
+            embed.set_image(url=result.coverImage)
+            await ctx.send(embed=embed)
+        else:
+            try:
+                await send_cmd_help(self.bot, ctx, "")
+            except discord.Forbidden:  # not allowed to send embeds
+                await send_cmd_help(self.bot, ctx, "", plain=True)
 
     @commands.command(description="Enter the title of a manga here and DTbot will return a small overview for that "
                                   "manga from AniList. Expect data like the synopsis, chapter count, release status, "
@@ -188,35 +194,41 @@ class Misc(commands.Cog):
     @anilist_cooldown
     async def manga(self, ctx, *manga_title):
         manga = ' '.join(manga_title)
-        result = Misc.AniListMediaResult(manga, True)
-        embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
-        embed.add_field(name='Genres', value=result.genres)
-        ft_str = result.format.replace('_', ' ').title()
-        embed.add_field(name='Format', value=ft_str)
-        if result.chapters is not None and result.chapters != 0:
-            vol_str = ""
-            ch_str = f"{result.chapters} Chapter" if result.chapters == 1 else f"{result.chapters} Chapters"
-            if result.volumes is not None and result.volumes != 0:
-                vol_str = f"{result.volumes} Volume" if result.volumes == 1 else f"{result.volumes} Volumes"
-            embed.add_field(name='Chapters', value=f'{ch_str}{" in " + vol_str if vol_str else ""}')
-        embed.add_field(name='Status', value=result.status_str)
-        if result.avgScore is not None:
-            embed.add_field(name='Average Score', value=f"{result.avgScore}%")
-        if result.status != 'NOT_YET_RELEASED':
-            embed.add_field(name='Start Date', value=result.startDate)
-        if result.status == 'FINISHED':
-            embed.add_field(name='End Date', value=result.endDate)
-        if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
-            embed.add_field(name='\u200b', value='\u200b')
-            if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+        if manga != '':
+            result = Misc.AniListMediaResult(manga, True)
+            embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
+            embed.add_field(name='Genres', value=result.genres)
+            ft_str = result.format.replace('_', ' ').title()
+            embed.add_field(name='Format', value=ft_str)
+            if result.chapters is not None and result.chapters != 0:
+                vol_str = ""
+                ch_str = f"{result.chapters} Chapter" if result.chapters == 1 else f"{result.chapters} Chapters"
+                if result.volumes is not None and result.volumes != 0:
+                    vol_str = f"{result.volumes} Volume" if result.volumes == 1 else f"{result.volumes} Volumes"
+                embed.add_field(name='Chapters', value=f'{ch_str}{" in " + vol_str if vol_str else ""}')
+            embed.add_field(name='Status', value=result.status_str)
+            if result.avgScore is not None:
+                embed.add_field(name='Average Score', value=f"{result.avgScore}%")
+            if result.status != 'NOT_YET_RELEASED':
+                embed.add_field(name='Start Date', value=result.startDate)
+            if result.status == 'FINISHED':
+                embed.add_field(name='End Date', value=result.endDate)
+            if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
                 embed.add_field(name='\u200b', value='\u200b')
-        embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
-        urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu_url})",
-                '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL_url})"]
-        embed.add_field(name=urls[0] if result.Kitsu_url else '\u200b', value=urls[1] if result.Kitsu_url else '\u200b')
-        embed.add_field(name=urls[2] if result.MAL_url else '\u200b', value=urls[3] if result.MAL_url else '\u200b')
-        embed.set_image(url=result.coverImage)
-        await ctx.send(embed=embed)
+                if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+                    embed.add_field(name='\u200b', value='\u200b')
+            embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({result.AL_url})")
+            urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({result.Kitsu})",
+                    '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({result.MAL})"]
+            embed.add_field(name=urls[0] if result.Kitsu else '\u200b', value=urls[1] if result.Kitsu else '\u200b')
+            embed.add_field(name=urls[2] if result.MAL else '\u200b', value=urls[3] if result.MAL else '\u200b')
+            embed.set_image(url=result.coverImage)
+            await ctx.send(embed=embed)
+        else:
+            try:
+                await send_cmd_help(self.bot, ctx, "")
+            except discord.Forbidden:  # not allowed to send embeds
+                await send_cmd_help(self.bot, ctx, "", plain=True)
 
     @commands.command(description="Actually you can't",
                       brief="Kill yourself")
