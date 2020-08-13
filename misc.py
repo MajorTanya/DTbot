@@ -140,9 +140,10 @@ class Misc(commands.Cog):
 
     @commands.command(description="Enter the title of an anime here and DTbot will return a small overview for that "
                                   "anime from AniList. Expect data like the synopsis, episode count, airing season, "
-                                  "etc.\nMind you, AniList doesn't necessarily recognize abbreviations or alternative "
-                                  "titles. The best bet is to look it up with the Japanese or official English titles."
-                                  "\nUsage:\n\n+anime senko-san\n+anime oregairu 3",
+                                  "etc.\n*Doesn't* return NSFW entries.\nMind you, AniList doesn't necessarily "
+                                  "recognize abbreviations or alternative titles. The best bet is to look it up with "
+                                  "the Japanese or official English titles.\nUsage:\n\n+anime senko-san\n+anime "
+                                  "oregairu 3",
                       brief="Look up an anime title on AniList",
                       aliases=['lookupanime', 'searchanime', 'animesearch'])
     @anilist_cooldown
@@ -178,9 +179,10 @@ class Misc(commands.Cog):
 
     @commands.command(description="Enter the title of a manga here and DTbot will return a small overview for that "
                                   "manga from AniList. Expect data like the synopsis, chapter count, release status, "
-                                  "etc.\nMind you, AniList doesn't necessarily recognize abbreviations or alternative "
-                                  "titles. The best bet is to look it up with the Japanese or official English titles."
-                                  "\nUsage:\n\n+manga haikyuu\n+manga akatsuki no yona",
+                                  "etc.\n*Doesn't* return NSFW entries.\nMind you, AniList doesn't necessarily "
+                                  "recognize abbreviations or alternative titles. The best bet is to look it up with "
+                                  "the Japanese or official English titles.\nUsage:\n\n+manga haikyuu\n+manga "
+                                  "akatsuki no yona",
                       brief="Look up a manga title on AniList",
                       aliases=['lookupmanga', 'searchmanga', 'mangasearch'])
     @anilist_cooldown

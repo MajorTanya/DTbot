@@ -73,10 +73,11 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, IllegalCustomCommandAccess):
             pass
         elif isinstance(error, AniMangaLookupError):
-            await ctx.send(f"`Error: Something went wrong when looking up \"{error.title}\" on AniList. Check your "
+            await ctx.send(f"`Error: Something went wrong when looking up \"{error.title}\" on AniList.`\nCheck your "
                            f"request for typos and make sure that you are looking up {error.type} with the correct "
-                           f"command.\nSometimes, AniList doesn't recognize alternative titles or acronyms. "
-                           f"Please try again with e.g. a different name for \"{error.title}\".`")
+                           f"command.\nRemember that DTbot doesn't return NSFW results.\nSometimes, AniList doesn't "
+                           f"recognize alternative titles or acronyms. Please try again with e.g. a different name "
+                           f"for \"{error.title}\".")
             logger.error(type(error).__name__)
             logger.error(f'HTML Status Code for the error below: {error.status_code}')
         else:
