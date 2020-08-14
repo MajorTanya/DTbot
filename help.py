@@ -9,7 +9,7 @@ from error_handler import IllegalCustomCommandAccess
 from launcher import dtbot_colour
 
 hidden_cogs = config.items('Hidden')
-allowed_servers = config.get('General', 'servwpeopacc')
+allowed_servers = config.get('General', 'allowed_servers')
 
 
 class PaginatorSession:
