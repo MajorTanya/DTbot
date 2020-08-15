@@ -1,8 +1,6 @@
 # DTbot
 A versatile Discord bot for your server, written with discord.py.
 
-![Discord](https://img.shields.io/discord/477237732419174401?style=flat-square&logo=discord)
-![Invite](https://img.shields.io/badge/Invite%20DTbot%20to%20your%20server-%20?style=flat-square&color=5e51a8&link=https%3A%2F%2Fdiscord.com%2Fapi%2Foauth2%2Fauthorize%3Fclient_id%3D472730689599569921%26permissions%3D67390528%26scope%3Dbot)
 ## Features
 We aim to provide a vast variety of commands for our users with simplicity of commands being one of our top priorities.
 With our array of command modules, DTbot provides:
