@@ -17,6 +17,7 @@ main_dev = config.get('Developers', 'main')
 secondary_dev = config.get('Developers', 'secondary')
 dtbot_devs = f'{main_dev}\n{secondary_dev}'
 INVITE = config.get('General', 'INVITE')
+PERMSEXPL = config.get('General', 'PERMSEXPL')
 REQHALL = config.getint('General', 'REQHALL')
 
 AVATAR_ARTIST = config.get('About', 'AVATAR ARTIST')
@@ -98,7 +99,8 @@ class General(commands.Cog):
         embed.add_field(name="Stats", value=f"In {len(self.bot.guilds)} servers with {len(self.bot.users)} members")
         embed.add_field(name="\u200b", value="\u200b")
         embed.add_field(name="Uptime", value=uptime)
-        embed.add_field(name="Invite me", value=f"[Invite me]({INVITE}) to your server too")
+        embed.add_field(name="Invite me", value=f"[Invite me]({INVITE}) to your server too.\n[Explanation]({PERMSEXPL})"
+                                                f" for DTbot's permissions")
         embed.add_field(name="Avatar by", value=AVATAR_ARTIST, inline=False)
         embed.set_footer(text=f"DTbot v. {dtbot_version}")
         await ctx.send(embed=embed)
