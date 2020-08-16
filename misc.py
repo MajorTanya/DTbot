@@ -94,7 +94,7 @@ class Misc(commands.Cog):
                     except IndexError:
                         pass
                 self.title = result['title']['romaji']
-                self.description = re.sub('<.*?>', '', result['description'])
+                self.description = re.sub('<.*?>', '', result['description']) if result['description'] else ""
                 genres = ""
                 for genre in result['genres']:
                     genres += genre + ', '
