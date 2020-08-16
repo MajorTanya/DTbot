@@ -158,7 +158,8 @@ class Misc(commands.Cog):
             embed.add_field(name='Genres', value=result.genres)
             embed.add_field(name='Format', value=ft_str)
             if result.episodes:
-                embed.add_field(name='Episodes', value=f"{result.ep_str} à {result.duration} {result.duration_str}")
+                duration = f'à {result.duration} {result.duration_str}' if result.duration else ''
+                embed.add_field(name='Episodes', value=f'{result.ep_str} {duration}')
             embed.add_field(name='Status', value=result.status_str)
             if result.avgScore:
                 embed.add_field(name='Average Score', value=f"{result.avgScore}%")
