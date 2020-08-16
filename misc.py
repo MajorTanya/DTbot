@@ -83,7 +83,7 @@ class Misc(commands.Cog):
                 result = result['media'][0]
                 mal_id = result['idMal']
                 self.AL_url = result['siteUrl']
-                if mal_id is not None:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
+                if mal_id:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
                     self.MAL = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
                     kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
                     k_res = json.loads(requests.get(kitsu_req).text)
@@ -114,21 +114,21 @@ class Misc(commands.Cog):
                         self.ep_str = f"{result['episodes']} Episodes"
                     self.duration = result['duration']
                     self.duration_str = 'Minutes' if self.duration != 1 else 'Minute'
-                    self.season = result['season'].title() if result['season'] is not None else None
+                    self.season = result['season'].title() if result['season'] else None
                     self.year = result['seasonYear']
                     self.season_str = f"{self.season} {self.year}" if self.status != 'NOT_YET_RELEASED' else 'Unknown'
                 if self.status != 'NOT_YET_RELEASED':
                     # manually assemble the start (and end) date because some entries may be None from the API
                     date = result['startDate']
-                    year = date['year'] if date['year'] is not None else '????'
-                    month = date['month'] if date['month'] is not None else '??'
-                    day = date['day'] if date['day'] is not None else '??'
+                    year = date['year'] if date['year'] else '????'
+                    month = date['month'] if date['month'] else '??'
+                    day = date['day'] if date['day'] else '??'
                     self.startDate = f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
                 if self.status == 'FINISHED':
                     date = result['endDate']
-                    year = date['year'] if date['year'] is not None else '????'
-                    month = date['month'] if date['month'] is not None else '??'
-                    day = date['day'] if date['day'] is not None else '??'
+                    year = date['year'] if date['year'] else '????'
+                    month = date['month'] if date['month'] else '??'
+                    day = date['day'] if date['day'] else '??'
                     self.endDate = f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
                 self.id = result['id']
                 if result['coverImage']['color']:
@@ -157,10 +157,10 @@ class Misc(commands.Cog):
             embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
             embed.add_field(name='Genres', value=result.genres)
             embed.add_field(name='Format', value=ft_str)
-            if result.episodes is not None:
+            if result.episodes:
                 embed.add_field(name='Episodes', value=f"{result.ep_str} à {result.duration} {result.duration_str}")
             embed.add_field(name='Status', value=result.status_str)
-            if result.avgScore is not None:
+            if result.avgScore:
                 embed.add_field(name='Average Score', value=f"{result.avgScore}%")
             embed.add_field(name='Season', value=result.season_str)
             if result.status != 'NOT_YET_RELEASED':
@@ -202,14 +202,14 @@ class Misc(commands.Cog):
             embed.add_field(name='Genres', value=result.genres)
             ft_str = result.format.replace('_', ' ').title()
             embed.add_field(name='Format', value=ft_str)
-            if result.chapters is not None and result.chapters != 0:
+            if result.chapters and result.chapters != 0:
                 vol_str = ""
                 ch_str = f"{result.chapters} Chapter" if result.chapters == 1 else f"{result.chapters} Chapters"
-                if result.volumes is not None and result.volumes != 0:
+                if result.volumes and result.volumes != 0:
                     vol_str = f"{result.volumes} Volume" if result.volumes == 1 else f"{result.volumes} Volumes"
                 embed.add_field(name='Chapters', value=f'{ch_str}{" in " + vol_str if vol_str else ""}')
             embed.add_field(name='Status', value=result.status_str)
-            if result.avgScore is not None:
+            if result.avgScore:
                 embed.add_field(name='Average Score', value=f"{result.avgScore}%")
             if result.status != 'NOT_YET_RELEASED':
                 embed.add_field(name='Start Date', value=result.startDate)

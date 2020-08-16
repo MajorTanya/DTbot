@@ -215,16 +215,16 @@ class Help(commands.Cog):
             else:
                 cog = self.bot.get_cog(command.title() if not command.lower() == 'rng' else command.upper())
                 cmd = self.bot.get_command(command)
-            if cog is not None:
+            if cog:
                 embed = cog_help(self.bot, ctx, cog)
-                if embed is not None:
+                if embed:
                     for em in embed:
                         pages.append(em)
                     p_sess = PaginatorSession(ctx, pages=pages,
                                               footer=f'Type {ctx.prefix}help [command] for more info on a command.')
                     await p_sess.run()
 
-            elif cmd is not None:
+            elif cmd:
                 embed = command_help(self.bot, ctx, cmd)
                 return await ctx.send(embed=embed)
             else:
