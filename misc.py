@@ -11,6 +11,7 @@ from discord.ext.commands import Cooldown, CooldownMapping, cooldown
 from DTbot import config
 from error_handler import AniMangaLookupError, send_cmd_help
 from launcher import dtbot_colour
+from linklist import woop_links
 
 AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
 KITSU_URL = config.get('AniManga Lookup', 'kitsu_url')
@@ -254,6 +255,15 @@ class Misc(commands.Cog):
     @cooldown(3, 120, commands.BucketType.guild)
     async def re(self, ctx):
         await ctx.send('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
+
+    @commands.command(description="Woop woop!",
+                      brief="Woop woop!")
+    @commands.bot_has_permissions(embed_links=True)
+    async def woop(self, ctx):
+        chosen = random.choice(woop_links)
+        embed = discord.Embed(colour=dtbot_colour, description=f'[Image link]({chosen})')
+        embed.set_image(url=f"{chosen}")
+        await ctx.send(embed=embed)
 
 
 def setup(bot):

@@ -469,3 +469,15 @@ whip_links = [
     'https://i.imgur.com/SU0uAUb.gif',
     'https://i.imgur.com/f0QAJk8.gif',
 ]
+
+woop_links = [
+    'https://i.imgur.com/6bv7c7y.gif',
+    'https://i.imgur.com/yFveOHe.gif',
+    'https://i.imgur.com/K6BzAK9.gif',
+    'https://i.imgur.com/JvboOpC.gif',
+    'https://i.imgur.com/qsdnZmE.gif',
+    'https://i.imgur.com/04Lnv6e.gif',
+    'https://i.imgur.com/DBGof6N.gif',
+    'https://i.imgur.com/m0VwN5K.gif',
+    'https://i.imgur.com/SFzwYW2.gif'
+]
