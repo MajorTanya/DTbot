@@ -1,23 +1,15 @@
-import datetime
-import logging
 from configparser import ConfigParser
 
 import discord
 import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
-from pytz import timezone
 
 from DTbot import DTbot
 
 launch_config = ConfigParser()
 launch_config.read('./config/config.ini')
 default_prefixes = [launch_config.get('General', 'prefix')]
-
-ger_tz = timezone(launch_config.get('Heartbeat', 'ger_tz'))
-human_startup_time = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
-log_startup_time = datetime.datetime.now(ger_tz).strftime('%Y-%m-%d (%H-%M-%S %Z)')
-startup_time = datetime.datetime.utcnow()
 
 db_config = dict(launch_config.items('Database'))
 lauch_db_config = db_config
@@ -28,18 +20,6 @@ servers_default = launch_config.get('Database defaults', 'servers_default')
 users_default = launch_config.get('Database defaults', 'users_default')
 
 dtbot_colour = discord.Colour(0x5e51a8)
-
-
-def dtbotinfo(self, msg, *args, **kwargs):
-    # custom logging level (less verbose than INFO but not serious enough for WARNING or above)
-    if self.isEnabledFor(25):
-        self._log(25, msg, args, **kwargs)
-
-
-logger = logging.getLogger('discord')
-logging.addLevelName(25, 'DTBOT-INFO')
-logger.dtbotinfo = dtbotinfo
-logger.setLevel(25)
 
 
 def det_prefixes(bot, msg):
@@ -60,9 +40,9 @@ def ensuredb():
     firstcursor = fcnx.cursor()
     try:
         firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME} DEFAULT CHARACTER SET 'utf8'")
-        logger.dtbotinfo(logger, f"Successfully created database {DB_NAME}")
+        bot.log.dtbotinfo(bot.log, f"Successfully created database {DB_NAME}")
     except mariadb.Error as err:
-        logger.error(f"Failed creating database: {err}")
+        bot.log.error(f"Failed creating database: {err}")
     finally:
         fcnx.close()
 
@@ -73,23 +53,23 @@ def start_db():
         db = cnx.get_connection()
         cursor = db.cursor()
         cursor.execute(f"USE {DB_NAME}")
-        logger.dtbotinfo(logger, f"Using database: {DB_NAME}")
+        bot.log.dtbotinfo(bot.log, f"Using database: {DB_NAME}")
 
         tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
 
         for table_name in tables:
             table_description = tables[table_name]
             try:
-                logger.dtbotinfo(logger, f"Creating table {table_name}: ")
+                bot.log.dtbotinfo(bot.log, f"Creating table {table_name}: ")
                 cursor.execute(table_description)
             except mariadb.Error as err:
-                logger.error(err.msg)
+                bot.log.error(err.msg)
             else:
-                logger.dtbotinfo(logger, "OK")
+                bot.log.dtbotinfo(bot.log, "OK")
         db.close()
     except mariadb.Error as err:
-        logger.error(f"Error connecting to {DB_NAME}.")
-        logger.error(err)
+        bot.log.error(f"Error connecting to {DB_NAME}.")
+        bot.log.error(err)
     finally:
         pass
 
@@ -99,18 +79,14 @@ def run_bot():
         start_db()
     except Exception as e:
         print('Exception connecting to database. Closing.')
-        logger.exception(f'Exception connecting to database. Closing.\n{e}')
+        bot.log.exception(f'Exception connecting to database. Closing.\n{e}')
         return
 
-    bot = DTbot(det_prefixes=det_prefixes)
     bot.run()
 
 
 if __name__ == '__main__':
-    # avoid an issue which would sometimes create two log files
-    handler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8', mode='w')
-    handler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
-    logger.addHandler(handler)
+    bot = DTbot(det_prefixes=det_prefixes)
 
     ensuredb()
     # open a pooled connection solely used for prefix checking

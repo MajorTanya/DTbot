@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from launcher import dtbot_colour, logger
+from launcher import dtbot_colour
 
 
 class AniMangaLookupError(commands.CommandInvokeError):
@@ -78,12 +78,12 @@ class ErrorHandler(commands.Cog):
                            f"command.\nRemember that DTbot doesn't return NSFW results.\nSometimes, AniList doesn't "
                            f"recognize alternative titles or acronyms. Please try again with e.g. a different name "
                            f"for \"{error.title}\".")
-            logger.error(type(error).__name__)
-            logger.error(f'HTML Status Code for the error below: {error.status_code}')
+            self.bot.log.error(type(error).__name__)
+            self.bot.log.error(f'HTML Status Code for the error below: {error.status_code}')
         else:
             pass
-        logger.error(type(error).__name__)
-        logger.error(f"Command '{command}' raised the following error: '{error}'")
+        self.bot.log.error(type(error).__name__)
+        self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
 def setup(bot):

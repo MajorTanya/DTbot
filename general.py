@@ -4,11 +4,11 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
-from DTbot import config
+from DTbot import config, startup_time
 from database_management import dbcallprocedure
 from dev import dtbot_version
 from error_handler import send_cmd_help
-from launcher import default_prefixes, dtbot_colour, startup_time
+from launcher import default_prefixes, dtbot_colour
 from linklist import changelog_link
 
 last_updated = config.get('Info', 'last_updated')
