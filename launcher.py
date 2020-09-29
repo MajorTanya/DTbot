@@ -1,23 +1,20 @@
-from configparser import ConfigParser
-
 import discord
 import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
 
-from DTbot import DTbot
+from DTbot import DTbot, config
 
-launch_config = ConfigParser()
-launch_config.read('./config/config.ini')
-default_prefixes = [launch_config.get('General', 'prefix')]
+config.read('./config/config.ini')
+default_prefixes = [config.get('General', 'prefix')]
 
-db_config = dict(launch_config.items('Database'))
+db_config = dict(config.items('Database'))
 lauch_db_config = db_config
 lauch_db_config['pool_name'] = 'launch_pool'
 DB_NAME = db_config.get('database')
-commandstats_default = launch_config.get('Database defaults', 'commandstats_default')
-servers_default = launch_config.get('Database defaults', 'servers_default')
-users_default = launch_config.get('Database defaults', 'users_default')
+commandstats_default = config.get('Database defaults', 'commandstats_default')
+servers_default = config.get('Database defaults', 'servers_default')
+users_default = config.get('Database defaults', 'users_default')
 
 dtbot_colour = discord.Colour(0x5e51a8)
 
