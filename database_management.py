@@ -5,7 +5,7 @@ import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
 
-from launcher import DB_NAME, db_config
+from launcher import db_config
 
 # open the pooled connection used for everything but prefix checks
 cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
@@ -83,7 +83,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         params = (user_id, user_xp, user_last_xp_gain, user_rep, user_last_rep_awarded)
         try:
             dbcallprocedure('ManualNewUser', params=params)
-            await ctx.send(f"Row added successfully to table `users` in database `{DB_NAME}`.")
+            await ctx.send(f"Row added successfully to table `users` in database `{db_config['database']}`.")
         except mariadb.Error as err:
             self.bot.log.error(err)
         except Exception as e:

@@ -11,7 +11,6 @@ default_prefixes = [config.get('General', 'prefix')]
 db_config = dict(config.items('Database'))
 lauch_db_config = db_config
 lauch_db_config['pool_name'] = 'launch_pool'
-DB_NAME = db_config.get('database')
 commandstats_default = config.get('Database defaults', 'commandstats_default')
 servers_default = config.get('Database defaults', 'servers_default')
 users_default = config.get('Database defaults', 'users_default')
@@ -36,8 +35,8 @@ def ensuredb():
     fcnx = mariadb.connect(user=db_config.get('user'), password=db_config.get('password'))
     firstcursor = fcnx.cursor()
     try:
-        firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME} DEFAULT CHARACTER SET 'utf8'")
-        bot.log.dtbotinfo(bot.log, f"Successfully created database {DB_NAME}")
+        firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {lauch_db_config['database']} DEFAULT CHARACTER SET 'utf8'")
+        bot.log.dtbotinfo(bot.log, f"Successfully created database {lauch_db_config['database']}")
     except mariadb.Error as err:
         bot.log.error(f"Failed creating database: {err}")
     finally:
@@ -49,8 +48,8 @@ def start_db():
         # try to USE the given database and CREATE the tables if necessary
         db = cnx.get_connection()
         cursor = db.cursor()
-        cursor.execute(f"USE {DB_NAME}")
-        bot.log.dtbotinfo(bot.log, f"Using database: {DB_NAME}")
+        cursor.execute(f"USE {lauch_db_config['database']}")
+        bot.log.dtbotinfo(bot.log, f"Using database: {lauch_db_config['database']}")
 
         tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
 
@@ -65,7 +64,7 @@ def start_db():
                 bot.log.dtbotinfo(bot.log, "OK")
         db.close()
     except mariadb.Error as err:
-        bot.log.error(f"Error connecting to {DB_NAME}.")
+        bot.log.error(f"Error connecting to {lauch_db_config['database']}.")
         bot.log.error(err)
     finally:
         pass
