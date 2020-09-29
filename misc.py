@@ -10,7 +10,6 @@ from discord.ext.commands import Cooldown, CooldownMapping, cooldown
 
 from DTbot import config
 from error_handler import AniMangaLookupError, send_cmd_help
-from launcher import dtbot_colour
 from linklist import woop_links
 
 AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
@@ -136,7 +135,7 @@ class Misc(commands.Cog):
                     rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
                     self.colour = discord.Colour.from_rgb(rgb[0], rgb[1], rgb[2])
                 else:
-                    self.colour = dtbot_colour
+                    self.colour = self.bot.dtbot_colour
                 self.coverImage = result['coverImage']['large']
 
     @commands.command(description="Enter the title of an anime here and DTbot will return a small overview for that "
@@ -261,7 +260,7 @@ class Misc(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def woop(self, ctx):
         chosen = random.choice(woop_links)
-        embed = discord.Embed(colour=dtbot_colour, description=f'[Image link]({chosen})')
+        embed = discord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
 

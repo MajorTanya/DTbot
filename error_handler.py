@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 
-from launcher import dtbot_colour
-
 
 class AniMangaLookupError(commands.CommandInvokeError):
     # raised if something went wrong with the anime/manga lookup with the AL API
@@ -30,7 +28,7 @@ async def send_cmd_help(bot, ctx, error_msg, delete_after=None, plain=False):
     usage = bot.help_command.get_command_signature(command=command)
     if not plain:
         em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
-                           colour=dtbot_colour)
+                           colour=bot.dtbot_colour)
         em.set_footer(text=error_msg)
         await ctx.channel.send(embed=em, delete_after=delete_after)
     else:

@@ -8,7 +8,7 @@ from DTbot import config, startup_time
 from database_management import dbcallprocedure
 from dev import dtbot_version
 from error_handler import send_cmd_help
-from launcher import default_prefixes, dtbot_colour
+from launcher import default_prefixes
 from linklist import changelog_link
 
 last_updated = config.get('Info', 'last_updated')
@@ -38,10 +38,10 @@ class General(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def avatar(self, ctx, *, user: discord.Member = None):
         if user:
-            embed = discord.Embed(colour=dtbot_colour, description=f"{user.mention}'s avatar")
+            embed = discord.Embed(colour=self.bot.dtbot_colour, description=f"{user.mention}'s avatar")
             embed.set_image(url=user.avatar_url)
         else:
-            embed = discord.Embed(colour=dtbot_colour, description=f"{ctx.author.mention}'s avatar")
+            embed = discord.Embed(colour=self.bot.dtbot_colour, description=f"{ctx.author.mention}'s avatar")
             embed.set_image(url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -49,7 +49,7 @@ class General(commands.Cog):
                       brief="Recent updates to DTbot")
     @commands.bot_has_permissions(embed_links=True)
     async def changelog(self, ctx):
-        embed = discord.Embed(colour=dtbot_colour,
+        embed = discord.Embed(colour=self.bot.dtbot_colour,
                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
                                           f'({last_updated})')
         embed.set_image(url=changelog_link)
@@ -92,7 +92,7 @@ class General(commands.Cog):
                                           f"server.\n\nIf you have any command requests, use the `request` "
                                           f"command.\n\nThank you and have a good day.\n\n[__**"
                                           f"{self.bot.user.name} Support Server**__]({SUPPORT_LINK})",
-                              colour=dtbot_colour)
+                              colour=self.bot.dtbot_colour)
         embed.add_field(name="Authors", value=dtbot_devs)
         embed.add_field(name="GitHub repository", value=f"Find me [here]({GH_LINK})")
         embed.add_field(name="Twitter", value=f"[Tweet @DTbotDiscord]({TWITTER_LINK})", inline=True)
@@ -110,7 +110,7 @@ class General(commands.Cog):
     @cooldown(3, 30, commands.BucketType.guild)
     async def ping(self, ctx):
         try:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
             await ctx.send(embed=embed)
         except discord.Forbidden:  # not allowed to send embeds

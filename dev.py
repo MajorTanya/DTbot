@@ -7,7 +7,6 @@ from discord import Game
 from discord.ext import commands
 
 from DTbot import config, ger_tz, human_startup_time, startup_time
-from launcher import dtbot_colour
 
 dtbot_version = config.get('Info', 'dtbot_version')
 h_code = config.get('Developers', 'h_code')
@@ -36,7 +35,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         hb_freq = config.getint('Heartbeat', 'hb_freq')
         hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
 
-        startup_embed = discord.Embed(colour=dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                       description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
         await hb_chamber.send(embed=startup_embed)
@@ -46,7 +45,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
             tdelta = now - startup_time
             tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
-            beat_embed = discord.Embed(colour=dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+            beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                        description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=str(human_startup_time))
             beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)

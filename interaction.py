@@ -4,7 +4,6 @@ import random
 import discord
 from discord.ext import commands
 
-from launcher import dtbot_colour
 from linklist import *
 
 
@@ -20,13 +19,13 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def baddog(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} called themselves a bad dog. I think they "
                                               f"just misspoke. Because if they were a dog, they'd be a good one. "
                                               f"A very good one.")
         else:
             chosen = random.choice(baddog_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention}, you're being a very bad dog! {ctx.author.mention} is "
                                               f"disappointed in you!\n\n[Image Link]({chosen})")
             embed.set_image(url=f"{chosen}")
@@ -37,12 +36,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def baka(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} called themselves a baka? You're not a baka "
                                               f"though, you're adorable.")
         else:
             chosen = random.choice(baka_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} called {user.mention} a baka. Are they a "
                                               f"Tsundere? :thinking:\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
@@ -53,11 +52,11 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def bitchslap(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} tried to give themselves a mean bitch slap. "
                                               f"All they decide to do is rub their cheeks.")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got a bitch slap."
                                               f"\n\n[Image link](https://i.imgur.com/bTGigCv.gif)")
             embed.set_image(url="https://i.imgur.com/bTGigCv.gif")
@@ -68,12 +67,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def bite(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} thought about biting themselves. "
                                               f"You're not you when you're hungry, so how about a snack instead?")
         else:
             chosen = random.choice(bite_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got bitten by {ctx.author.mention}."
                                               f"\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
@@ -85,12 +84,12 @@ class Interaction(commands.Cog):
     async def bkiss(self, ctx, user: discord.Member):
         chosen = random.choice(bkiss_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} kissed themselves in a non-romantic way. "
                                               f"It's very important to be happy about oneself, "
                                               f"though self-love is even better!\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got kissed.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -101,11 +100,11 @@ class Interaction(commands.Cog):
     async def blush(self, ctx, *reason: str):
         chosen = random.choice(blush_links)
         if reason:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} blushed because of {' '.join(reason)}! "
                                               f"How cute!\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} blushed! How cute!\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -115,12 +114,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def boop(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} booped themselves. But they were such a cutie "
                                               f"doing it that we can't show it here.")
         else:
             chosen = random.choice(boop_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got booped.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -130,12 +129,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def cage(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"Just as {ctx.author.mention} tried to enter the cage, their friends "
                                               f"surprised them with a party. Hooray!")
         else:
             chosen = random.choice(cage_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got caged.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -146,11 +145,11 @@ class Interaction(commands.Cog):
     async def choke(self, ctx, user: discord.Member):
         chosen = random.choice(choke_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} wanted to choke themselves. They stopped when they "
                                               f"remembered their favorite food.")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} was choked by {ctx.author.mention}."
                                               f"\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
@@ -161,12 +160,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def confess(self, ctx, crush: discord.Member):
         if crush.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{crush.mention} confessed their love for themselves! "
                                               f"Aww, what a great example of self-love.")
             await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{crush.mention}, you've been confessed to by {ctx.author.mention}! "
                                               f"\nWill you let the ship set sail or will you sink it before its "
                                               f"journey starts?" + u"\u26F5")
@@ -203,12 +202,12 @@ class Interaction(commands.Cog):
     async def cry(self, ctx, *reason: str):
         chosen = random.choice(cry_links)
         if reason:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} is crying because of {' '.join(reason)}. "
                                               f"Someone, comfort them. <:kannahug:461996510637326386>"
                                               f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} is crying. Someone, comfort them. "
                                               f"<:kannahug:461996510637326386>\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -220,11 +219,11 @@ class Interaction(commands.Cog):
     async def cuddle(self, ctx, user: discord.Member):
         chosen = random.choice(cuddle_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} cuddled themselves! They seem so happy about being here."
                                               f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got cuddled.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -236,7 +235,7 @@ class Interaction(commands.Cog):
         chosen = random.choice(dance_links)
 
         def alonedance(ctx):
-            return discord.Embed(colour=dtbot_colour,
+            return discord.Embed(colour=self.bot.dtbot_colour,
                                  description=f"{ctx.author.mention} started dancing by themselves! Everyone, come and "
                                              f"join them! DANCE PARTY!\n\n[Image link]({chosen})")
 
@@ -250,12 +249,12 @@ class Interaction(commands.Cog):
                     for _ in ctx.message.mentions:
                         all_mentions += f"{ctx.message.mentions[i].mention}, "
                         i = i + 1
-                    embed = discord.Embed(colour=dtbot_colour,
+                    embed = discord.Embed(colour=self.bot.dtbot_colour,
                                           description=f"{ctx.author.mention} started dancing with "
                                                       f"{all_mentions.rstrip(', ')}.\n\n[Image link]({chosen})")
             else:
                 description = f"{ctx.author.mention} started dancing with {' '.join(target)}.\n\n[Image link]({chosen})"
-                embed = discord.Embed(colour=dtbot_colour,
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
                                       description=description.replace('with with', 'with'))
         else:
             embed = alonedance(ctx)
@@ -268,11 +267,11 @@ class Interaction(commands.Cog):
     async def glomp(self, ctx, user: discord.Member):
         chosen = random.choice(glomp_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} glomped themselves! Someone is very happy to see "
                                               f"themselves!\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got a glomp from {ctx.author.mention}."
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -284,11 +283,11 @@ class Interaction(commands.Cog):
     async def handholding(self, ctx, user: discord.Member):
         chosen = random.choice(handholding_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} tried to hold their own hand. Aww. Come here, I'll hold "
                                               f"it for you.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} is holding {user.mention}'s hand! How lewd!"
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -300,11 +299,11 @@ class Interaction(commands.Cog):
     async def hide(self, ctx, *reason: str):
         chosen = random.choice(hide_links)
         if reason:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} is hiding from {' '.join(reason)}."
                                               f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} is hiding. Are they embarrassed?"
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -316,11 +315,11 @@ class Interaction(commands.Cog):
     async def highfive(self, ctx, user: discord.Member):
         chosen = random.choice(highfive_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} gave themselves a high five! You go! Gotta "
                                               f"congratulate yourself when others don't.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got a high five from {ctx.author.mention}."
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -332,11 +331,11 @@ class Interaction(commands.Cog):
     async def hug(self, ctx, user: discord.Member):
         chosen = random.choice(hug_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} hugged themselves! Hooray for self-appreciation!"
                                               f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got hugged.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -346,13 +345,13 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def kick(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} aimed to kick themselves. As they noticed, it's "
                                               f"quite hard to actually do. So they didn't and went to watch their "
                                               f"favorite show.")
         else:
             chosen = random.choice(kick_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got kicked.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -362,11 +361,11 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def kill(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} tried to kill themselves. Luckily, they changed "
                                               f"their mind and went to get food instead.")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got killed.")
         await ctx.send(embed=embed)
 
@@ -376,11 +375,11 @@ class Interaction(commands.Cog):
     async def kiss(self, ctx, user: discord.Member):
         chosen = random.choice(kiss_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} gave themselves a kiss! Self-love is very important "
                                               f"after all.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got kissed.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -392,16 +391,16 @@ class Interaction(commands.Cog):
         chosen = random.choice(lewd_links)
         if user:
             if user.id == ctx.author.id:
-                embed = discord.Embed(colour=dtbot_colour,
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
                                       description=f"Calling yourself out for being lewd, **{user.mention}**? "
                                                   f"How self-aware you are. And yes. Why you gotta be so lewd?"
                                                   f"\n\n[Image link]({chosen})")
             else:
-                embed = discord.Embed(colour=dtbot_colour,
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
                                       description=f"Why you gotta be so lewd, **{user.mention}**?"
                                                   f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"Why you gotta be so lewd?\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -411,12 +410,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def lick(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} licked themselves. Maybe they are secretly a "
                                               f"cat and value personal hygiene?")
         else:
             chosen = random.choice(lick_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} licked {user.mention}.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -426,11 +425,11 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def notice(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} noticed themselves. Yes, you are here, and yes, "
                                               f"it's good you are.")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got noticed by {ctx.author.mention}.")
         await ctx.send(embed=embed)
 
@@ -440,11 +439,11 @@ class Interaction(commands.Cog):
     async def pat(self, ctx, user: discord.Member):
         chosen = random.choice(pat_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} patted themselves. They deserve all the pats!"
                                               f"\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got a pat.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -455,12 +454,12 @@ class Interaction(commands.Cog):
     async def patback(self, ctx, user: discord.Member):
         chosen = random.choice(patback_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} patted themselves on the back. Their flexibility is "
                                               f"highly impressive and they deserve a pat on the back already for "
                                               f"being this flexible.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got a pat on the back.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -471,11 +470,11 @@ class Interaction(commands.Cog):
     async def pinch(self, ctx, user: discord.Member):
         chosen = random.choice(pinch_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} pinched their own cheeks. Maybe they wanted to check "
                                               f"if they were dreaming or not?\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got their cheeks pinched.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -486,11 +485,11 @@ class Interaction(commands.Cog):
     async def poke(self, ctx, user: discord.Member):
         chosen = random.choice(poke_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} poked themselves. It wasn't hard at all, just a soft "
                                               f"boop. And they deserve a boop.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got poked.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -501,11 +500,11 @@ class Interaction(commands.Cog):
     async def pout(self, ctx, *reason: str):
         chosen = random.choice(pout_links)
         if reason:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} pouted! They said it's because of "
                                               f"{' '.join(reason)}.\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} pouted! Ask them why.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -515,12 +514,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def punch(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} wanted to punch themselves. But they only "
                                               f"lightly rubbed their belly.")
         else:
             chosen = random.choice(punch_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got punched.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -532,14 +531,14 @@ class Interaction(commands.Cog):
         chosen = random.choice(salute_links)
         if reason:
             if ctx.author in ctx.message.mentions:
-                embed = discord.Embed(colour=dtbot_colour,
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
                                       description=f"{ctx.author.mention} saluted themselves. They must be really "
                                                   f"proud of what they did. And I am proud of them too.")
             else:
-                embed = discord.Embed(colour=dtbot_colour,
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
                                       description=f"{ctx.author.mention} saluted {' '.join(reason)}.")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} salutes."
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -550,12 +549,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def slap(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} tried to slap themselves. 'Twas but a gentle "
                                               f"caressing.")
         else:
             chosen = random.choice(slap_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got slapped.\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -565,7 +564,7 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def smug(self, ctx):
         chosen = random.choice(smug_links)
-        embed = discord.Embed(colour=dtbot_colour,
+        embed = discord.Embed(colour=self.bot.dtbot_colour,
                               description=f"{ctx.author.mention} is being smug.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -575,12 +574,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def stab(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} tried to stab themselves. Fortunately, their "
                                               f"aim was off.")
         else:
             chosen = random.choice(stab_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got stabbed by {ctx.author.mention}."
                                               f"\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")
@@ -592,11 +591,11 @@ class Interaction(commands.Cog):
     async def tickle(self, ctx, user: discord.Member):
         chosen = random.choice(tickle_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} tickled themselves. They must be really ticklish if "
                                               f"they can do that!\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{user.mention} got tickled.\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
@@ -607,11 +606,11 @@ class Interaction(commands.Cog):
     async def wave(self, ctx, user: discord.Member):
         chosen = random.choice(wave_links)
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} waved at themselves. They seem incredibly happy "
                                               f"and energetic today. How cute!\n\n[Image link]({chosen})")
         else:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} waved at {user.mention}."
                                               f"\n\n[Image link]({chosen})")
         embed.set_image(url=f"{chosen}")
@@ -622,12 +621,12 @@ class Interaction(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def whip(self, ctx, user: discord.Member):
         if user.id == ctx.author.id:
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"{ctx.author.mention} wants to whip themselves. They must be really "
                                               f"kinky.")
         else:
             chosen = random.choice(whip_links)
-            embed = discord.Embed(colour=dtbot_colour,
+            embed = discord.Embed(colour=self.bot.dtbot_colour,
                                   description=f"Bow down, {user.mention}. Time to get whipped by {ctx.author.mention}!"
                                               f"\n\n[Image link]({chosen})")
             embed.set_image(url=f"{chosen}")

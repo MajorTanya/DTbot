@@ -6,7 +6,6 @@ from discord.ext import commands
 
 from DTbot import config
 from error_handler import IllegalCustomCommandAccess
-from launcher import dtbot_colour
 
 hidden_cogs = config.items('Hidden')
 allowed_servers = config.get('General', 'allowed_servers')
@@ -127,7 +126,7 @@ def command_help(bot, ctx, cmd):
         if str(ctx.message.guild.id) not in allowed_servers:
             raise IllegalCustomCommandAccess(ctx)
 
-    embed = discord.Embed(colour=dtbot_colour, description=f'{cmd.description}\n\n{acq_sig(bot, ctx, cmd)}',
+    embed = discord.Embed(colour=bot.dtbot_colour, description=f'{cmd.description}\n\n{acq_sig(bot, ctx, cmd)}',
                           title=f'{ctx.prefix}{cmd.name}')
     return embed
 
@@ -138,9 +137,9 @@ def cog_help(bot, ctx, cog):
             raise IllegalCustomCommandAccess(ctx)
 
     cmd_list = []
-    embed = discord.Embed(colour=dtbot_colour, title=cog.qualified_name)
-    embed2 = discord.Embed(colour=dtbot_colour)
-    embed3 = discord.Embed(colour=dtbot_colour)
+    embed = discord.Embed(colour=bot.dtbot_colour, title=cog.qualified_name)
+    embed2 = discord.Embed(colour=bot.dtbot_colour)
+    embed3 = discord.Embed(colour=bot.dtbot_colour)
     for command in bot.commands:
         if not command.hidden:
             if command.cog is cog:
@@ -176,7 +175,7 @@ def cog_help(bot, ctx, cog):
 def bot_help(bot, ctx):
     cog_list = []
     cog_dict = OrderedDict()
-    embed = discord.Embed(colour=dtbot_colour, title='DTbot',
+    embed = discord.Embed(colour=bot.dtbot_colour, title='DTbot',
                           description=f'An overview over all DTbot modules'
                                       f'\nDo `{ctx.prefix}help [module]` for a command overview of the module.')
     for c in bot.cogs:

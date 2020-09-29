@@ -1,4 +1,3 @@
-import discord
 import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
@@ -12,8 +11,6 @@ db_config = dict(config.items('Database'))
 commandstats_default = config.get('Database defaults', 'commandstats_default')
 servers_default = config.get('Database defaults', 'servers_default')
 users_default = config.get('Database defaults', 'users_default')
-
-dtbot_colour = discord.Colour(0x5e51a8)
 
 
 def det_prefixes(bot, msg):
