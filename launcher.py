@@ -9,8 +9,6 @@ config.read('./config/config.ini')
 default_prefixes = [config.get('General', 'prefix')]
 
 db_config = dict(config.items('Database'))
-lauch_db_config = db_config
-lauch_db_config['pool_name'] = 'launch_pool'
 commandstats_default = config.get('Database defaults', 'commandstats_default')
 servers_default = config.get('Database defaults', 'servers_default')
 users_default = config.get('Database defaults', 'users_default')
@@ -35,8 +33,8 @@ def ensuredb():
     fcnx = mariadb.connect(user=db_config.get('user'), password=db_config.get('password'))
     firstcursor = fcnx.cursor()
     try:
-        firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {lauch_db_config['database']} DEFAULT CHARACTER SET 'utf8'")
-        bot.log.dtbotinfo(bot.log, f"Successfully created database {lauch_db_config['database']}")
+        firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_config['database']} DEFAULT CHARACTER SET 'utf8'")
+        bot.log.dtbotinfo(bot.log, f"Successfully created database {db_config['database']}")
     except mariadb.Error as err:
         bot.log.error(f"Failed creating database: {err}")
     finally:
@@ -48,8 +46,8 @@ def start_db():
         # try to USE the given database and CREATE the tables if necessary
         db = cnx.get_connection()
         cursor = db.cursor()
-        cursor.execute(f"USE {lauch_db_config['database']}")
-        bot.log.dtbotinfo(bot.log, f"Using database: {lauch_db_config['database']}")
+        cursor.execute(f"USE {db_config['database']}")
+        bot.log.dtbotinfo(bot.log, f"Using database: {db_config['database']}")
 
         tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
 
@@ -64,7 +62,7 @@ def start_db():
                 bot.log.dtbotinfo(bot.log, "OK")
         db.close()
     except mariadb.Error as err:
-        bot.log.error(f"Error connecting to {lauch_db_config['database']}.")
+        bot.log.error(f"Error connecting to {db_config['database']}.")
         bot.log.error(err)
     finally:
         pass
@@ -86,6 +84,6 @@ if __name__ == '__main__':
 
     ensuredb()
     # open a pooled connection solely used for prefix checking
-    cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **lauch_db_config)
+    cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
 
     run_bot()
