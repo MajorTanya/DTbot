@@ -68,7 +68,8 @@ class Misc(commands.Cog):
         await ctx.send('fffffffffffffff\nfffffff\nfffffffffffffff\nfffffff\nfffffff')
 
     class AniListMediaResult(object):
-        def __init__(self, title, manga: bool):
+        def __init__(self, title, manga: bool, bot):
+            self.bot = bot
             self.MAL = ''
             self.Kitsu = ''
             self.request(title, manga)
@@ -151,7 +152,7 @@ class Misc(commands.Cog):
     async def anime(self, ctx, *anime_title):
         anime = ' '.join(anime_title)
         if anime != '':
-            result = Misc.AniListMediaResult(anime, False)
+            result = Misc.AniListMediaResult(anime, False, self.bot)
             ft = result.format
             ft_str = ft.replace('_', ' ').title().replace('Tv', 'TV').replace('Ova', 'OVA').replace('Ona', 'ONA')
             embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
@@ -198,7 +199,7 @@ class Misc(commands.Cog):
     async def manga(self, ctx, *manga_title):
         manga = ' '.join(manga_title)
         if manga != '':
-            result = Misc.AniListMediaResult(manga, True)
+            result = Misc.AniListMediaResult(manga, True, self.bot)
             embed = discord.Embed(colour=result.colour, title=result.title, description=result.description)
             embed.add_field(name='Genres', value=result.genres)
             ft_str = result.format.replace('_', ' ').title()
