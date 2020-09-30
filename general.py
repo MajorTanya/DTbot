@@ -164,7 +164,23 @@ class General(commands.Cog):
         embed.add_field(name='Highest Role', value=f'<@&{user.top_role.id}>', inline=True)
         embed.add_field(name='Joined at', value=f'{user.joined_at:%d. %h \'%y at %H:%M}', inline=True)
         embed.add_field(name='Created at', value=f'{user.created_at:%d. %h \'%y at %H:%M}', inline=True)
-        embed.add_field(name='Activity', value=user.activity)
+        all_activities = ""
+        for activity in user.activities:
+            act_type_name = str(activity.type)[13:].title()  # remove the 'ActivityType.' start & make it Title Case
+            act_type_name += ' to:' if activity.type == discord.ActivityType.listening else ':'  # make 'Listening to:'
+            # ignore 'Custom:' and underline the Activity (e.g. __Listening to:__) for ease of reading
+            act_type_name = '' if activity.type == discord.ActivityType.custom else f'__{act_type_name}__ '
+            if activity.type == discord.ActivityType.listening:
+                song_dict = activity.to_dict()  # __Listening to:__ "Title" by _Artist_ on "Album"
+                act_details = f'"{song_dict["details"]}" by *{song_dict["state"]}* on ' \
+                              f'"{song_dict["assets"]["large_text"]}"'
+            elif activity.type == discord.ActivityType.streaming:  # __Streaming:__ (Title (Category) on Platform)[Link]
+                act_details = f'{activity.name} ({activity.game}) on {activity.platform}'
+                act_details = f'[{act_details}]({activity.url})'  # Title through Platform is a link to the stream
+            else:
+                act_details = activity.name  # either Playing or Watching
+            all_activities += f'{act_type_name}{act_details}\n'  # new line for each simultaneous Activity
+        embed.add_field(name='Activity', value=all_activities.strip('\n'))
         embed.set_footer(text=f"{user.name}'s Info", icon_url=f'{user.avatar_url}')
         embed.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=embed)
