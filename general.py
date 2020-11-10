@@ -1,4 +1,5 @@
 import datetime
+from math import ceil
 
 import discord
 import requests
@@ -11,6 +12,7 @@ from dev import dtbot_version
 from error_handler import send_cmd_help
 from launcher import default_prefixes
 from linklist import changelog_link
+from util.PaginatorSession import PaginatorSession
 
 last_updated = config.get('Info', 'last_updated')
 main_dev_id = config.getint('Developers', 'main dev id')
@@ -172,18 +174,31 @@ class General(commands.Cog):
         embed.set_thumbnail(url=user.avatar_url)
         await ctx.send(embed=embed)
 
-    @commands.command(description='Shows a list of all users with a particular role (case sensitive)',
-                      brief='List all users with this role')
-    @commands.bot_has_permissions(embed_links=True)
+    @commands.command(description='Shows how many users have a particular role (case sensitive), and lists them.\n\n'
+                                  'Limited to 10 pages of output, which hold roughly 900 members.',
+                      brief='List users with this role')
     async def whohas(self, ctx, *, role: discord.Role):
         role = discord.utils.get(ctx.guild.roles, name=role.name)
-        role_members = list()
+        embed_desc_max_size = 2048  # max char count in embed.description of a discord.Embed
+        pages, role_members = [], []
         for member in role.members:
             role_members.append(member.mention)
-        role_members = str(role_members).strip("[]").replace("'", "")
-        embed = discord.Embed(colour=role.colour, title=f'Users with the role {role.name}',
-                              description=f"{len(role.members)} members with {role.mention}\n\n{role_members}")
-        await ctx.send(embed=embed)
+        # get character count in role_members, divide by 2048 (max size of embed.description) = pages needed
+        page_count = ceil(len(str(role_members).strip("[]").replace("'", "")) / embed_desc_max_size)
+        for i in range(0, min(page_count, 10)):  # we allow 10 pages max
+            page_members = f"{len(role.members)} members with {role.mention}\n\n" if i == 0 else ""
+            role_members.reverse()  # so we can pop() "from the front"
+            try:
+                while (len(page_members) + len(role_members[0])) < embed_desc_max_size:
+                    page_members += f'{role_members.pop()}, '
+            except IndexError:  # list is empty now, ignore and continue
+                pass
+            page_members = page_members.rstrip(", ")
+            pages.append(discord.Embed(colour=role.colour,
+                                       title=f'{len(role.members)} users with {role.name} - Page {i + 1}/{page_count}',
+                                       description=page_members))
+        p_sess = PaginatorSession(ctx, pages=pages)
+        await p_sess.run()
 
     @commands.command(description="Shows a user's XP points. If no user is mentioned, it will default to command user.",
                       brief="Check user's XP")
