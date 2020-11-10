@@ -1,6 +1,7 @@
 import datetime
 
 import discord
+import requests
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
@@ -49,10 +50,13 @@ class General(commands.Cog):
                       brief="Recent updates to DTbot")
     @commands.bot_has_permissions(embed_links=True)
     async def changelog(self, ctx):
+        latest_commit = requests.get("https://api.github.com/repos/MajorTanya/DTbot/commits").json()[0]
         embed = discord.Embed(colour=self.bot.dtbot_colour,
                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
                                           f'({last_updated})')
         embed.set_image(url=changelog_link)
+        embed.add_field(name=f"Latest Commit", value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
+                                                     f"{latest_commit['commit']['message']}")
         embed.set_footer(text="Check out our customizable prefixes with '@DTbot help changeserverprefix'!")
         await ctx.send(embed=embed)
 
