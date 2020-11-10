@@ -6,6 +6,9 @@ import discord
 from discord.ext import commands
 from pytz import timezone
 
+intents = discord.Intents.default()
+intents.members = True
+
 config = ConfigParser()
 config.read('./config/config.ini')
 TOKEN = config.get('General', 'TOKEN')
@@ -29,7 +32,7 @@ def dtbotinfo(self, msg, *args, **kwargs):
 
 class DTbot(commands.Bot):
     def __init__(self, det_prefixes=None):
-        super().__init__(command_prefix=det_prefixes, case_insensitive=True)
+        super().__init__(case_insensitive=True, command_prefix=det_prefixes, intents=intents)
         self.dtbot_colour = discord.Colour(0x5e51a8)
         self.remove_command('help')
         # set up logging and bind to instance
