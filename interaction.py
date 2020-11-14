@@ -434,7 +434,8 @@ class Interaction(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(description="Give someone a head pat",
-                      brief="Pat someone")
+                      brief="Pat someone",
+                      aliases=["headpat"])
     @commands.bot_has_permissions(embed_links=True)
     async def pat(self, ctx, user: discord.Member):
         chosen = random.choice(pat_links)
