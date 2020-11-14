@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import sys
+from configparser import ConfigParser
 
 import discord
 from discord import Game
@@ -9,6 +10,7 @@ from discord.ext import commands
 from DTbot import config, ger_tz, human_startup_time, startup_time
 
 dtbot_version = config.get('Info', 'dtbot_version')
+last_updated = config.get('Info', 'last_updated')
 h_code = config.get('Developers', 'h_code')
 sdb_code = config.get('Developers', 'sdb_code')
 
@@ -115,6 +117,21 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot.log.dtbotinfo(self.bot.log,
                                f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
         await ctx.send("Rich Presence updated.")
+
+    @commands.command(description='Refresh the version number and date of last update from the config.'
+                                  '\nCalls `updaterp Do DTbot (v. dtbot_version)` to update the Rich Presence.'
+                                  '\nCalls `reload general` to update the use of the version'
+                                  'and date in the `info` and `changelog` commands.\nDevelopers only.',
+                      brief='Refresh the version and date of the last update. Developers only.')
+    async def updatever(self, ctx):
+        global dtbot_version, last_updated
+        refreshed_config = ConfigParser()
+        refreshed_config.read('./config/config.ini')
+        dtbot_version = refreshed_config.get('Info', 'dtbot_version')
+        last_updated = refreshed_config.get('Info', 'last_updated')
+        await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
+        await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
+
 
     @commands.command(description='Shutdown command for the bot. Developers only.',
                       brief='Shut the bot down. Developers only.')

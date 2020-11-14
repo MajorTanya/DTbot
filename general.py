@@ -8,13 +8,12 @@ from discord.ext.commands import cooldown
 
 from DTbot import config, startup_time
 from database_management import dbcallprocedure
-from dev import dtbot_version
+from dev import dtbot_version, last_updated
 from error_handler import send_cmd_help
 from launcher import default_prefixes
 from linklist import changelog_link
 from util.PaginatorSession import PaginatorSession
 
-last_updated = config.get('Info', 'last_updated')
 main_dev_id = config.getint('Developers', 'main dev id')
 main_dev = config.get('Developers', 'main')
 secondary_dev = config.get('Developers', 'secondary')
