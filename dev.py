@@ -132,7 +132,6 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
         await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
 
-
     @commands.command(description='Shutdown command for the bot. Developers only.',
                       brief='Shut the bot down. Developers only.')
     async def shutdownbot(self, ctx, passcode: str):
