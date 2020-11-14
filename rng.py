@@ -33,7 +33,12 @@ class Rng(commands.Cog, name='RNG'):
             'YES',
             'Kind of',
             'HELL NO',
-            'What if?'
+            'What if?',
+            'It is certain.',
+            'Ask again later.',
+            'Don\'t count on it',
+            'Without a doubt.',
+            'Replay hazy, try again later'
         ]
         await ctx.send(random.choice(possible_responses))
 
