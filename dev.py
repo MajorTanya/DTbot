@@ -24,7 +24,10 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
 
     def cog_unload(self):
-        self.heartbeat_task.cancel()
+        try:
+            self.heartbeat_task.cancel()
+        except:
+            pass
 
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.message.author)
