@@ -129,6 +129,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         refreshed_config.read('./config/config.ini')
         dtbot_version = refreshed_config.get('Info', 'dtbot_version')
         last_updated = refreshed_config.get('Info', 'last_updated')
+        config.set('Info', 'dtbot_version', dtbot_version)
+        config.set('Info', 'last_updated', last_updated)
         self.bot.log.dtbotinfo(self.bot.log, f"{ctx.author} refreshed dtbot_version and last_update.")
         self.bot.log.dtbotinfo(self.bot.log, "Updating Rich Presence and reloading General...")
         await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
