@@ -1,17 +1,17 @@
-import asyncio
 import datetime
 import sys
 from configparser import ConfigParser
 
 import discord
 from discord import Game
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from DTbot import config, ger_tz, human_startup_time, startup_time
 
 dtbot_version = config.get('Info', 'dtbot_version')
 last_updated = config.get('Info', 'last_updated')
 h_code = config.get('Developers', 'h_code')
+hb_freq = config.getint('Heartbeat', 'hb_freq')
 sdb_code = config.get('Developers', 'sdb_code')
 
 
@@ -20,32 +20,24 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     def __init__(self, bot):
         self.bot = bot
+        self.hb_chamber = None
         if len(sys.argv) < 2 or sys.argv[1] == '1':
             # run "python launcher.py 1" to start DTbot with a heartbeat message, 0 if not
             # if no parameter is provided, defaults to run with a heartbeat
-            self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+            self.heartbeat.start()
 
     def cog_unload(self):
         try:
-            self.heartbeat_task.cancel()
+            self.heartbeat.stop()
         except:
             pass
 
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.message.author)
 
+    @tasks.loop(seconds=hb_freq)
     async def heartbeat(self):
-        await self.bot.wait_until_ready()
-
-        hb_freq = config.getint('Heartbeat', 'hb_freq')
-        hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
-
-        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
-                                      description=f"{self.bot.user.name} is starting up!")
-        startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
-        await hb_chamber.send(embed=startup_embed)
-        await asyncio.sleep(hb_freq)
-        while not self.bot.is_closed():
+        if not self.bot.is_closed():
             now = datetime.datetime.utcnow()
             now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
             tdelta = now - startup_time
@@ -56,8 +48,16 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)
             beat_embed.add_field(name="Uptime:", value=str(tdelta))
             beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
-            await hb_chamber.send(embed=beat_embed, delete_after=hb_freq)
-            await asyncio.sleep(hb_freq)
+            await self.hb_chamber.send(embed=beat_embed, delete_after=hb_freq)
+
+    @heartbeat.before_loop
+    async def before_heartbeat(self):
+        await self.bot.wait_until_ready()
+        self.hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
+        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                      description=f"{self.bot.user.name} is starting up!")
+        startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
+        await self.hb_chamber.send(embed=startup_embed)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -71,14 +71,14 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     @heart.command(description="Stops the heartbeat of DTbot. Developers only.")
     async def stop(self, ctx, code=None):
         if code == h_code:
-            self.heartbeat_task.cancel()
+            self.heartbeat.stop()
             self.bot.log.dtbotinfo(self.bot.log, f'Heartbeat stopped by user {ctx.author}.')
             await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
     @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
     async def start(self, ctx, code=None):
         if code == h_code:
-            self.heartbeat_task = self.bot.loop.create_task(self.heartbeat())
+            self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
             self.bot.log.dtbotinfo(self.bot.log, f'Heartbeat started by user {ctx.author}.')
             await ctx.send(f'Heartbeat started by user {ctx.author}.')
 
@@ -141,7 +141,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     async def shutdownbot(self, ctx, passcode: str):
         if passcode == sdb_code:
             try:
-                self.heartbeat_task.cancel()
+                self.heartbeat.stop()
             except:
                 pass
             await self.bot.logout()
