@@ -2,9 +2,9 @@ import datetime
 import sys
 from configparser import ConfigParser
 
-import discord
-from discord import Game
-from discord.ext import commands, tasks
+import nextcord
+from nextcord import Game
+from nextcord.ext import commands, tasks
 
 from DTbot import config, ger_tz, human_startup_time, startup_time
 
@@ -42,8 +42,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
             tdelta = now - startup_time
             tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
-            beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
-                                       description=f"{self.bot.user.name} is still alive and running!")
+            beat_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                        description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=str(human_startup_time))
             beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)
             beat_embed.add_field(name="Uptime:", value=str(tdelta))
@@ -54,8 +54,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     async def before_heartbeat(self):
         await self.bot.wait_until_ready()
         self.hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
-        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
-                                      description=f"{self.bot.user.name} is starting up!")
+        startup_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                       description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
         await self.hb_chamber.send(embed=startup_embed)
 
@@ -144,7 +144,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
                 self.heartbeat.stop()
             except:
                 pass
-            await self.bot.logout()
+            await self.bot.close()
         else:
             return
 

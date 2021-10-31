@@ -1,16 +1,16 @@
 import datetime
 from math import ceil
 
-import discord
+import nextcord
 import requests
-from discord.ext import commands
-from discord.ext.commands import cooldown
+from nextcord.ext import commands
+from nextcord.ext.commands import cooldown
 
 from DTbot import config, startup_time
 from database_management import dbcallprocedure
 from dev import dtbot_version, last_updated
 from error_handler import send_cmd_help
-from launcher import default_prefixes
+from launcher import default_prefix
 from linklist import changelog_link
 from util.PaginatorSession import PaginatorSession
 
@@ -38,13 +38,17 @@ class General(commands.Cog):
                                   "no user is mentioned.",
                       brief="Show a user's avatar")
     @commands.bot_has_permissions(embed_links=True)
-    async def avatar(self, ctx, *, user: discord.Member = None):
+    async def avatar(self, ctx, *, user: nextcord.Member = None):
         if user:
-            embed = discord.Embed(colour=self.bot.dtbot_colour, description=f"{user.mention}'s avatar")
-            embed.set_image(url=user.avatar_url)
+            avatar_url = user.avatar.url
+            embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                                   description=f"{user.mention}'s avatar\n\n[Avatar Link]({avatar_url})")
+            embed.set_image(url=avatar_url)
         else:
-            embed = discord.Embed(colour=self.bot.dtbot_colour, description=f"{ctx.author.mention}'s avatar")
-            embed.set_image(url=ctx.author.avatar_url)
+            avatar_url = ctx.author.avatar.url
+            embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                                   description=f"{ctx.author.mention}'s avatar\n\n[Avatar Link]({avatar_url})")
+            embed.set_image(url=avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(description="Get an overview over the recentmost update of DTbot",
@@ -52,9 +56,9 @@ class General(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def changelog(self, ctx):
         latest_commit = requests.get("https://api.github.com/repos/MajorTanya/DTbot/commits").json()[0]
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
-                                          f'({last_updated})')
+        embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
+                                           f'({last_updated})')
         embed.set_image(url=changelog_link)
         embed.add_field(name=f"Latest Commit", value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
                                                      f"{latest_commit['commit']['message']}")
@@ -75,7 +79,7 @@ class General(commands.Cog):
         if newprefix == '':
             try:
                 await send_cmd_help(self.bot, ctx, "")
-            except discord.Forbidden:  # not allowed to send embeds
+            except nextcord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         elif len(newprefix) <= 3:
             dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, newprefix))
@@ -92,12 +96,12 @@ class General(commands.Cog):
         now = datetime.datetime.utcnow()
         tdelta = now - startup_time
         uptime = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
-        embed = discord.Embed(title=f"{self.bot.user.name}'s info",
-                              description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
-                                          f"server.\n\nIf you have any command requests, use the `request` "
-                                          f"command.\n\nThank you and have a good day.\n\n[__**"
-                                          f"{self.bot.user.name} Support Server**__]({SUPPORT_LINK})",
-                              colour=self.bot.dtbot_colour)
+        embed = nextcord.Embed(title=f"{self.bot.user.name}'s info",
+                               description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
+                                           f"server.\n\nIf you have any command requests, use the `request` "
+                                           f"command.\n\nThank you and have a good day.\n\n[__**"
+                                           f"{self.bot.user.name} Support Server**__]({SUPPORT_LINK})",
+                               colour=self.bot.dtbot_colour)
         embed.add_field(name="Authors", value=dtbot_devs)
         embed.add_field(name="GitHub repository", value=f"Find me [here]({GH_LINK})")
         embed.add_field(name="Twitter", value=f"[Tweet @DTbotDiscord]({TWITTER_LINK})", inline=True)
@@ -115,24 +119,24 @@ class General(commands.Cog):
     @cooldown(3, 30, commands.BucketType.guild)
     async def ping(self, ctx):
         try:
-            embed = discord.Embed(colour=self.bot.dtbot_colour,
-                                  description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
+            embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                                   description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
             await ctx.send(embed=embed)
-        except discord.Forbidden:  # not allowed to send embeds
+        except nextcord.Forbidden:  # not allowed to send embeds
             await ctx.send(f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
 
     @commands.command(description=f"Request a command to be added to DTbot. Functionality can be described in detail."
                                   f"\nPlease keep it reasonably concise.\nRestricted to 2 uses every 24 hours.\n\n"
-                                  f"Usage:\n{default_prefixes[0]}request burn Burn someone at the stake for being a heretic.",
+                                  f"Usage:\n{default_prefix}request burn Burn someone at the stake for being a heretic.",
                       brief="Request a new command (2x/24hr)",
                       aliases=['req'])
     @cooldown(2, 86400, commands.BucketType.user)
     async def request(self, ctx, command: str, *functionality: str):
         reqhall = self.bot.get_channel(REQHALL)
         dev_dm = self.bot.get_user(main_dev_id)
-        embed = discord.Embed(title=f"New request by {ctx.author.name}",
-                              description=f'{ctx.author} (ID: {ctx.author.id}) requested the following command:',
-                              colour=ctx.author.colour)
+        embed = nextcord.Embed(title=f"New request by {ctx.author.name}",
+                               description=f'{ctx.author} (ID: {ctx.author.id}) requested the following command:',
+                               colour=ctx.author.colour)
         embed.add_field(name='Suggested command name', value=f'**{command}**')
         embed.add_field(name='Suggested functionality', value=f'*{" ".join(functionality)}*', inline=False)
         await reqhall.send('New command request!', embed=embed)
@@ -160,25 +164,25 @@ class General(commands.Cog):
                       brief="Get info on a user",
                       aliases=['uinfo'])
     @commands.bot_has_permissions(embed_links=True)
-    async def userinfo(self, ctx, user: discord.Member):
-        embed = discord.Embed(title=f"{user}'s info",
-                              description='Here is what I could find:', colour=ctx.author.colour)
+    async def userinfo(self, ctx, user: nextcord.Member):
+        embed = nextcord.Embed(title=f"{user}'s info",
+                               description='Here is what I could find:', colour=ctx.author.colour)
         embed.add_field(name='Nickname', value=f'{user.display_name}')
         embed.add_field(name='ID', value=f'{user.id}', inline=True)
         embed.add_field(name='Status', value=f'{user.status}', inline=True)
         embed.add_field(name='Highest Role', value=f'<@&{user.top_role.id}>', inline=True)
         embed.add_field(name='Joined at', value=f'{user.joined_at:%d. %h \'%y at %H:%M}', inline=True)
         embed.add_field(name='Created at', value=f'{user.created_at:%d. %h \'%y at %H:%M}', inline=True)
-        embed.set_footer(text=f"{user.name}'s Info", icon_url=f'{user.avatar_url}')
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_footer(text=f"{user.name}'s Info", icon_url=f'{user.avatar.url}')
+        embed.set_thumbnail(url=user.avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command(description='Shows how many users have a particular role (case sensitive), and lists them.\n\n'
                                   'Limited to 10 pages of output, which hold roughly 900 members.',
                       brief='List users with this role')
-    async def whohas(self, ctx, *, role: discord.Role):
-        role = discord.utils.get(ctx.guild.roles, name=role.name)
-        embed_desc_max_size = 2048  # max char count in embed.description of a discord.Embed
+    async def whohas(self, ctx, *, role: nextcord.Role):
+        role = nextcord.utils.get(ctx.guild.roles, name=role.name)
+        embed_desc_max_size = 2048  # max char count in embed.description of a nextcord.Embed
         pages, role_members = [], []
         for member in role.members:
             role_members.append(member.mention)
@@ -193,15 +197,15 @@ class General(commands.Cog):
             except IndexError:  # list is empty now, ignore and continue
                 pass
             page_members = page_members.rstrip(", ")
-            pages.append(discord.Embed(colour=role.colour,
-                                       title=f'{len(role.members)} users with {role.name} - Page {i + 1}/{page_count}',
-                                       description=page_members))
+            pages.append(nextcord.Embed(colour=role.colour,
+                                        title=f'{len(role.members)} users with {role.name} - Page {i + 1}/{page_count}',
+                                        description=page_members))
         p_sess = PaginatorSession(ctx, pages=pages)
         await p_sess.run()
 
     @commands.command(description="Shows a user's XP points. If no user is mentioned, it will default to command user.",
                       brief="Check user's XP")
-    async def xp(self, ctx, user: discord.Member = None):
+    async def xp(self, ctx, user: nextcord.Member = None):
         if user:
             if user.bot:
                 await ctx.send("Bots don't get XP. :robot:")

@@ -2,8 +2,8 @@ import random
 import time
 
 import mysql.connector as mariadb
-from discord.ext import commands
 from mysql.connector import pooling
+from nextcord.ext import commands
 
 from launcher import db_config
 

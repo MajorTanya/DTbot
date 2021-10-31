@@ -2,11 +2,11 @@ import datetime
 import logging
 from configparser import ConfigParser
 
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 from pytz import timezone
 
-intents = discord.Intents.default()
+intents = nextcord.Intents.default()
 intents.members = True
 
 config = ConfigParser()
@@ -33,7 +33,7 @@ def dtbotinfo(self, msg, *args, **kwargs):
 class DTbot(commands.Bot):
     def __init__(self, det_prefixes=None):
         super().__init__(case_insensitive=True, command_prefix=det_prefixes, intents=intents)
-        self.dtbot_colour = discord.Colour(0x5e51a8)
+        self.dtbot_colour = nextcord.Colour(0x5e51a8)
         self.remove_command('help')
         # set up logging and bind to instance
         self.log = logging.getLogger('discord')

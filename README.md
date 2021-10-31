@@ -34,6 +34,6 @@ We also won't provide the (convoluted) `config.ini`.
 DTbot can be invited via [this link](https://discord.com/api/oauth2/authorize?client_id=472730689599569921&permissions=67390528&scope=bot). Alternatively, use the `+info` command and click where it says "Invite me".
 ## Requirements
 * Python 3.8+
-* discord.py 1.5.1+
+* nextcord 2.0.0+
 * MariaDB 10.4+ (server-side)
-* Dependencies listed in `requirements.txt`
+* (other) Dependencies listed in `requirements.txt`

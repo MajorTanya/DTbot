@@ -1,7 +1,7 @@
 import re
 import urllib.parse
 
-import discord
+import nextcord
 import requests
 
 from DTbot import config
@@ -59,12 +59,12 @@ class AniListMediaResult:
 
         if result['coverImage']['color']:
             rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
-            colour = discord.Colour.from_rgb(rgb[0], rgb[1], rgb[2])
+            colour = nextcord.Colour.from_rgb(rgb[0], rgb[1], rgb[2])
         else:
             colour = self.bot.dtbot_colour
         title = result['title']['romaji']
         description = re.sub('<.*?>', '', result['description']) if result['description'] else ""
-        embed = discord.Embed(colour=colour, title=title, description=description)
+        embed = nextcord.Embed(colour=colour, title=title, description=description)
 
         cover_image = result['coverImage']['large']
         embed.set_image(url=cover_image)

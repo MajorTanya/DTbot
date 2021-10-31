@@ -1,8 +1,8 @@
-import discord
-from discord.ext import commands
+import nextcord
+from nextcord.ext import commands
 
 
-class AniMangaLookupError(commands.CommandInvokeError):
+class AniMangaLookupError(commands.CommandError):
     # raised if something went wrong with the anime/manga lookup with the AL API
     def __init__(self, *, title, status_code, manga: bool):
         self.title = title
@@ -27,13 +27,13 @@ async def send_cmd_help(bot, ctx, error_msg, delete_after=None, plain=False):
     command = ctx.subcommand if ctx.invoked_subcommand else ctx.command
     usage = bot.help_command.get_command_signature(command=command)
     if not plain:
-        em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
-                           colour=bot.dtbot_colour)
+        em = nextcord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
+                            colour=bot.dtbot_colour)
         em.set_footer(text=error_msg)
         await ctx.channel.send(embed=em, delete_after=delete_after)
     else:
         await ctx.channel.send(
-            f"```{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}\n\n{error_msg}```")
+                f"```{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}\n\n{error_msg}```")
 
 
 class ErrorHandler(commands.Cog):
@@ -48,13 +48,13 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             try:
                 await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}", 15)
-            except discord.Forbidden:
+            except nextcord.Forbidden:
                 await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}",
                                     15, plain=True)
         elif isinstance(error, commands.BadArgument):
             try:
                 await send_cmd_help(self.bot, ctx, f"Error: Bad Argument ({' '.join(error.args)})", 15)
-            except discord.Forbidden:
+            except nextcord.Forbidden:
                 await send_cmd_help(self.bot, ctx, f"Error: Bad Argument ({' '.join(error.args)})", 15, plain=True)
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._",

@@ -1,11 +1,11 @@
 import mysql.connector as mariadb
-from discord.ext import commands
 from mysql.connector import pooling
+from nextcord.ext import commands
 
 from DTbot import DTbot, config
 
 config.read('./config/config.ini')
-default_prefixes = [config.get('General', 'prefix')]
+default_prefix = config.get('General', 'prefix')
 
 db_config = dict(config.items('Database'))
 commandstats_default = config.get('Database defaults', 'commandstats_default')
@@ -22,7 +22,7 @@ def det_prefixes(bot, msg):
         prefixes = [prefix + ' ', prefix]
         return commands.when_mentioned_or(*prefixes)(bot, msg)
     else:
-        return commands.when_mentioned_or(default_prefixes)(bot, msg)
+        return commands.when_mentioned_or(default_prefix)(bot, msg)
 
 
 def ensuredb():

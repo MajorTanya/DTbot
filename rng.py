@@ -1,9 +1,9 @@
 import random
 import re
 
-import discord
+import nextcord
 import rolldice
-from discord.ext import commands
+from nextcord.ext import commands
 
 
 def roulettecolourfinder(n, black):
@@ -101,17 +101,17 @@ class Rng(commands.Cog, name='RNG'):
                 raise commands.BadArgument("Unsupported operation")  # user probably used NdN a/s/m n or something
 
             result = eval(str(total_rolled) + full_mod) if full_mod else total_rolled
-            embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"Result: __{result}__",
-                                  description=f"{explanation} {full_mod}")
+            embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"Result: __{result}__",
+                                   description=f"{explanation} {full_mod}")
             embed.set_footer(text=f"Rolled {dice_rolled}{mode}{full_mod}")
             await ctx.send(embed=embed)
 
         except rolldice.DiceGroupException as e:
             self.bot.help_command.context = ctx
             usage = self.bot.help_command.get_command_signature(command=ctx.command)
-            em = discord.Embed(title="Dice have to be in proper NdN format",
-                               description=f"{ctx.command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
-                               colour=self.bot.dtbot_colour)
+            em = nextcord.Embed(title="Dice have to be in proper NdN format",
+                                description=f"{ctx.command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
+                                colour=self.bot.dtbot_colour)
             em.set_footer(text=str(e))
             await ctx.channel.send(embed=em)
 
@@ -180,8 +180,8 @@ class Rng(commands.Cog, name='RNG'):
     @show.command(name="roulette",
                   description="")
     async def _roulette(self, ctx):
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description="Distribution of numbers and colours on the French Roulette table:\n")
+        embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                               description="Distribution of numbers and colours on the French Roulette table:\n")
         embed.set_image(url="https://i.imgur.com/jtMZJXR.png")
         await ctx.send(embed=embed)
 
@@ -194,8 +194,8 @@ class Rng(commands.Cog, name='RNG'):
         ship = re.split(" and ", ship, 1, flags=re.IGNORECASE)
         shipping = random.random() * 100
         emote_choice = ":broken_heart:" if shipping < 50 else ":heart:"
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description=f"{ship[0]} and {ship[1]}? `{shipping:.2f}%` shippable. {emote_choice}")
+        embed = nextcord.Embed(colour=self.bot.dtbot_colour,
+                               description=f"{ship[0]} and {ship[1]}? `{shipping:.2f}%` shippable. {emote_choice}")
         await ctx.send(embed=embed)
 
 

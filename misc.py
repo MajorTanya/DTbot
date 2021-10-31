@@ -1,8 +1,8 @@
 import random
 
-import discord
-from discord.ext import commands
-from discord.ext.commands import Cooldown, CooldownMapping, cooldown
+import nextcord
+from nextcord.ext import commands
+from nextcord.ext.commands import Cooldown, CooldownMapping, cooldown
 
 from error_handler import send_cmd_help
 from linklist import woop_links
@@ -12,13 +12,14 @@ from util.AniListMediaResult import AniListMediaResult
 def shared_cooldown(rate, per, type=commands.BucketType.default):
     # we have one rate limit for AniList, not differentiated by media type, so we build a shared cooldown that tracks
     # uses across different commands
-    cooldown = Cooldown(rate, per, type=type)
 
     def decorator(func):
+        cooldown = Cooldown(rate, per)
+        cooldown_mapping = CooldownMapping(cooldown, type=type)
         if isinstance(func, commands.Command):
-            func._buckets = CooldownMapping(cooldown)
+            func._buckets = cooldown_mapping
         else:
-            func.__commands_cooldown__ = cooldown
+            func.__commands_cooldown__ = cooldown_mapping
         return func
 
     return decorator
@@ -68,7 +69,7 @@ class Misc(commands.Cog):
         if anime == '':
             try:
                 await send_cmd_help(self.bot, ctx, "")
-            except discord.Forbidden:  # not allowed to send embeds
+            except nextcord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
             await ctx.trigger_typing()
@@ -90,7 +91,7 @@ class Misc(commands.Cog):
         if manga == '':
             try:
                 await send_cmd_help(self.bot, ctx, "")
-            except discord.Forbidden:  # not allowed to send embeds
+            except nextcord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
             await ctx.trigger_typing()
@@ -124,7 +125,7 @@ class Misc(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def woop(self, ctx):
         chosen = random.choice(woop_links)
-        embed = discord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
+        embed = nextcord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
 
