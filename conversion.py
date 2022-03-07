@@ -126,7 +126,7 @@ class Conversion(commands.Cog):
                 elif '\"' in argument and "\'" not in argument:
                     argument1, argument2 = argument.split('\"')
                 if "ft" in argument1.lower():
-                    argument1 = argument1.lower().split("ft")[0]
+                    argument1, argument2 = argument1.lower().split("ft")
                     if not argument2:
                         argument2 = argument1.lower().split("ft")[1]
                 if "in" in argument2.lower():
