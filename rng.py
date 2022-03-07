@@ -119,14 +119,7 @@ class Rng(commands.Cog, name='RNG'):
                       brief="Play some Russian Roulette",
                       aliases=['russianroulette', 'rusroulette'])
     async def rroulette(self, ctx):
-        possible_responses = [
-            'Dead',
-            'Alive',
-            'Alive',
-            'Alive',
-            'Alive'
-        ]
-        await ctx.send(random.choice(possible_responses))
+        await ctx.send(random.choices(['Alive', 'Dead'], [0.8, 0.2])[0])
 
     @commands.command(description="Play some French Roulette (bet optional)\n\n"
                                   "For a nicer overview of the distribution of numbers across the colours, use "
