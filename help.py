@@ -114,6 +114,10 @@ class Help(commands.Cog):
                 embed = cog_help(self.bot, ctx, cog)
                 if embed:
                     for em in embed:
+                        if len(em.fields) % 3 != 0:  # even out the last line of info embed fields
+                            em.add_field(name='\u200b', value='\u200b')
+                            if len(em.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+                                em.add_field(name='\u200b', value='\u200b')
                         pages.append(em)
                     p_sess = PaginatorSession(ctx, pages=pages,
                                               footer=f'Type {ctx.prefix}help [command] for more info on a command.')
