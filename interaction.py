@@ -275,7 +275,7 @@ class Interaction(commands.Cog):
         await self.make_embed(ctx, user=user, links=lewd_links,
                               self_tag_msg=f"Calling yourself out for being lewd, {mention}? How self-aware you "
                                            f"are. And yes. Why you gotta be so lewd?",
-                              other_tag_msg=f"Why you gotta be so lewd, {user.mention}?",
+                              other_tag_msg=f"Why you gotta be so lewd, {mention}?",
                               no_tag_msg="Why you gotta be so lewd?")
 
     @commands.command(description="Lick someone",
@@ -355,11 +355,11 @@ class Interaction(commands.Cog):
                       brief="Salute someone")
     @commands.bot_has_permissions(embed_links=True)
     async def salute(self, ctx, *reason: str):
-        message = "{user.mention} salutes."
+        message = f"{ctx.author.mention} salutes."
         if reason:
             if ctx.author in ctx.message.mentions:
-                message = "{user.mention} saluted themselves. They must be really proud of what they did. And I am " \
-                          "proud of them too."
+                message = f"{ctx.author.mention} saluted themselves. They must be really proud of what they did. And " \
+                          f"I am proud of them too."
             else:
                 message = f"{ctx.author.mention} saluted {' '.join(reason)}."
         await self.make_embed(ctx, ctx.author, links=salute_links, self_tag_msg=message)
