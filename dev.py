@@ -110,10 +110,9 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             caption = " ".join(caption)
             caption = caption.replace("DTbot", "@\u200bDTbot")
             caption = caption.replace("dtbot_version", dtbot_version)
-            await self.bot.change_presence(activity=Game(name=caption))
         else:
             caption = f"Do @\u200bDTbot help (v. {dtbot_version})"
-            await self.bot.change_presence(activity=Game(name=caption))
+        await self.bot.change_presence(activity=Game(name=caption))
         self.bot.log.dtbotinfo(self.bot.log,
                                f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
         await ctx.send("Rich Presence updated.")
