@@ -77,10 +77,16 @@ class Rng(commands.Cog, name='RNG'):
         total_rolled = 0
         full_mod = ""
         try:
+            group = re.match(r'^(\d*)d(\d+)', dice, re.IGNORECASE)
+            if group is None:
+                raise commands.BadArgument("Could not detect NdN pattern for dice. Refer to the command help for info"
+                                           "on the NdN syntax.")
+            num_of_dice, type_of_dice = int(group[1]) if group[1] != '' else 1, int(group[2])
+            if num_of_dice > 150:
+                await ctx.send(f"Too many dice to roll. Maximum number of dice allowed is 150. "
+                               f"(You wanted {num_of_dice}.)")
             _, explanation = rolldice.roll_dice(''.join(dice))
             # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
-            group = re.match(r'^(\d*)d(\d+)', dice, re.IGNORECASE)
-            num_of_dice, type_of_dice = int(group[1]) if group[1] != '' else 1, int(group[2])
             dice_rolled = f"{num_of_dice}d{type_of_dice}"
             mode = re.search(rf'((?<={dice_rolled}).)', dice, re.IGNORECASE)
             mode = "" if mode is None or mode.group(1).lower() not in {'k', 'x'} else mode.group(1)
