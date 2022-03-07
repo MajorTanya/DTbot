@@ -42,15 +42,16 @@ class Rng(commands.Cog, name='RNG'):
         ]
         await ctx.send(random.choice(possible_responses))
 
-    @commands.command(description='Choose one of multiple choices.'
+    @commands.command(description='Choose one of multiple choices. '
                                   'With options containing spaces, use double quotes like:\n'
                                   '+choose "Make Pizza" Fish "Go to the cafeteria"',
                       brief='Let the bot decide for you',
                       aliases=['choice'])
     async def choose(self, ctx, *choices: str):
-        if choices == '':
-            ctx.send('You have to provide me with something to actually choose from though...')
-        await ctx.send(random.choice(choices))
+        try:
+            await ctx.send(random.choice(choices))
+        except IndexError:
+            await ctx.send('You have to provide me with something to actually choose from though...')
 
     @commands.command(description="Flips a coin",
                       brief="Flip a coin")
