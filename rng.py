@@ -84,8 +84,8 @@ class Rng(commands.Cog, name='RNG'):
                                            "on the NdN syntax.")
             num_of_dice, type_of_dice = int(group[1]) if group[1] != '' else 1, int(group[2])
             if num_of_dice > 150:
-                await ctx.send(f"Too many dice to roll. Maximum number of dice allowed is 150. "
-                               f"(You wanted {num_of_dice}.)")
+                return await ctx.send(f"Too many dice to roll. Maximum number of dice allowed is 150. "
+                                      f"(You wanted {num_of_dice}.)")
             _, explanation = rolldice.roll_dice(''.join(dice))
             # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
             dice_rolled = f"{num_of_dice}d{type_of_dice}"
@@ -93,13 +93,13 @@ class Rng(commands.Cog, name='RNG'):
             mode = "" if mode is None or mode.group(1).lower() not in {'k', 'x'} else mode.group(1)
             explanation, *modification = explanation.replace(",", ", ").split("]", 1)
             explanation += "]"
-            explanation = re.sub(r' ~~ ([0-9, ]+)', " ~~(\\1)~~", explanation).replace("]]", "]")
+            explanation = re.sub(r' ~~ ([\d, ]+)', " ~~(\\1)~~", explanation).replace("]]", "]")
 
             if str(modification) != "['']":
                 mod = str(modification).strip("[']").split(" ", 3)
                 # we only care about the first modification because handling several is a headache for now
                 operator, modifier, full_mod = mod[1], mod[2], mod[1] + mod[2]
-            kept_dice = re.sub(r' ~~(\([0-9, ]*\))~~', "", explanation).strip('[]').split(', ')
+            kept_dice = re.sub(r' ~~(\([\d, ]*\))~~', "", explanation).strip('[]').split(', ')
 
             try:
                 for i in kept_dice:
