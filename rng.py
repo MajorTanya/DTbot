@@ -80,7 +80,7 @@ class Rng(commands.Cog, name='RNG'):
         try:
             group = re.match(r'^(\d*)d(\d+)', dice, re.IGNORECASE)
             if group is None:
-                raise commands.BadArgument("Could not detect NdN pattern for dice. Refer to the command help for info"
+                raise commands.BadArgument("Could not detect NdN pattern for dice. Refer to the command help for info "
                                            "on the NdN syntax.")
             num_of_dice, type_of_dice = int(group[1]) if group[1] != '' else 1, int(group[2])
             if num_of_dice > 150:
