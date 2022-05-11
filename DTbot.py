@@ -21,22 +21,14 @@ startup_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=
 log_startup_time = startup_time.strftime('%Y-%m-%d (%H-%M-%S %Z)')
 
 
-def dtbotinfo(self, msg, *args, **kwargs):
-    # custom logging level (less verbose than INFO but not serious enough for WARNING or above)
-    if self.isEnabledFor(25):
-        self._log(25, msg, args, **kwargs)
-
-
 class DTbot(commands.Bot):
     def __init__(self, det_prefixes=None):
         super().__init__(case_insensitive=True, command_prefix=det_prefixes, intents=intents)
         self.dtbot_colour = nextcord.Colour(0x5e51a8)
         self.remove_command('help')
         # set up logging and bind to instance
-        self.log = logging.getLogger('discord')
-        logging.addLevelName(25, 'DTBOT-INFO')
-        self.log.dtbotinfo = dtbotinfo
-        self.log.setLevel(25)
+        self.log = logging.getLogger('nextcord')
+        self.log.setLevel(20)
         handler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8', mode='w')
         handler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
         self.log.addHandler(handler)

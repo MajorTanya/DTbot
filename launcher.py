@@ -31,7 +31,7 @@ def ensuredb():
     firstcursor = fcnx.cursor()
     try:
         firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_config['database']} DEFAULT CHARACTER SET 'utf8'")
-        bot.log.dtbotinfo(bot.log, f"Successfully created database {db_config['database']}")
+        bot.log.info(f"Successfully created database {db_config['database']}")
     except mariadb.Error as err:
         bot.log.error(f"Failed creating database: {err}")
     finally:
@@ -44,19 +44,19 @@ def start_db():
         db = cnx.get_connection()
         cursor = db.cursor()
         cursor.execute(f"USE {db_config['database']}")
-        bot.log.dtbotinfo(bot.log, f"Using database: {db_config['database']}")
+        bot.log.info(f"Using database: {db_config['database']}")
 
         tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
 
         for table_name in tables:
             table_description = tables[table_name]
             try:
-                bot.log.dtbotinfo(bot.log, f"Creating table {table_name}: ")
+                bot.log.info(f"Creating table {table_name}: ")
                 cursor.execute(table_description)
             except mariadb.Error as err:
                 bot.log.error(err.msg)
             else:
-                bot.log.dtbotinfo(bot.log, "OK")
+                bot.log.info("OK")
         db.close()
     except mariadb.Error as err:
         bot.log.error(f"Error connecting to {db_config['database']}.")

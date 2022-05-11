@@ -73,35 +73,35 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     async def stop(self, ctx, code=None):
         if code == h_code:
             self.heartbeat.stop()
-            self.bot.log.dtbotinfo(self.bot.log, f'Heartbeat stopped by user {ctx.author}.')
+            self.bot.log.info(f'Heartbeat stopped by user {ctx.author}.')
             await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
     @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
     async def start(self, ctx, code=None):
         if code == h_code:
             self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
-            self.bot.log.dtbotinfo(self.bot.log, f'Heartbeat started by user {ctx.author}.')
+            self.bot.log.info(f'Heartbeat started by user {ctx.author}.')
             await ctx.send(f'Heartbeat started by user {ctx.author}.')
 
     @commands.command(description="Can load additional extensions into DTbot. Developers only.",
                       brief="Load an extension. Developers only.")
     async def load(self, ctx, extension_name: str):
         self.bot.load_extension(extension_name)
-        self.bot.log.dtbotinfo(self.bot.log, f"Module `{extension_name}` loaded by user {ctx.author}.")
+        self.bot.log.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` loaded successfully.")
 
     @commands.command(description="Unload an extension. Developers only.",
                       brief="Unload an extension. Developers only.")
     async def unload(self, ctx, extension_name: str):
         self.bot.unload_extension(extension_name)
-        self.bot.log.dtbotinfo(self.bot.log, f"Module `{extension_name}` unloaded by user {ctx.author}.")
+        self.bot.log.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` unloaded successfully.")
 
     @commands.command(description="First unload and then immediately reload a module. Developers only.",
                       brief="Reload an extension. Developers only.")
     async def reload(self, ctx, extension_name: str):
         self.bot.reload_extension(extension_name)
-        self.bot.log.dtbotinfo(self.bot.log, f"Module `{extension_name}` reloaded by user {ctx.author}.")
+        self.bot.log.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` reloaded successfully.")
 
     @commands.command(description="Update / Refresh DTbot's Rich Presence. Developers only.",
@@ -114,8 +114,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         else:
             caption = f"Do @\u200bDTbot help (v. {dtbot_version})"
         await self.bot.change_presence(activity=Game(name=caption))
-        self.bot.log.dtbotinfo(self.bot.log,
-                               f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
+        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
         await ctx.send("Rich Presence updated.")
 
     @commands.command(description='Refresh the version number and date of last update from the config.'
@@ -131,8 +130,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         last_updated = refreshed_config.get('Info', 'last_updated')
         config.set('Info', 'dtbot_version', dtbot_version)
         config.set('Info', 'last_updated', last_updated)
-        self.bot.log.dtbotinfo(self.bot.log, f"{ctx.author} refreshed dtbot_version and last_update.")
-        self.bot.log.dtbotinfo(self.bot.log, "Updating Rich Presence and reloading General...")
+        self.bot.log.info(f"{ctx.author} refreshed dtbot_version and last_update.")
+        self.bot.log.info("Updating Rich Presence and reloading General...")
         await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
         await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
 
