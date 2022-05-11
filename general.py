@@ -93,9 +93,8 @@ class General(commands.Cog):
                       brief="Info about me")
     @commands.bot_has_permissions(embed_links=True)
     async def info(self, ctx):
-        now = datetime.datetime.utcnow()
-        tdelta = now - startup_time
-        uptime = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+        now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        uptime = now_dt - startup_time
         embed = nextcord.Embed(title=f"{self.bot.user.name}'s info",
                                description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
                                            f"server.\n\nIf you have any command requests, use the `request` "
@@ -155,9 +154,8 @@ class General(commands.Cog):
     @commands.command(description="Gives the bot's uptime since the last restart.",
                       brief="DTbot's uptime")
     async def uptime(self, ctx):
-        now = datetime.datetime.utcnow()
-        tdelta = now - startup_time
-        uptime = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+        now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        uptime = now_dt - startup_time
         await ctx.send(f"{self.bot.user.name}'s uptime is: `{uptime}`")
 
     @commands.command(description="Shows details on user, such as Name, Join Date, or Highest Role",
@@ -165,14 +163,16 @@ class General(commands.Cog):
                       aliases=['uinfo'])
     @commands.bot_has_permissions(embed_links=True)
     async def userinfo(self, ctx, user: nextcord.Member):
+        join_ts = int(user.joined_at.timestamp())
+        created_ts = int(user.created_at.timestamp())
         embed = nextcord.Embed(title=f"{user}'s info",
                                description='Here is what I could find:', colour=ctx.author.colour)
         embed.add_field(name='Nickname', value=f'{user.display_name}')
         embed.add_field(name='ID', value=f'{user.id}', inline=True)
         embed.add_field(name='Status', value=f'{user.status}', inline=True)
         embed.add_field(name='Highest Role', value=f'<@&{user.top_role.id}>', inline=True)
-        embed.add_field(name='Joined at', value=f'{user.joined_at:%d. %h \'%y at %H:%M}', inline=True)
-        embed.add_field(name='Created at', value=f'{user.created_at:%d. %h \'%y at %H:%M}', inline=True)
+        embed.add_field(name='Joined at', value=f'<t:{join_ts}:D> - <t:{join_ts}:T>', inline=True)
+        embed.add_field(name='Created at', value=f'<t:{created_ts}:D> - <t:{created_ts}:T>', inline=True)
         embed.set_footer(text=f"{user.name}'s Info", icon_url=f'{user.avatar.url}')
         embed.set_thumbnail(url=user.avatar.url)
         await ctx.send(embed=embed)

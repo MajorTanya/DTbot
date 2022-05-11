@@ -4,7 +4,6 @@ from configparser import ConfigParser
 
 import nextcord
 from nextcord.ext import commands
-from pytz import timezone
 
 intents = nextcord.Intents.default()
 intents.members = True
@@ -18,10 +17,8 @@ startup_extensions = []
 for key, ext in extensions:
     startup_extensions.append(ext)
 
-ger_tz = timezone(config.get('Heartbeat', 'ger_tz'))
-human_startup_time = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
-log_startup_time = datetime.datetime.now(ger_tz).strftime('%Y-%m-%d (%H-%M-%S %Z)')
-startup_time = datetime.datetime.utcnow()
+startup_time = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+log_startup_time = startup_time.strftime('%Y-%m-%d (%H-%M-%S %Z)')
 
 
 def dtbotinfo(self, msg, *args, **kwargs):

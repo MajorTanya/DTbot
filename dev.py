@@ -6,7 +6,7 @@ import nextcord
 from nextcord import Game
 from nextcord.ext import commands, tasks
 
-from DTbot import config, ger_tz, human_startup_time, startup_time
+from DTbot import config, startup_time
 
 dtbot_version = config.get('Info', 'dtbot_version')
 last_updated = config.get('Info', 'last_updated')
@@ -38,25 +38,26 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     @tasks.loop(seconds=hb_freq)
     async def heartbeat(self):
         if not self.bot.is_closed():
-            now = datetime.datetime.utcnow()
-            now_timezone = datetime.datetime.now(ger_tz).strftime('%d-%m-%Y - %H:%M:%S %Z')
-            tdelta = now - startup_time
-            tdelta = tdelta - datetime.timedelta(microseconds=tdelta.microseconds)
+            now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+            now_ts = int(now_dt.timestamp())
+            startup_ts = int(startup_time.timestamp())
+            uptime = now_dt - startup_time
             beat_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                         description=f"{self.bot.user.name} is still alive and running!")
-            beat_embed.add_field(name="Startup time:", value=str(human_startup_time))
-            beat_embed.add_field(name="Time now:", value=str(now_timezone), inline=False)
-            beat_embed.add_field(name="Uptime:", value=str(tdelta))
+            beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
+            beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
+            beat_embed.add_field(name="Uptime:", value=uptime)
             beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
             await self.hb_chamber.send(embed=beat_embed, delete_after=hb_freq)
 
     @heartbeat.before_loop
     async def before_heartbeat(self):
         await self.bot.wait_until_ready()
+        startup_ts = int(startup_time.timestamp())
         self.hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
         startup_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                        description=f"{self.bot.user.name} is starting up!")
-        startup_embed.add_field(name="Startup time:", value=str(human_startup_time))
+        startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
         await self.hb_chamber.send(embed=startup_embed)
 
     @commands.Cog.listener()
