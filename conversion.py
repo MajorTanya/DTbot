@@ -2,6 +2,13 @@ import re
 
 from nextcord.ext import commands
 
+CM_IN_INCH = 2.54
+KM_IN_MI = 1.609344
+M_IN_FT = 0.3048
+KG_IN_LBS = 0.45359237
+ML_IN_USFLOZ = 29.57353
+L_IN_USGAL = 3.785411784
+
 
 class Conversion(commands.Cog):
     """Convert units, especially Metric and US Customary / Imperial"""
@@ -67,7 +74,7 @@ class Conversion(commands.Cog):
                       aliases=['cmtoin'])
     async def cmin(self, ctx, centimeters):
         centimeters = ('-' if centimeters[0] == '-' else '') + re.sub('[^0-9.]', '', centimeters)
-        cminch_value = round(float(centimeters) * 0.393701, 2)
+        cminch_value = round(float(centimeters) / CM_IN_INCH, 2)
         await ctx.send(f'{round(float(centimeters), 2)} cm  = {cminch_value} inch')
 
     @commands.command(description='Convert from Inches to Centimeters\n\nUsage:\n+incm 10 (Returns 25.4 cm)',
@@ -75,7 +82,7 @@ class Conversion(commands.Cog):
                       aliases=['intocm'])
     async def incm(self, ctx, inches):
         inches = ('-' if inches[0] == '-' else '') + re.sub('[^0-9.]', '', inches)
-        inchcm_value = round(float(inches) * 2.54, 2)
+        inchcm_value = round(float(inches) * CM_IN_INCH, 2)
         await ctx.send(f'{round(float(inches), 2)} inch = {inchcm_value} cm')
 
     @commands.command(description='Convert from Centimeters to Feet\n\nUsage:\n+cmft 91.44 (Returns 3 ft)',
@@ -83,7 +90,7 @@ class Conversion(commands.Cog):
                       aliases=['cmtoft'])
     async def cmft(self, ctx, centimeters):
         centimeters = ('-' if centimeters[0] == '-' else '') + re.sub('[^0-9.]', '', centimeters)
-        cmft_value = round(float(centimeters) / 30.48, 2)
+        cmft_value = round(float(centimeters) / (M_IN_FT * 100), 2)
         await ctx.send(f'{round(float(centimeters), 2)} cm = {cmft_value} ft')
 
     @commands.command(description='Convert from Feet to Centimeters\n\nUsage:\n+cmft 3 (Returns 91.44 cm)',
@@ -91,7 +98,7 @@ class Conversion(commands.Cog):
                       aliases=['fttocm'])
     async def ftcm(self, ctx, feet):
         feet = ('-' if feet[0] == '-' else '') + re.sub('[^0-9.]', '', feet)
-        ftcm_value = round(float(feet) * 30.48, 2)
+        ftcm_value = round(float(feet) * (M_IN_FT * 100), 2)
         await ctx.send(f'{round(float(feet), 2)} ft = {ftcm_value} cm')
 
     @commands.command(description='Convert from Feet to Meters\n\nUsage:\n+ftm 3.28 (Returns 1.0 m)',
@@ -99,7 +106,7 @@ class Conversion(commands.Cog):
                       aliases=['fttom'])
     async def ftm(self, ctx, feet):
         feet = ('-' if feet[0] == '-' else '') + re.sub('[^0-9.]', '', feet)
-        ftm_value = round(float(feet) * 0.3048, 2)
+        ftm_value = round(float(feet) * M_IN_FT, 2)
         await ctx.send(f'{round(float(feet), 2)} ft = {ftm_value} m')
 
     @commands.command(description='Convert from Meters to Feet\n\nUsage:\n+mft 1 (Returns 3.28 ft)',
@@ -107,7 +114,7 @@ class Conversion(commands.Cog):
                       aliases=['mtoft'])
     async def mft(self, ctx, meters):
         meters = ('-' if meters[0] == '-' else '') + re.sub('[^0-9.]', '', meters)
-        mft_value = round(float(meters) / 0.3048, 2)
+        mft_value = round(float(meters) / M_IN_FT, 2)
         await ctx.send(f'{round(float(meters), 2)} m = {mft_value} ft')
 
     class FtinmConv(commands.Converter):
@@ -153,7 +160,7 @@ class Conversion(commands.Cog):
         # send default values so still stored old ones don't get delivered
         if isinstance(feet_inches.feet, float) and isinstance(feet_inches.inches, float):
             await ctx.send(f'{round(float(feet_inches.feet), 2)} ft {round(float(feet_inches.inches))} in = '
-                           f'{round((feet_inches.feet * 0.3048) + (feet_inches.inches * 0.0254), 2)} m')
+                           f'{round((feet_inches.feet * M_IN_FT) + (feet_inches.inches * (CM_IN_INCH / 100)), 2)} m')
 
     @commands.command(description='Convert from Meters to mixed US Customary length units\n\nUsage:\n+mftin 1.88m \n '
                                   'Or:\n+mftin 1.88 (Return 6 ft 2.0 in)',
@@ -161,8 +168,8 @@ class Conversion(commands.Cog):
                       aliases=['mtoftin'])
     async def mftin(self, ctx, meters):
         meters = ('-' if meters[0] == '-' else '') + re.sub('[^0-9.]', '', meters)
-        feetfrommeters = divmod(float(meters), 0.3048)
-        inchesfrommeters = feetfrommeters[1] / 0.0254
+        feetfrommeters = divmod(float(meters), M_IN_FT)
+        inchesfrommeters = feetfrommeters[1] / (CM_IN_INCH / 100)
         await ctx.send(f'{round(float(meters), 2)} m = {int(feetfrommeters[0])} ft {round(inchesfrommeters, 1)} in')
 
     @commands.command(name='kmmi',
@@ -171,7 +178,7 @@ class Conversion(commands.Cog):
                       aliases=['kitomi', 'kmm'])
     async def kmmi(self, ctx, kilometers):
         kilometers = ('-' if kilometers[0] == '-' else '') + re.sub('[^0-9.]', '', kilometers)
-        kmmi_value = round(float(kilometers) * 0.621371, 2)
+        kmmi_value = round(float(kilometers) / KM_IN_MI, 2)
         await ctx.send(f'{round(float(kilometers), 2)} km = {kmmi_value} mi')
 
     @commands.command(description='Convert Miles to Kilometers\n\nUsage:\n+mikm 80 (Returns 128.75 km)',
@@ -179,7 +186,7 @@ class Conversion(commands.Cog):
                       aliases=['mitokm', 'mkm'])
     async def mikm(self, ctx, miles):
         miles = ('-' if miles[0] == '-' else '') + re.sub('[^0-9.]', '', miles)
-        mikm_value = round(float(miles) / 0.621371, 2)
+        mikm_value = round(float(miles) * KM_IN_MI, 2)
         await ctx.send(f'{round(float(miles))} mi = {mikm_value} km')
 
     @commands.command(description='Convert from Kilograms to Pounds\n\nUsage:\n+kglbs 70 (Returns 154.32 lbs)',
@@ -187,7 +194,7 @@ class Conversion(commands.Cog):
                       aliases=['kgtolbs'])
     async def kglbs(self, ctx, kilograms):
         kilograms = ('-' if kilograms[0] == '-' else '') + re.sub('[^0-9.]', '', kilograms)
-        kglbs_value = round(float(kilograms) / 0.45359237, 2)
+        kglbs_value = round(float(kilograms) / KG_IN_LBS, 2)
         await ctx.send(f'{round(float(kilograms), 2)} kg = {kglbs_value} lbs')
 
     @commands.command(description='Convert from Pounds to Kilograms\n\nUsage:\n+lbskg 154.32 (Returns 70.0 kg)',
@@ -195,7 +202,7 @@ class Conversion(commands.Cog):
                       aliases=['lbstokg'])
     async def lbskg(self, ctx, pounds):
         pounds = ('-' if pounds[0] == '-' else '') + re.sub('[^0-9.]', '', pounds)
-        lbskg_value = round(float(pounds) * 0.45359237, 2)
+        lbskg_value = round(float(pounds) * KG_IN_LBS, 2)
         await ctx.send(f'{round(float(pounds), 2)} lbs = {lbskg_value} kg')
 
     @commands.command(description='Convert from US Fluid Ounces to Milliliters\n\nUsage:\n+flozml 10 '
@@ -204,7 +211,7 @@ class Conversion(commands.Cog):
                       aliases=['floztoml'])
     async def flozml(self, ctx, floz):
         floz = ('-' if floz[0] == '-' else '') + re.sub('[^0-9.]', '', floz)
-        ml_value = round(float(floz) * 29.5735, 2)
+        ml_value = round(float(floz) * ML_IN_USFLOZ, 2)
         await ctx.send(f'{round(float(floz), 2)} fl oz = {ml_value} ml')
 
     @commands.command(description='Convert from Milliliters to US Fluid Ounces\n\nUsage:\n+mlfloz 395.74 '
@@ -213,7 +220,7 @@ class Conversion(commands.Cog):
                       aliases=['mltofloz'])
     async def mlfloz(self, ctx, milliliters):
         milliliters = ('-' if milliliters[0] == '-' else '') + re.sub('[^0-9.]', '', milliliters)
-        floz_value = round(float(milliliters) * 0.033814, 2)
+        floz_value = round(float(milliliters) / ML_IN_USFLOZ, 2)
         await ctx.send(f'{round(float(milliliters))} ml = {floz_value} fl oz')
 
     @commands.command(description='Convert from US Gallons to Liters\n\nUsage:\n+gall 26.42 (Returns 100 l)',
@@ -221,7 +228,7 @@ class Conversion(commands.Cog):
                       aliases=['galtol'])
     async def gall(self, ctx, gallons):
         gallons = ('-' if gallons[0] == '-' else '') + re.sub('[^0-9.]', '', gallons)
-        gal_value = round(float(gallons) * 3.785411784, 2)
+        gal_value = round(float(gallons) * L_IN_USGAL, 2)
         await ctx.send(f'{round(float(gallons))} gal (US) = {gal_value} l')
 
     @commands.command(description='Convert from Liters to US Gallons\n\nUsage:\n+lgal 100 (Returns 26.42 gal (US))',
@@ -229,7 +236,7 @@ class Conversion(commands.Cog):
                       aliases=['ltogal'])
     async def lgal(self, ctx, liters):
         liters = ('-' if liters[0] == '-' else '') + re.sub('[^0-9.]', '', liters)
-        l_value = round(float(liters) * 0.2641720524, 2)
+        l_value = round(float(liters) / L_IN_USGAL, 2)
         await ctx.send(f'{round(float(liters))} l = {l_value} gal (US)')
 
 
