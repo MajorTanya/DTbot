@@ -14,7 +14,7 @@ users_default = config.get('Database defaults', 'users_default')
 
 
 def det_prefixes(bot, msg):
-    if msg.guild.id:
+    if msg.guild and msg.guild.id:
         db = cnx.get_connection()
         cursor = db.cursor()
         prefix = cursor.callproc('GetServerPrefix', (msg.guild.id, '@res'))[1]
