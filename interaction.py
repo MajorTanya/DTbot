@@ -4,17 +4,18 @@ import random
 import nextcord
 from nextcord.ext import commands
 
+from DTbot import DTbot
 from linklist import *
 
 
 class Interaction(commands.Cog):
     """Commands which interact with others"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
-    async def make_embed(self, ctx, user, links=None, self_tag_msg="", other_tag_msg="", no_tag_msg="",
-                         self_tag_img: bool = True):
+    async def make_embed(self, ctx: commands.Context, user: nextcord.Member | None, links=None, self_tag_msg="",
+                         other_tag_msg="", no_tag_msg="", self_tag_img: bool = True):
         chosen = random.choice(links) if links else ""
         markdown_link = f"\n\n[Image link]({chosen})" if links else ""
         embed = nextcord.Embed(colour=self.bot.dtbot_colour)
@@ -36,7 +37,7 @@ class Interaction(commands.Cog):
                       brief="Call someone a bad doggo",
                       aliases=['shame', 'baddoggo'])
     @commands.bot_has_permissions(embed_links=True)
-    async def baddog(self, ctx, user: nextcord.Member):
+    async def baddog(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=baddog_links,
                               self_tag_msg=f"{user.mention} called themselves a bad dog. I think they just misspoke. "
                                            f"Because if they were a dog, they'd be a good one. A very good one.",
@@ -47,7 +48,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Go full Tsundere and call someone a BAKA",
                       brief="Call someone a BAKA")
     @commands.bot_has_permissions(embed_links=True)
-    async def baka(self, ctx, user: nextcord.Member):
+    async def baka(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=baka_links,
                               self_tag_msg=f"{user.mention} called themselves a baka? You're not a baka though, you're "
                                            f"adorable.",
@@ -57,7 +58,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Bitch slaps someone",
                       brief="Bitch slaps someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def bitchslap(self, ctx, user: nextcord.Member):
+    async def bitchslap(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=['https://i.imgur.com/bTGigCv.gif'],
                               self_tag_msg=f"{user.mention} tried to give themselves a mean bitch slap. All they "
                                            f"decide to do is rub their cheeks.",
@@ -66,7 +67,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Bite someone",
                       brief="Bite someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def bite(self, ctx, user: nextcord.Member):
+    async def bite(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=bite_links,
                               self_tag_msg=f"{user.mention} thought about biting themselves. You're not you when "
                                            f"you're hungry, so how about a snack instead?",
@@ -75,7 +76,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Kiss someone the non-romantic way",
                       brief="A non-romantic kiss")
     @commands.bot_has_permissions(embed_links=True)
-    async def bkiss(self, ctx, user: nextcord.Member):
+    async def bkiss(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=bkiss_links,
                               self_tag_msg=f"{user.mention} kissed themselves in a non-romantic way. It's very "
                                            f"important to be happy about oneself, though self-love is even better!",
@@ -84,7 +85,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Blush\nCan be given a reason",
                       brief="Blush")
     @commands.bot_has_permissions(embed_links=True)
-    async def blush(self, ctx, *reason: str):
+    async def blush(self, ctx: commands.Context, *reason: str):
         message = f"{ctx.author.mention} blushed! How cute!"
         if reason:
             message = f"{ctx.author.mention} blushed because of {' '.join(reason)}! How cute!"
@@ -93,7 +94,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Boop em good",
                       brief="Boop someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def boop(self, ctx, user: nextcord.Member):
+    async def boop(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=boop_links,
                               self_tag_msg=f"{user.mention} booped themselves. But they were such a cutie doing it "
                                            f"that we can't show it here.",
@@ -102,7 +103,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Cage someone",
                       brief="Cage someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def cage(self, ctx, user: nextcord.Member):
+    async def cage(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=cage_links,
                               self_tag_msg=f"Just as {user.mention} tried to enter the cage, their friends surprised "
                                            f"them with a party. Hooray!",
@@ -111,7 +112,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Choke em good",
                       brief="Choke someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def choke(self, ctx, user: nextcord.Member):
+    async def choke(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=choke_links,
                               self_tag_msg=f"{user.mention} wanted to choke themselves. They stopped when they "
                                            f"remembered their favorite food.",
@@ -120,7 +121,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Confess your feelings to someone",
                       brief="Confess your feelings to someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def confess(self, ctx, crush: nextcord.Member):
+    async def confess(self, ctx: commands.Context, crush: nextcord.Member):
         if crush.id == ctx.author.id:
             embed = nextcord.Embed(colour=self.bot.dtbot_colour,
                                    description=f"{crush.mention} confessed their love for themselves! "
@@ -161,7 +162,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Cry\nCan be given a reason",
                       brief="Cry")
     @commands.bot_has_permissions(embed_links=True)
-    async def cry(self, ctx, *reason: str):
+    async def cry(self, ctx: commands.Context, *reason: str):
         message = f"{ctx.author.mention} is crying. Someone, comfort them. <:kannahug:461996510637326386>"
         if reason:
             message = f"{ctx.author.mention} is crying because of {' '.join(reason)}. Someone, comfort them. " \
@@ -171,7 +172,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Cuddle someone",
                       brief="Cuddle someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def cuddle(self, ctx, user: nextcord.Member):
+    async def cuddle(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=cuddle_links,
                               self_tag_msg=f"{user.mention} cuddled themselves! They seem so happy about being here.",
                               other_tag_msg=f"{user.mention} got cuddled.")
@@ -179,7 +180,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Dance with someone. Mention multiple users for a big dance party",
                       brief="Dance with someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def dance(self, ctx, *target: str):
+    async def dance(self, ctx: commands.Context, *target: str):
         if target:
             if ctx.message.mentions:
                 if ctx.message.mentions[0].id == ctx.author.id and len(ctx.message.mentions) == 1:
@@ -199,7 +200,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Glomp someone",
                       brief="Glomp someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def glomp(self, ctx, user: nextcord.Member):
+    async def glomp(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=glomp_links,
                               self_tag_msg=f"{user.mention} glomped themselves! Someone is very happy to see "
                                            f"themselves!",
@@ -208,7 +209,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Hold someone's hand",
                       brief="Hold someone's hand",
                       aliases=['handhold', 'holdhand'])
-    async def handholding(self, ctx, user: nextcord.Member):
+    async def handholding(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=handholding_links,
                               self_tag_msg=f"{user.mention} tried to hold their own hand. Aww. Come here, I'll hold it "
                                            f"for you.",
@@ -217,7 +218,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Hide yourself",
                       brief="Hide yourself")
     @commands.bot_has_permissions(embed_links=True)
-    async def hide(self, ctx, *reason: str):
+    async def hide(self, ctx: commands.Context, *reason: str):
         message = f"{ctx.author.mention} is hiding. Are they embarrassed?"
         if reason:
             message = f"{ctx.author.mention} is hiding from {' '.join(reason)}."
@@ -226,7 +227,7 @@ class Interaction(commands.Cog):
     @commands.command(description="High five someone",
                       brief="High five someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def highfive(self, ctx, user: nextcord.Member):
+    async def highfive(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=highfive_links,
                               self_tag_msg=f"{user.mention} gave themselves a high five! You go! Gotta congratulate "
                                            f"yourself when others don't.",
@@ -235,7 +236,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Hug someone",
                       brief="Hug someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def hug(self, ctx, user: nextcord.Member):
+    async def hug(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=hug_links,
                               self_tag_msg=f"{user.mention} hugged themselves! Hooray for self-appreciation!",
                               other_tag_msg=f"{user.mention} got hugged.")
@@ -243,7 +244,7 @@ class Interaction(commands.Cog):
     @commands.command(description="KICK THEIR ASS\n\n(This is NOT a moderation command to kick a user from a server.)",
                       brief="Kick someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def kick(self, ctx, user: nextcord.Member):
+    async def kick(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=kick_links,
                               self_tag_msg=f"{user.mention} aimed to kick themselves. As they noticed, it's quite hard "
                                            f"to actually do. So they didn't and went to watch their favorite show.",
@@ -252,7 +253,7 @@ class Interaction(commands.Cog):
     @commands.command(description="What do you think it does",
                       brief="It's in the name")
     @commands.bot_has_permissions(embed_links=True)
-    async def kill(self, ctx, user: nextcord.Member):
+    async def kill(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=None,
                               self_tag_msg=f"{user.mention} tried to kill themselves. Luckily, they changed their mind "
                                            f"and went to get food instead.",
@@ -261,7 +262,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Kiss someone",
                       brief="Kiss someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def kiss(self, ctx, user: nextcord.Member):
+    async def kiss(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=kiss_links,
                               self_tag_msg=f"{user.mention} gave themselves a kiss! Self-love is very important "
                                            f"after all.",
@@ -270,7 +271,7 @@ class Interaction(commands.Cog):
     @commands.command(description="For something LEWD",
                       brief="LEWD")
     @commands.bot_has_permissions(embed_links=True)
-    async def lewd(self, ctx, user: nextcord.Member = None):
+    async def lewd(self, ctx: commands.Context, user: nextcord.Member = None):
         mention = "" if not hasattr(user, "mention") else user.mention
         await self.make_embed(ctx, user=user, links=lewd_links,
                               self_tag_msg=f"Calling yourself out for being lewd, {mention}? How self-aware you "
@@ -281,7 +282,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Lick someone",
                       brief="Lick someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def lick(self, ctx, user: nextcord.Member):
+    async def lick(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=lick_links,
                               self_tag_msg=f"{user.mention} licked themselves. Maybe they are secretly a cat and value "
                                            f"personal hygiene?",
@@ -290,7 +291,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Notice someone",
                       brief="Notice someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def notice(self, ctx, user: nextcord.Member):
+    async def notice(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=None,
                               self_tag_msg=f"{user.mention} noticed themselves. Yes, you are here, and yes, it's "
                                            f"good you are.",
@@ -300,7 +301,7 @@ class Interaction(commands.Cog):
                       brief="Pat someone",
                       aliases=["headpat"])
     @commands.bot_has_permissions(embed_links=True)
-    async def pat(self, ctx, user: nextcord.Member):
+    async def pat(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=pat_links,
                               self_tag_msg=f"{user.mention} patted themselves. They deserve all the pats!",
                               other_tag_msg=f"{user.mention} got a pat.")
@@ -308,7 +309,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Pat them on the back",
                       brief="Pat someone on the back",
                       aliases=["backpat"])
-    async def patback(self, ctx, user: nextcord.Member):
+    async def patback(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=patback_links,
                               self_tag_msg=f"{user.mention} patted themselves on the back. Their flexibility is highly "
                                            f"impressive and they deserve a pat on the back already for being this "
@@ -318,7 +319,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Pinch someone's cheeks",
                       brief="Pinch someone's cheeks")
     @commands.bot_has_permissions(embed_links=True)
-    async def pinch(self, ctx, user: nextcord.Member):
+    async def pinch(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=pinch_links,
                               self_tag_msg=f"{user.mention} pinched their own cheeks. Maybe they wanted to check if "
                                            f"they were dreaming or not?",
@@ -327,7 +328,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Poke someone",
                       brief="Poke someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def poke(self, ctx, user: nextcord.Member):
+    async def poke(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=poke_links,
                               self_tag_msg=f"{user.mention} poked themselves. It wasn't hard at all, just a soft boop. "
                                            f"And they deserve a boop.",
@@ -336,7 +337,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Pout\nCan be given a reason",
                       brief="Pout")
     @commands.bot_has_permissions(embed_links=True)
-    async def pout(self, ctx, *reason: str):
+    async def pout(self, ctx: commands.Context, *reason: str):
         message = f"{ctx.author.mention} pouted! Ask them why."
         if reason:
             message = f"{ctx.author.mention} pouted! They said it's because of {' '.join(reason)}."
@@ -345,7 +346,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Someone gonna get punched",
                       brief="Punch someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def punch(self, ctx, user: nextcord.Member):
+    async def punch(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=punch_links,
                               self_tag_msg=f"{user.mention} wanted to punch themselves. But they only lightly rubbed "
                                            f"their belly.",
@@ -354,7 +355,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Salute someone\nCan be given a reason",
                       brief="Salute someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def salute(self, ctx, *reason: str):
+    async def salute(self, ctx: commands.Context, *reason: str):
         message = f"{ctx.author.mention} salutes."
         if reason:
             if ctx.author in ctx.message.mentions:
@@ -367,7 +368,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Slap 'em hard",
                       brief="Slap someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def slap(self, ctx, user: nextcord.Member):
+    async def slap(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=slap_links,
                               self_tag_msg=f"{user.mention} tried to slap themselves. 'Twas but a gentle caressing.",
                               other_tag_msg=f"{user.mention} got slapped.", self_tag_img=False)
@@ -375,13 +376,13 @@ class Interaction(commands.Cog):
     @commands.command(description="Be the smuggest of them all",
                       brief="Be smug")
     @commands.bot_has_permissions(embed_links=True)
-    async def smug(self, ctx):
+    async def smug(self, ctx: commands.Context):
         await self.make_embed(ctx, ctx.author, links=smug_links, self_tag_msg=f"{ctx.author.mention} is being smug.")
 
     @commands.command(description="Stab someone",
                       brief="Stab someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def stab(self, ctx, user: nextcord.Member):
+    async def stab(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=stab_links,
                               self_tag_msg=f"{user.mention} tried to stab themselves. Fortunately, their aim was off.",
                               other_tag_msg=f"{user.mention} got stabbed by {ctx.author.mention}.", self_tag_img=False)
@@ -389,7 +390,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Tickle someone",
                       brief="Tickle someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def tickle(self, ctx, user: nextcord.Member):
+    async def tickle(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=tickle_links,
                               self_tag_msg=f"{user.mention} tickled themselves. They must be really ticklish if they "
                                            f"can do that!",
@@ -398,7 +399,7 @@ class Interaction(commands.Cog):
     @commands.command(description="Wave at someone",
                       brief="Wave at someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def wave(self, ctx, user: nextcord.Member):
+    async def wave(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=wave_links,
                               self_tag_msg=f"{user.mention} waved at themselves. They seem incredibly happy and "
                                            f"energetic today. How cute!",
@@ -407,12 +408,12 @@ class Interaction(commands.Cog):
     @commands.command(description="Whip someone (rather kinky)",
                       brief="Whip someone")
     @commands.bot_has_permissions(embed_links=True)
-    async def whip(self, ctx, user: nextcord.Member):
+    async def whip(self, ctx: commands.Context, user: nextcord.Member):
         await self.make_embed(ctx, user=user, links=whip_links,
                               self_tag_msg=f"{user.mention} wants to whip themselves. They must be really kinky.",
                               other_tag_msg=f"Bow down, {user.mention}. Time to get whipped by {ctx.author.mention}!",
                               self_tag_img=False)
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(Interaction(bot))

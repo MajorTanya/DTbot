@@ -6,7 +6,7 @@ import nextcord
 from nextcord import Game
 from nextcord.ext import commands, tasks
 
-from DTbot import config, startup_time
+from DTbot import DTbot, config, startup_time
 
 dtbot_version = config.get('Info', 'dtbot_version')
 last_updated = config.get('Info', 'last_updated')
@@ -18,7 +18,7 @@ sdb_code = config.get('Developers', 'sdb_code')
 class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     """Developer Commands and DTbot Management"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
         self.hb_chamber = None
         if len(sys.argv) < 2 or sys.argv[1] == '1':
@@ -32,7 +32,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         except:
             pass
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         return await self.bot.is_owner(ctx.message.author)
 
     @tasks.loop(seconds=hb_freq)
@@ -65,19 +65,19 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         await self.bot.change_presence(activity=Game(name=f"Do @\u200bDTbot help (v. {dtbot_version})"))
 
     @commands.group(description="Manages the heartbeat of DTbot. Developers only.")
-    async def heart(self, ctx):
+    async def heart(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             pass
 
     @heart.command(description="Stops the heartbeat of DTbot. Developers only.")
-    async def stop(self, ctx, code=None):
+    async def stop(self, ctx: commands.Context, code=None):
         if code == h_code:
             self.heartbeat.stop()
             self.bot.log.info(f'Heartbeat stopped by user {ctx.author}.')
             await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
 
     @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
-    async def start(self, ctx, code=None):
+    async def start(self, ctx: commands.Context, code=None):
         if code == h_code:
             self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
             self.bot.log.info(f'Heartbeat started by user {ctx.author}.')
@@ -85,28 +85,28 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.command(description="Can load additional extensions into DTbot. Developers only.",
                       brief="Load an extension. Developers only.")
-    async def load(self, ctx, extension_name: str):
+    async def load(self, ctx: commands.Context, extension_name: str):
         self.bot.load_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` loaded successfully.")
 
     @commands.command(description="Unload an extension. Developers only.",
                       brief="Unload an extension. Developers only.")
-    async def unload(self, ctx, extension_name: str):
+    async def unload(self, ctx: commands.Context, extension_name: str):
         self.bot.unload_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` unloaded successfully.")
 
     @commands.command(description="First unload and then immediately reload a module. Developers only.",
                       brief="Reload an extension. Developers only.")
-    async def reload(self, ctx, extension_name: str):
+    async def reload(self, ctx: commands.Context, extension_name: str):
         self.bot.reload_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` reloaded successfully.")
 
     @commands.command(description="Update / Refresh DTbot's Rich Presence. Developers only.",
                       brief="Update DTbot's Rich Presence. Developers only.")
-    async def updaterp(self, ctx, *caption: str):
+    async def updaterp(self, ctx: commands.Context, *caption: str):
         if caption:
             caption = " ".join(caption)
             caption = caption.replace("DTbot", "@\u200bDTbot")
@@ -122,7 +122,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
                                   '\nCalls `reload general` to update the use of the version'
                                   'and date in the `info` and `changelog` commands.\nDevelopers only.',
                       brief='Refresh the version and date of the last update. Developers only.')
-    async def updatever(self, ctx):
+    async def updatever(self, ctx: commands.Context):
         global dtbot_version, last_updated
         refreshed_config = ConfigParser()
         refreshed_config.read('./config/config.ini')
@@ -137,7 +137,7 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.command(description='Shutdown command for the bot. Developers only.',
                       brief='Shut the bot down. Developers only.')
-    async def shutdownbot(self, ctx, passcode: str):
+    async def shutdownbot(self, ctx: commands.Context, passcode: str):
         if passcode == sdb_code:
             try:
                 self.heartbeat.stop()
@@ -148,5 +148,5 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             return
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(Dev(bot))

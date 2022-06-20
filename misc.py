@@ -4,6 +4,7 @@ import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Cooldown, CooldownMapping, cooldown
 
+from DTbot import DTbot
 from error_handler import send_cmd_help
 from linklist import woop_links
 from util.AniListMediaResult import AniListMediaResult
@@ -32,26 +33,26 @@ anilist_cooldown = shared_cooldown(80, 60)
 class Misc(commands.Cog):
     """Miscellaneous commands for fun"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.command(description="SAY BLESS YOU TO THE CAT",
                       brief="Say bless you to the cat")
     @cooldown(3, 60, commands.BucketType.guild)
-    async def cat(self, ctx):
+    async def cat(self, ctx: commands.Context):
         await ctx.send('<:sneezecat:472732802727804928> <:sneezecat:472732802727804928> '
                        '<:sneezecat:472732802727804928> <:sneezecat:472732802727804928> '
                        '<:sneezecat:472732802727804928>')
 
     @commands.command(description="For when you need to pay a lot of respects",
                       brief="Pay big Respects")
-    async def bigf(self, ctx):
+    async def bigf(self, ctx: commands.Context):
         await ctx.send('FFFFFFFFFFFFFFFFFFF\nFFFFFFFFFFFFFFFFFFF\nFFFFFFFFFF\nFFFFFFFFFF\nFFFFFFFFFFFFFFFFFFF\n'
                        'FFFFFFFFFFFFFFFFFFF\nFFFFFFFFFF\nFFFFFFFFFF\nFFFFFFFFFF\nFFFFFFFFFF')
 
     @commands.command(description="To Pay Respects",
                       brief="Pay Respects")
-    async def f(self, ctx):
+    async def f(self, ctx: commands.Context):
         await ctx.send('fffffffffffffff\nfffffff\nfffffffffffffff\nfffffff\nfffffff')
 
     @commands.command(description="Enter the title of an anime here and DTbot will return a small overview for that "
@@ -100,7 +101,7 @@ class Misc(commands.Cog):
 
     @commands.command(description="Actually you can't",
                       brief="Kill yourself")
-    async def kms(self, ctx):
+    async def kms(self, ctx: commands.Context):
         possible_responses = [
             'NO',
             'NEVER',
@@ -117,18 +118,18 @@ class Misc(commands.Cog):
     @commands.command(description="IT'S JUST A REEE BRO",
                       brief="REEEEE")
     @cooldown(3, 120, commands.BucketType.guild)
-    async def re(self, ctx):
+    async def re(self, ctx: commands.Context):
         await ctx.send('REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE')
 
     @commands.command(description="Woop woop!",
                       brief="Woop woop!")
     @commands.bot_has_permissions(embed_links=True)
-    async def woop(self, ctx):
+    async def woop(self, ctx: commands.Context):
         chosen = random.choice(woop_links)
         embed = nextcord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(Misc(bot))

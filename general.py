@@ -6,7 +6,7 @@ import requests
 from nextcord.ext import commands
 from nextcord.ext.commands import cooldown
 
-from DTbot import config, startup_time
+from DTbot import DTbot, config, startup_time
 from database_management import dbcallprocedure
 from dev import dtbot_version, last_updated
 from error_handler import send_cmd_help
@@ -31,14 +31,14 @@ TWITTER_LINK = config.get('About', 'TWITTER LINK')
 class General(commands.Cog):
     """General utility commands, like user info and uptime, among others"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.command(description="Displays a user's avatar. Defaults to command user's avatar when "
                                   "no user is mentioned.",
                       brief="Show a user's avatar")
     @commands.bot_has_permissions(embed_links=True)
-    async def avatar(self, ctx, *, user: nextcord.Member = None):
+    async def avatar(self, ctx: commands.Context, *, user: nextcord.Member = None):
         if user:
             avatar_url = user.avatar.url
             embed = nextcord.Embed(colour=self.bot.dtbot_colour,
@@ -54,7 +54,7 @@ class General(commands.Cog):
     @commands.command(description="Get an overview over the recentmost update of DTbot",
                       brief="Recent updates to DTbot")
     @commands.bot_has_permissions(embed_links=True)
-    async def changelog(self, ctx):
+    async def changelog(self, ctx: commands.Context):
         latest_commit = requests.get("https://api.github.com/repos/MajorTanya/DTbot/commits").json()[0]
         embed = nextcord.Embed(colour=self.bot.dtbot_colour,
                                description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
@@ -74,7 +74,7 @@ class General(commands.Cog):
                       brief="Change DTbot's prefix in this server",
                       aliases=['csp', 'changeprefix', 'prefix'])
     @commands.has_guild_permissions(manage_guild=True)
-    async def changeserverprefix(self, ctx, *newprefix: str):
+    async def changeserverprefix(self, ctx: commands.Context, *newprefix: str):
         newprefix = ''.join(newprefix)
         if newprefix == '':
             try:
@@ -92,7 +92,7 @@ class General(commands.Cog):
     @commands.command(description="Info about me, DTbot. Please take a look.",
                       brief="Info about me")
     @commands.bot_has_permissions(embed_links=True)
-    async def info(self, ctx):
+    async def info(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - startup_time
         embed = nextcord.Embed(title=f"{self.bot.user.name}'s info",
@@ -116,7 +116,7 @@ class General(commands.Cog):
     @commands.command(description="Show the latency between DTbot and the Discord web servers",
                       brief="Pong")
     @cooldown(3, 30, commands.BucketType.guild)
-    async def ping(self, ctx):
+    async def ping(self, ctx: commands.Context):
         try:
             embed = nextcord.Embed(colour=self.bot.dtbot_colour,
                                    description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
@@ -130,7 +130,7 @@ class General(commands.Cog):
                       brief="Request a new command (2x/24hr)",
                       aliases=['req'])
     @cooldown(2, 86400, commands.BucketType.user)
-    async def request(self, ctx, command: str, *functionality: str):
+    async def request(self, ctx: commands.Context, command: str, *functionality: str):
         reqhall = self.bot.get_channel(REQHALL)
         dev_dm = self.bot.get_user(main_dev_id)
         embed = nextcord.Embed(title=f"New request by {ctx.author.name}",
@@ -147,13 +147,13 @@ class General(commands.Cog):
                       brief="Reset DTbot's prefix to `+`",
                       aliases=['rsp', 'resetprefix'])
     @commands.has_guild_permissions(manage_guild=True)
-    async def resetserverprefix(self, ctx):
+    async def resetserverprefix(self, ctx: commands.Context):
         dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, '+'))
         await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
     @commands.command(description="Gives the bot's uptime since the last restart.",
                       brief="DTbot's uptime")
-    async def uptime(self, ctx):
+    async def uptime(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - startup_time
         await ctx.send(f"{self.bot.user.name}'s uptime is: `{uptime}`")
@@ -162,7 +162,7 @@ class General(commands.Cog):
                       brief="Get info on a user",
                       aliases=['uinfo'])
     @commands.bot_has_permissions(embed_links=True)
-    async def userinfo(self, ctx, user: nextcord.Member):
+    async def userinfo(self, ctx: commands.Context, user: nextcord.Member):
         join_ts = int(user.joined_at.timestamp())
         created_ts = int(user.created_at.timestamp())
         embed = nextcord.Embed(title=f"{user}'s info",
@@ -180,7 +180,7 @@ class General(commands.Cog):
     @commands.command(description='Shows how many users have a particular role (case sensitive), and lists them.\n\n'
                                   'Limited to 10 pages of output, which hold roughly 900 members.',
                       brief='List users with this role')
-    async def whohas(self, ctx, *, role: nextcord.Role):
+    async def whohas(self, ctx: commands.Context, *, role: nextcord.Role):
         role = nextcord.utils.get(ctx.guild.roles, name=role.name)
         embed_desc_max_size = 2048  # max char count in embed.description of a nextcord.Embed
         pages, role_members = [], []
@@ -205,7 +205,7 @@ class General(commands.Cog):
 
     @commands.command(description="Shows a user's XP points. If no user is mentioned, it will default to command user.",
                       brief="Check user's XP")
-    async def xp(self, ctx, user: nextcord.Member = None):
+    async def xp(self, ctx: commands.Context, user: nextcord.Member = None):
         if user:
             if user.bot:
                 await ctx.send("Bots don't get XP. :robot:")
@@ -222,5 +222,5 @@ class General(commands.Cog):
             await ctx.send("User hasn't talked yet.")
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(General(bot))

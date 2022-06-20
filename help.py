@@ -3,7 +3,7 @@ from collections import OrderedDict
 import nextcord
 from nextcord.ext import commands
 
-from DTbot import config
+from DTbot import DTbot, config
 from error_handler import IllegalCustomCommandAccess
 from util.PaginatorSession import PaginatorSession
 
@@ -92,12 +92,12 @@ def bot_help(bot, ctx):
 class Help(commands.Cog):
     """Go here for help"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.command(usage='[command or module]')
     @commands.bot_has_permissions(embed_links=True)
-    async def help(self, ctx, *command: str):
+    async def help(self, ctx: commands.Context, *command: str):
         """Shows this message"""
         pages = []
         command = ' '.join(command)
@@ -137,5 +137,5 @@ class Help(commands.Cog):
             await p_sess.run()
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(Help(bot))

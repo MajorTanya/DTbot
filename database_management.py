@@ -2,9 +2,11 @@ import random
 import time
 
 import mysql.connector as mariadb
+import nextcord
 from mysql.connector import pooling
 from nextcord.ext import commands
 
+from DTbot import DTbot
 from launcher import db_config
 
 # open the pooled connection used for everything but prefix checks
@@ -25,7 +27,7 @@ def dbcallprocedure(procedure, *, returns: bool = False, params: tuple):
     db.close()
 
 
-def checkdbforuser(message):
+def checkdbforuser(message: nextcord.Message):
     result = dbcallprocedure('CheckUserExist', returns=True, params=(message.author.id, '@res'))
     if result:
         # entry for this user ID exists, proceed to check for last XP gain time, possibly awarding some new XP
@@ -42,14 +44,14 @@ def checkdbforuser(message):
 class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
     """Manages the DTbot MariaDB database"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         return await self.bot.is_owner(ctx.message.author)
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: nextcord.Message):
         if (message.author == self.bot.user) or message.author.bot:
             return
         try:
@@ -59,11 +61,11 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         pass
 
     @commands.Cog.listener()
-    async def on_guild_join(self, guild):
+    async def on_guild_join(self, guild: nextcord.Guild):
         dbcallprocedure('AddNewServer', params=(guild.id, guild.member_count))
 
     @commands.Cog.listener()
-    async def on_command_completion(self, ctx):
+    async def on_command_completion(self, ctx: commands.Context):
         result = dbcallprocedure('CheckCommandExist', returns=True, params=(ctx.command.qualified_name, '@res'))
         if result:
             dbcallprocedure('IncrementCommandUsage', params=(ctx.command.qualified_name,))
@@ -76,26 +78,13 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
             # because the command was used this one time, we increment the default value (0) by 1
             dbcallprocedure('IncrementCommandUsage', params=(ctx.command.qualified_name,))
 
-    @commands.command(description="Manually adds an entry to the table 'users' of DTbot's database."
-                                  "\nGenerally not required. Developers only.")
-    async def adduserdata(self, ctx, user_id: int, user_xp: int, user_last_xp_gain: int, user_rep: int,
-                          user_last_rep_awarded: int):
-        params = (user_id, user_xp, user_last_xp_gain, user_rep, user_last_rep_awarded)
-        try:
-            dbcallprocedure('ManualNewUser', params=params)
-            await ctx.send(f"Row added successfully to table `users` in database `{db_config['database']}`.")
-        except mariadb.Error as err:
-            self.bot.log.error(err)
-        except Exception as e:
-            self.bot.log.error(e)
-
     @commands.command(description="Manually cycles through the bot's servers to refresh the table 'servers' of the "
                                   "database.\nGenerally not required. Developers only.")
-    async def refreshservers(self, ctx):
+    async def refreshservers(self, ctx: commands.Context):
         for guild in self.bot.guilds:
             dbcallprocedure('AddNewServer', params=(guild.id, guild.member_count))
         await ctx.send('Server list refreshed.', delete_after=5)
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(DatabaseManagement(bot))

@@ -5,6 +5,8 @@ import nextcord
 import rolldice
 from nextcord.ext import commands
 
+from DTbot import DTbot
+
 
 def roulettecolourfinder(n, black):
     if n == 0:
@@ -15,13 +17,13 @@ def roulettecolourfinder(n, black):
 class Rng(commands.Cog, name='RNG'):
     """Randomness-based commands, such as rolling dice"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.command(name='8ball',
                       description="Answers a yes/no question.",
                       brief="Answers from the beyond.")
-    async def _eightball(self, ctx):
+    async def _eightball(self, ctx: commands.Context):
         possible_responses = [
             'Yes',
             'Maybe',
@@ -47,7 +49,7 @@ class Rng(commands.Cog, name='RNG'):
                                   '+choose "Make Pizza" Fish "Go to the cafeteria"',
                       brief='Let the bot decide for you',
                       aliases=['choice'])
-    async def choose(self, ctx, *choices: str):
+    async def choose(self, ctx: commands.Context, *choices: str):
         try:
             await ctx.send(random.choice(choices))
         except IndexError:
@@ -55,7 +57,7 @@ class Rng(commands.Cog, name='RNG'):
 
     @commands.command(description="Flips a coin",
                       brief="Flip a coin")
-    async def coinflip(self, ctx):
+    async def coinflip(self, ctx: commands.Context):
         await ctx.send(random.choice(['Heads', 'Tails']))
 
     @commands.command(description="Rolls dice in NdN format. (1d6 is rolling a standard, six-sided die once. "
@@ -74,7 +76,7 @@ class Rng(commands.Cog, name='RNG'):
                                   "Does NOT support any other CritDice formats.",
                       brief="Rolls dice in NdN format")
     @commands.bot_has_permissions(embed_links=True)
-    async def roll(self, ctx, *, dice):
+    async def roll(self, ctx: commands.Context, *, dice):
         total_rolled = 0
         full_mod = ""
         try:
@@ -125,7 +127,7 @@ class Rng(commands.Cog, name='RNG'):
     @commands.command(description="It's Russian Roulette with a 5-barrel revolver. One chamber is loaded. Good luck.",
                       brief="Play some Russian Roulette",
                       aliases=['russianroulette', 'rusroulette'])
-    async def rroulette(self, ctx):
+    async def rroulette(self, ctx: commands.Context):
         await ctx.send(random.choices(['Alive', 'Dead'], [0.8, 0.2])[0])
 
     @commands.command(description="Play some French Roulette (bet optional)\n\n"
@@ -137,7 +139,7 @@ class Rng(commands.Cog, name='RNG'):
                                   "Bet options: No Bet / Straight bet (Red 3) / Colour Bet (Red) / Even/Odd Bet (Odd)"
                                   "\n\nUsage:\n+roulette OR +roulette Red 3 OR +roulette 0 OR +roulette Odd",
                       brief="Play some Roulette")
-    async def roulette(self, ctx, *bet):
+    async def roulette(self, ctx: commands.Context, *bet):
         result_eo = result_c = win_type = ""
         black = (2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35)
         # red = (1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36)
@@ -173,13 +175,13 @@ class Rng(commands.Cog, name='RNG'):
     @commands.group(hidden=True,
                     description="")
     @commands.bot_has_permissions(embed_links=True)
-    async def show(self, ctx):
+    async def show(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             return
 
     @show.command(name="roulette",
                   description="")
-    async def _roulette(self, ctx):
+    async def _roulette(self, ctx: commands.Context):
         embed = nextcord.Embed(colour=self.bot.dtbot_colour,
                                description="Distribution of numbers and colours on the French Roulette table:\n")
         embed.set_image(url="https://i.imgur.com/jtMZJXR.png")
@@ -189,7 +191,7 @@ class Rng(commands.Cog, name='RNG'):
                                   '\n\nUsage:\n+ship The entire internet and pineapple on pizza',
                       brief='Ship things')
     @commands.bot_has_permissions(embed_links=True)
-    async def ship(self, ctx, *ship):
+    async def ship(self, ctx: commands.Context, *ship):
         ship = ' '.join(ship)
         ship = re.split(" and ", ship, 1, flags=re.IGNORECASE)
         shipping = random.random() * 100
@@ -199,5 +201,5 @@ class Rng(commands.Cog, name='RNG'):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(Rng(bot))

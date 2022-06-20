@@ -1,6 +1,8 @@
 import nextcord
 from nextcord.ext import commands
 
+from DTbot import DTbot
+
 
 class AniMangaLookupError(commands.CommandError):
     # raised if something went wrong with the anime/manga lookup with the AL API
@@ -39,7 +41,7 @@ async def send_cmd_help(bot, ctx, error_msg, delete_after=None, plain=False):
 class ErrorHandler(commands.Cog):
     """Handles and logs DTbot's errors and exceptions"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -84,5 +86,5 @@ class ErrorHandler(commands.Cog):
         self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
-def setup(bot):
+def setup(bot: DTbot):
     bot.add_cog(ErrorHandler(bot))
