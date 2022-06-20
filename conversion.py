@@ -2,17 +2,14 @@ import re
 
 from nextcord.ext import commands
 
+from util.utils import rint
+
 CM_IN_INCH = 2.54
 KM_IN_MI = 1.609344
 M_IN_FT = 0.3048
 KG_IN_LBS = 0.45359237
 ML_IN_USFLOZ = 29.57353
 L_IN_USGAL = 3.785411784
-
-
-def rint(flt: float) -> int | float:
-    """Round to 2 digits. Returns int if rounded float has only zeroes after the decimal point."""
-    return int(rounded) if (rounded := round(flt, 2)).is_integer() else rounded
 
 
 class Conversion(commands.Cog):
