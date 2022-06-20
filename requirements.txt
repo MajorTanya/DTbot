@@ -1,4 +1,4 @@
-nextcord
+git+https://github.com/nextcord/nextcord@7ed2a379ccc62aa837fc3db66cd9e33593cbb0f8
 mysql-connector-python==8.0.12
 py-rolldice>0.3.9
 requests
