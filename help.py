@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 import nextcord
 from nextcord.ext import commands
 
@@ -11,28 +9,33 @@ hidden_cogs = config.items('Hidden')
 allowed_servers = config.get('General', 'allowed_servers')
 
 
-def acq_sig(bot, ctx, command):
+def clean_prefix(bot: DTbot, prefix: str | None):
+    return prefix if prefix and prefix.strip() != bot.user.mention else f"@\u200b{bot.user.name} "
+
+
+def acq_sig(bot: DTbot, ctx: commands.Context, command: commands.Command):
     bot.help_command.context = ctx
     signature = bot.help_command.get_command_signature(command=command)
-    return signature
+    return signature.replace(ctx.clean_prefix, clean_prefix(bot, ctx.prefix))
 
 
-def command_help(bot, ctx, cmd):
+def command_help(bot: DTbot, ctx: commands.Context, cmd: commands.Command):
     if cmd.cog.qualified_name in hidden_cogs[0][1]:
         if str(ctx.message.guild.id) not in allowed_servers:
             raise IllegalCustomCommandAccess(ctx)
 
     embed = nextcord.Embed(colour=bot.dtbot_colour, description=f'{cmd.description}\n\n{acq_sig(bot, ctx, cmd)}',
-                           title=f'{ctx.prefix}{cmd.name}')
+                           title=f'{clean_prefix(bot, ctx.prefix)}{cmd.name}')
     return embed
 
 
-def cog_help(bot, ctx, cog):
+def cog_help(bot: DTbot, ctx: commands.Context, cog: commands.Cog):
     if cog.qualified_name in hidden_cogs[0][1]:
         if str(ctx.message.guild.id) not in allowed_servers:
             raise IllegalCustomCommandAccess(ctx)
 
     cmd_list = []
+    used_prefix = clean_prefix(bot, ctx.prefix)
     embed = nextcord.Embed(colour=bot.dtbot_colour, title=cog.qualified_name)
     embed2 = nextcord.Embed(colour=bot.dtbot_colour)
     embed3 = nextcord.Embed(colour=bot.dtbot_colour)
@@ -46,13 +49,13 @@ def cog_help(bot, ctx, cog):
         field_counter = 0
         for c in sorted_commands:
             if field_counter < 21:
-                embed.add_field(name=f'**{ctx.prefix}{c.name}**', value=f'{c.brief}')
+                embed.add_field(name=f'**{used_prefix}{c.name}**', value=f'{c.brief}')
                 field_counter += 1
             elif 21 <= field_counter < 42:
-                embed2.add_field(name=f'**{ctx.prefix}{c.name}**', value=f'{c.brief}')
+                embed2.add_field(name=f'**{used_prefix}{c.name}**', value=f'{c.brief}')
                 field_counter += 1
             elif 42 <= field_counter < 63:
-                embed3.add_field(name=f'**{ctx.prefix}{c.name}**', value=f'{c.brief}')
+                embed3.add_field(name=f'**{used_prefix}{c.name}**', value=f'{c.brief}')
                 field_counter += 1
 
         if field_counter <= 21:
@@ -68,12 +71,13 @@ def cog_help(bot, ctx, cog):
             return [embed, embed2, embed3]
 
 
-def bot_help(bot, ctx):
+def bot_help(bot: DTbot, ctx: commands.Context):
     cog_list = []
-    cog_dict = OrderedDict()
+    cog_dict = {}
     embed = nextcord.Embed(colour=bot.dtbot_colour, title='DTbot',
-                           description=f'An overview over all DTbot modules'
-                                       f'\nDo `{ctx.prefix}help [module]` for a command overview of the module.')
+                           description=f'An overview over all DTbot modules\n'
+                                       f'Do `{clean_prefix(bot, ctx.prefix)}help [module]` for a command overview of '
+                                       f'the module.')
     for c in bot.cogs:
         if str(ctx.message.guild.id) in allowed_servers and c in hidden_cogs[0][1]:
             cog_list.append(bot.cogs[c].qualified_name)
@@ -101,6 +105,7 @@ class Help(commands.Cog):
         """Shows this message"""
         pages = []
         command = ' '.join(command)
+        used_prefix = clean_prefix(self.bot, ctx.prefix)
         if command != '':
             cog = cmd = None
             if command.lower() == 'help':
@@ -120,7 +125,7 @@ class Help(commands.Cog):
                                 em.add_field(name='\u200b', value='\u200b')
                         pages.append(em)
                     p_sess = PaginatorSession(ctx, pages=pages,
-                                              footer=f'Type {ctx.prefix}help [command] for more info on a command.')
+                                              footer=f'Type {used_prefix}help [command] for more info on a command.')
                     await p_sess.run()
 
             elif cmd:
@@ -133,7 +138,7 @@ class Help(commands.Cog):
             embed = bot_help(self.bot, ctx)
             pages.append(embed)
             p_sess = PaginatorSession(ctx, pages=pages,
-                                      footer=f'Type {ctx.prefix}help [module] for more info on a module.')
+                                      footer=f'Type {used_prefix}help [module] for more info on a module.')
             await p_sess.run()
 
 
