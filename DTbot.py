@@ -32,9 +32,12 @@ class DTbot(commands.Bot):
         # set up logging and bind to instance
         self.log = logging.getLogger('nextcord')
         self.log.setLevel(logging.WARNING)
-        handler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8', mode='w')
-        handler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
-        self.log.addHandler(handler)
+        filehandler = logging.FileHandler(filename=f'./logs/{log_startup_time}.log', encoding='utf-8', mode='w')
+        streamhandler = logging.StreamHandler()
+        filehandler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
+        streamhandler.setFormatter(logging.Formatter('%(asctime)s: %(levelname)s: %(name)s: %(message)s'))
+        self.log.addHandler(filehandler)
+        self.log.addHandler(streamhandler)
 
         for extension in startup_extensions:
             try:
