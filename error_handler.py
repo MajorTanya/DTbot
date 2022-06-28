@@ -82,8 +82,9 @@ class ErrorHandler(commands.Cog):
             self.bot.log.error(f'HTML Status Code for the error below: {error.status_code}')
         else:
             pass
-        self.bot.log.error(type(error).__name__)
-        self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
+        if not isinstance(error, commands.CommandNotFound):
+            self.bot.log.error(type(error).__name__)
+            self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
 def setup(bot: DTbot):
