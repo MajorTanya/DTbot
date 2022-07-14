@@ -1,5 +1,5 @@
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 
 from DTbot import DTbot
 
@@ -29,8 +29,8 @@ async def send_cmd_help(bot, ctx, error_msg, delete_after=None, plain=False):
     command = ctx.subcommand if ctx.invoked_subcommand else ctx.command
     usage = bot.help_command.get_command_signature(command=command)
     if not plain:
-        em = nextcord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
-                            colour=bot.dtbot_colour)
+        em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
+                           colour=bot.dtbot_colour)
         em.set_footer(text=error_msg)
         await ctx.channel.send(embed=em, delete_after=delete_after)
     else:
@@ -50,13 +50,13 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             try:
                 await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}", 15)
-            except nextcord.Forbidden:
+            except discord.Forbidden:
                 await send_cmd_help(self.bot, ctx, f"Error: Missing Required Argument: {' '.join(error.args)}",
                                     15, plain=True)
         elif isinstance(error, commands.BadArgument):
             try:
                 await send_cmd_help(self.bot, ctx, f"Error: Bad Argument ({' '.join(error.args)})", 15)
-            except nextcord.Forbidden:
+            except discord.Forbidden:
                 await send_cmd_help(self.bot, ctx, f"Error: Bad Argument ({' '.join(error.args)})", 15, plain=True)
         elif isinstance(error, commands.CommandOnCooldown):
             await ctx.send(f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._",
@@ -87,5 +87,5 @@ class ErrorHandler(commands.Cog):
             self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
-def setup(bot: DTbot):
-    bot.add_cog(ErrorHandler(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(ErrorHandler(bot))

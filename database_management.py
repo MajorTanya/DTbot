@@ -1,10 +1,10 @@
 import random
 import time
 
+import discord
 import mysql.connector as mariadb
-import nextcord
+from discord.ext import commands
 from mysql.connector import pooling
-from nextcord.ext import commands
 
 from DTbot import DTbot
 from launcher import db_config
@@ -27,7 +27,7 @@ def dbcallprocedure(procedure, *, returns: bool = False, params: tuple):
     db.close()
 
 
-def checkdbforuser(message: nextcord.Message):
+def checkdbforuser(message: discord.Message):
     result = dbcallprocedure('CheckUserExist', returns=True, params=(message.author.id, '@res'))
     if result:
         # entry for this user ID exists, proceed to check for last XP gain time, possibly awarding some new XP
@@ -51,7 +51,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         return await self.bot.is_owner(ctx.message.author)
 
     @commands.Cog.listener()
-    async def on_message(self, message: nextcord.Message):
+    async def on_message(self, message: discord.Message):
         if (message.author == self.bot.user) or message.author.bot:
             return
         try:
@@ -61,7 +61,7 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         pass
 
     @commands.Cog.listener()
-    async def on_guild_join(self, guild: nextcord.Guild):
+    async def on_guild_join(self, guild: discord.Guild):
         dbcallprocedure('AddNewServer', params=(guild.id, guild.member_count))
 
     @commands.Cog.listener()
@@ -86,5 +86,5 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send('Server list refreshed.', delete_after=5)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(DatabaseManagement(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(DatabaseManagement(bot))

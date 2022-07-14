@@ -1,8 +1,8 @@
 import random
 
-import nextcord
-from nextcord.ext import commands
-from nextcord.ext.commands import Cooldown, CooldownMapping, cooldown
+import discord
+from discord.ext import commands
+from discord.ext.commands import Cooldown, CooldownMapping, cooldown
 
 from DTbot import DTbot
 from error_handler import send_cmd_help
@@ -70,7 +70,7 @@ class Misc(commands.Cog):
         if anime == '':
             try:
                 await send_cmd_help(self.bot, ctx, "")
-            except nextcord.Forbidden:  # not allowed to send embeds
+            except discord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
             await ctx.trigger_typing()
@@ -92,7 +92,7 @@ class Misc(commands.Cog):
         if manga == '':
             try:
                 await send_cmd_help(self.bot, ctx, "")
-            except nextcord.Forbidden:  # not allowed to send embeds
+            except discord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
             await ctx.trigger_typing()
@@ -126,10 +126,10 @@ class Misc(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def woop(self, ctx: commands.Context):
         chosen = random.choice(woop_links)
-        embed = nextcord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
+        embed = discord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
         embed.set_image(url=f"{chosen}")
         await ctx.send(embed=embed)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Misc(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Misc(bot))

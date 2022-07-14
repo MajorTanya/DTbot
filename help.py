@@ -1,5 +1,5 @@
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 
 from DTbot import DTbot, config
 from error_handler import IllegalCustomCommandAccess
@@ -15,7 +15,7 @@ def clean_prefix(bot: DTbot, prefix: str | None):
 
 def acq_sig(bot: DTbot, ctx: commands.Context, command: commands.Command):
     bot.help_command.context = ctx
-    signature = bot.help_command.get_command_signature(command=command)
+    signature = bot.help_command.get_command_signature(command)
     return signature.replace(ctx.clean_prefix, clean_prefix(bot, ctx.prefix))
 
 
@@ -24,8 +24,8 @@ def command_help(bot: DTbot, ctx: commands.Context, cmd: commands.Command):
         if str(ctx.message.guild.id) not in allowed_servers:
             raise IllegalCustomCommandAccess(ctx)
 
-    embed = nextcord.Embed(colour=bot.dtbot_colour, description=f'{cmd.description}\n\n{acq_sig(bot, ctx, cmd)}',
-                           title=f'{clean_prefix(bot, ctx.prefix)}{cmd.name}')
+    embed = discord.Embed(colour=bot.dtbot_colour, description=f'{cmd.description}\n\n{acq_sig(bot, ctx, cmd)}',
+                          title=f'{clean_prefix(bot, ctx.prefix)}{cmd.name}')
     return embed
 
 
@@ -36,9 +36,9 @@ def cog_help(bot: DTbot, ctx: commands.Context, cog: commands.Cog):
 
     cmd_list = []
     used_prefix = clean_prefix(bot, ctx.prefix)
-    embed = nextcord.Embed(colour=bot.dtbot_colour, title=cog.qualified_name)
-    embed2 = nextcord.Embed(colour=bot.dtbot_colour)
-    embed3 = nextcord.Embed(colour=bot.dtbot_colour)
+    embed = discord.Embed(colour=bot.dtbot_colour, title=cog.qualified_name)
+    embed2 = discord.Embed(colour=bot.dtbot_colour)
+    embed3 = discord.Embed(colour=bot.dtbot_colour)
     for command in bot.commands:
         if not command.hidden:
             if command.cog is cog:
@@ -74,10 +74,10 @@ def cog_help(bot: DTbot, ctx: commands.Context, cog: commands.Cog):
 def bot_help(bot: DTbot, ctx: commands.Context):
     cog_list = []
     cog_dict = {}
-    embed = nextcord.Embed(colour=bot.dtbot_colour, title='DTbot',
-                           description=f'An overview over all DTbot modules\n'
-                                       f'Do `{clean_prefix(bot, ctx.prefix)}help [module]` for a command overview of '
-                                       f'the module.')
+    embed = discord.Embed(colour=bot.dtbot_colour, title='DTbot',
+                          description=f'An overview over all DTbot modules\n'
+                                      f'Do `{clean_prefix(bot, ctx.prefix)}help [module]` for a command overview of '
+                                      f'the module.')
     for c in bot.cogs:
         if str(ctx.message.guild.id) in allowed_servers and c in hidden_cogs[0][1]:
             cog_list.append(bot.cogs[c].qualified_name)

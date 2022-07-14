@@ -2,9 +2,9 @@ import datetime
 import sys
 from configparser import ConfigParser
 
-import nextcord
-from nextcord import Game
-from nextcord.ext import commands, tasks
+import discord
+from discord import Game
+from discord.ext import commands, tasks
 
 from DTbot import DTbot, config, startup_time
 
@@ -42,8 +42,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             now_ts = int(now_dt.timestamp())
             startup_ts = int(startup_time.timestamp())
             uptime = now_dt - startup_time
-            beat_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
-                                        description=f"{self.bot.user.name} is still alive and running!")
+            beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                       description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
             beat_embed.add_field(name="Uptime:", value=uptime)
@@ -55,8 +55,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         await self.bot.wait_until_ready()
         startup_ts = int(startup_time.timestamp())
         self.hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
-        startup_embed = nextcord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
-                                       description=f"{self.bot.user.name} is starting up!")
+        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+                                      description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
         await self.hb_chamber.send(embed=startup_embed)
 
@@ -86,21 +86,21 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command(description="Can load additional extensions into DTbot. Developers only.",
                       brief="Load an extension. Developers only.")
     async def load(self, ctx: commands.Context, extension_name: str):
-        self.bot.load_extension(extension_name)
+        await self.bot.load_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` loaded successfully.")
 
     @commands.command(description="Unload an extension. Developers only.",
                       brief="Unload an extension. Developers only.")
     async def unload(self, ctx: commands.Context, extension_name: str):
-        self.bot.unload_extension(extension_name)
+        await self.bot.unload_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` unloaded successfully.")
 
     @commands.command(description="First unload and then immediately reload a module. Developers only.",
                       brief="Reload an extension. Developers only.")
     async def reload(self, ctx: commands.Context, extension_name: str):
-        self.bot.reload_extension(extension_name)
+        await self.bot.reload_extension(extension_name)
         self.bot.log.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
         await ctx.send(f"Module `{extension_name}` reloaded successfully.")
 
@@ -132,8 +132,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         config.set('Info', 'last_updated', last_updated)
         self.bot.log.info(f"{ctx.author} refreshed dtbot_version and last_update.")
         self.bot.log.info("Updating Rich Presence and reloading General...")
-        await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
-        await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
+        # await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
+        # await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
 
     @commands.command(description='Shutdown command for the bot. Developers only.',
                       brief='Shut the bot down. Developers only.')
@@ -148,5 +148,5 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             return
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Dev(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Dev(bot))

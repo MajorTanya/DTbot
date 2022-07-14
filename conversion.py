@@ -1,7 +1,8 @@
 import re
 
-from nextcord.ext import commands
+from discord.ext import commands
 
+from DTbot import DTbot
 from util.utils import rint
 
 CM_IN_INCH = 2.54
@@ -15,7 +16,7 @@ L_IN_USGAL = 3.785411784
 class Conversion(commands.Cog):
     """Convert units, especially Metric and US Customary / Imperial"""
 
-    def __init__(self, bot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
 
     @commands.command(hidden=True,
@@ -242,5 +243,5 @@ class Conversion(commands.Cog):
         await ctx.send(f'{rint(liters)} l = {l_value} gal (US)')
 
 
-def setup(bot):
-    bot.add_cog(Conversion(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Conversion(bot))
