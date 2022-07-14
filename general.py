@@ -7,12 +7,12 @@ from discord.ext import commands
 from discord.ext.commands import cooldown
 
 from DTbot import DTbot, config, startup_time
-from database_management import dbcallprocedure
 from dev import dtbot_version, last_updated
 from error_handler import send_cmd_help
 from launcher import default_prefix
 from linklist import changelog_link
 from util.PaginatorSession import PaginatorSession
+from util.utils import dbcallprocedure
 
 main_dev_id = config.getint('Developers', 'main dev id')
 main_dev = config.get('Developers', 'main')
@@ -90,7 +90,7 @@ class General(commands.Cog):
             except discord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         elif len(newprefix) <= 3:
-            dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, newprefix))
+            dbcallprocedure(self.bot.db_cnx, 'ChangeServerPrefix', params=(ctx.message.guild.id, newprefix))
             await ctx.send(f"Prefix for {ctx.guild} changed to `{newprefix}`.\nYou can always reach DTbot by "
                            f"mentioning it. You can also reset the prefix to the default by using "
                            f"`@DTbot resetserverprefix` if you forget your server's prefix.")
@@ -156,7 +156,7 @@ class General(commands.Cog):
                       aliases=['rsp', 'resetprefix'])
     @commands.has_guild_permissions(manage_guild=True)
     async def resetserverprefix(self, ctx: commands.Context):
-        dbcallprocedure('ChangeServerPrefix', params=(ctx.message.guild.id, '+'))
+        dbcallprocedure(self.bot.db_cnx, 'ChangeServerPrefix', params=(ctx.message.guild.id, '+'))
         await ctx.send(f'Prefix for {ctx.guild} reset to `+`.')
 
     @commands.command(description="Gives the bot's uptime since the last restart.",
@@ -223,7 +223,7 @@ class General(commands.Cog):
         else:
             user_id = ctx.author.id
             user_name = ctx.author.display_name
-        xp = dbcallprocedure('GetUserXp', returns=True, params=(user_id, '@res'))
+        xp = dbcallprocedure(self.bot.db_cnx, 'GetUserXp', returns=True, params=(user_id, '@res'))
         if xp > 0:
             await ctx.send(f"**{user_name}** has `{xp}` XP.")
         else:
