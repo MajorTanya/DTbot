@@ -51,6 +51,14 @@ class General(commands.Cog):
             embed.set_image(url=avatar_url)
         await ctx.send(embed=embed)
 
+    @commands.command(description='Current DTbot announcements',
+                      brief='DTbot announcements')
+    async def announcements(self, ctx: commands.Context):
+        embed = nextcord.Embed(colour=self.bot.dtbot_colour, title='Announcement',
+                               url=config.get('About', 'ANNOUNCEMENT LINK'),
+                               description=config.get('About', 'ANNOUNCEMENT MSG'))
+        await ctx.send(embed=embed)
+
     @commands.command(description="Get an overview over the recentmost update of DTbot",
                       brief="Recent updates to DTbot")
     @commands.bot_has_permissions(embed_links=True)
