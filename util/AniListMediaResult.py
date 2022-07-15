@@ -23,7 +23,7 @@ def request(title, is_manga: bool):  # request the entry from AniList
     response = requests.post(AL_API_URL, json={'query': query, 'variables': {'search': title}})
     result = response.json()['data']['Page']
     if result['pageInfo']['total'] == 0:  # nothing found
-        raise AniMangaLookupError(title=title, status_code=response.status_code, manga=is_manga)
+        raise AniMangaLookupError(title=title)
     else:
         return result['media'][0]
 
