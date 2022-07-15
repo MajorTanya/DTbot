@@ -1,12 +1,15 @@
 import re
 import urllib.parse
+from configparser import ConfigParser
 
 import discord
 import requests
 
-from DTbot import config
+from DTbot import DTbot
 from error_handler import AniMangaLookupError
 
+config = ConfigParser()
+config.read('./config/config.ini')
 AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
 KITSU_URL = config.get('AniManga Lookup', 'kitsu_url')
 MAL_URL = config.get('AniManga Lookup', 'mal_url')
@@ -18,7 +21,7 @@ kitsu_filters = urllib.parse.quote(config.get('AniManga Lookup', 'kitsu_filters'
 kitsu_query += kitsu_filters
 
 
-def request(title, is_manga: bool):  # request the entry from AniList
+def request(title: str, is_manga: bool):  # request the entry from AniList
     query = manga_query if is_manga else anime_query
     response = requests.post(AL_API_URL, json={'query': query, 'variables': {'search': title}})
     result = response.json()['data']['Page']
@@ -36,15 +39,28 @@ def make_date(date: dict):
     return f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
 
 
+class AniListMediaResultView(discord.ui.View):
+
+    def __init__(self, *, anilist: str, kitsu: str | None = None, mal: str | None = None):
+        super().__init__()
+        self.add_item(discord.ui.Button(label=f'AniList', url=anilist, emoji='<:AniList:742063839259918336>'))
+        self.add_item(discord.ui.Button(label=f'Kitsu', disabled=kitsu is None, url=kitsu,
+                                        emoji='<:Kitsu:742063838555275337>'))
+        self.add_item(discord.ui.Button(label=f'MyAnimeList', disabled=mal is None, url=mal,
+                                        emoji='<:MyAnimeList:742063838760927323>'))
+
+
 class AniListMediaResult:
-    def __init__(self, title, is_manga: bool, bot):
+    def __init__(self, title: str, is_manga: bool, bot: DTbot):
         self.bot = bot
-        self.MAL = ''
-        self.Kitsu = ''
+        self.AL: str | None = None
+        self.MAL: str | None = None
+        self.Kitsu: str | None = None
         result = request(title, is_manga)
         self.embed = self.process_result(result['idMal'], is_manga, result)
+        self.view = AniListMediaResultView(anilist=self.AL, kitsu=self.Kitsu, mal=self.MAL)
 
-    def process_result(self, mal_id, manga, result):
+    def process_result(self, mal_id, manga: bool, result):
         mal, kitsu = '', ''
         al_url = result['siteUrl']
         if mal_id:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
@@ -107,7 +123,8 @@ class AniListMediaResult:
         if not manga:
             season = result['season'].title() if result['season'] else None
             season_str = f"{season} {result['seasonYear']}" if result['status'] != 'NOT_YET_RELEASED' else 'Unknown'
-            embed.add_field(name='Season', value=season_str)
+            if season_str != 'None None':
+                embed.add_field(name='Season', value=season_str)
 
         if result['status'] != 'NOT_YET_RELEASED':
             start_date = make_date(result['startDate'])
@@ -121,10 +138,8 @@ class AniListMediaResult:
             if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
                 embed.add_field(name='\u200b', value='\u200b')
 
-        embed.add_field(name='<:AniList:742063839259918336> AniList', value=f"[AniList]({al_url})")
-        urls = ['<:Kitsu:742063838555275337> Kitsu', f"[Kitsu]({kitsu})",
-                '<:MyAnimeList:742063838760927323> MAL', f"[MyAnimeList]({mal})"]
-        embed.add_field(name=urls[0] if kitsu else '\u200b', value=urls[1] if kitsu else '\u200b')
-        embed.add_field(name=urls[2] if mal else '\u200b', value=urls[3] if mal else '\u200b')
+        self.AL = al_url
+        self.Kitsu = kitsu if kitsu else None
+        self.MAL = mal if mal else None
 
         return embed
