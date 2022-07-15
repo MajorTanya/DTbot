@@ -1,17 +1,61 @@
 import random
 import re
+import typing
 
 import discord
 import rolldice
+from discord import app_commands
 from discord.ext import commands
 
 from DTbot import DTbot
 
+TRouletteBets = typing.Literal['Straight (e.g. Red 3)', 'Colour (Red/Black)', 'Even/Odd', 'High (19-36)/Low (1-18)']
+TRollModTypes = typing.Literal['+', '-', '*']
+TRollOptions = typing.Literal['Drop lowest', 'Drop highest', 'Keep lowest', 'Keep highest']
 
-def roulettecolourfinder(n, black):
-    if n == 0:
-        return "0"
-    return f"Black {n}" if n in black else f"Red {n}"
+roulette_bet_types = {'Straight (e.g. Red 3)': 'straight', 'Colour (Red/Black)': 'colour', 'Even/Odd': 'parity',
+                      'High (19-36)/Low (1-18)': 'hilo'}
+black = (2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35)
+red = (1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36)
+black_choices = [app_commands.Choice(name=f'Black {num}', value=f'Black {num}') for num in black]
+red_choices = [app_commands.Choice(name=f'Red {num}', value=f'Red {num}') for num in red]
+colour_choices = [app_commands.Choice(name='Red', value='Red'), app_commands.Choice(name='Black', value='Black')]
+parity_choices = [app_commands.Choice(name='Even', value='Even'), app_commands.Choice(name='Odd', value='Odd')]
+hilo_choices = [app_commands.Choice(name='High (19-36)', value='High'),
+                app_commands.Choice(name='Low (1-18)', value='Low')]
+
+roll_options = {'Drop lowest': 'x', 'Drop highest': 'X', 'Keep lowest': 'k', 'Keep highest': 'K', None: ''}
+
+
+def roulettecolourfinder(n: str | int):
+    try:
+        n = int(n)
+    except ValueError:
+        return 'invalid'
+    return '0' if n == 0 else f'Black {n}' if n in black else f'Red {n}' if n in red else 'invalid'
+
+
+def is_valid_bet(bet_type: str, bet: str):
+    digits = ''
+    try:
+        bet_type = roulette_bet_types[bet_type]
+    except KeyError:
+        return False
+    match bet_type:
+        case 'straight':
+            if 'red' in bet.lower() or 'black' in bet.lower() or '0' == bet.lower():
+                digits = bet.lower().removeprefix('red ').removeprefix('black ')
+            if digits.isdigit() and roulettecolourfinder(digits) != 'invalid':
+                return True
+            return False
+        case 'colour':
+            return bet.lower() == 'black' or bet.lower() == 'red'
+        case 'parity':
+            return bet.lower() == 'even' or bet.lower() == 'odd'
+        case 'hilo':
+            return bet.lower() == 'high' or bet.lower() == 'low'
+        case _:
+            return False
 
 
 class Rng(commands.Cog, name='RNG'):
@@ -20,185 +64,146 @@ class Rng(commands.Cog, name='RNG'):
     def __init__(self, bot: DTbot):
         self.bot = bot
 
-    @commands.command(name='8ball',
-                      description="Answers a yes/no question.",
-                      brief="Answers from the beyond.")
-    async def _eightball(self, ctx: commands.Context):
+    @app_commands.command(name='8ball', description='Ask any questions and receive an answer from the Great Beyond')
+    @app_commands.describe(_question='The question you wish to get answered')
+    @app_commands.rename(_question='question')
+    async def _eightball(self, interaction: discord.Interaction, _question: str | None):
         possible_responses = [
-            'Yes',
-            'Maybe',
-            'No',
-            'Probably',
-            'Nah',
-            'No way',
-            'Nope',
-            'YES',
-            'Kind of',
-            'HELL NO',
-            'What if?',
-            'It is certain.',
-            'Ask again later.',
-            'Don\'t count on it',
-            'Without a doubt.',
-            'Replay hazy, try again later'
+            'Yes', 'Maybe', 'No', 'Probably', 'Nah', 'No way',
+            'Nope', 'YES', 'Kind of', 'HELL NO', 'What if?',
+            'It is certain.', 'Ask again later.',
+            "Don't count on it", 'Without a doubt.',
+            'Reply hazy, try again later'
         ]
-        await ctx.send(random.choice(possible_responses))
+        await interaction.response.send_message(random.choice(possible_responses))
 
-    @commands.command(description='Choose one of multiple choices. '
-                                  'With options containing spaces, use double quotes like:\n'
-                                  '+choose "Make Pizza" Fish "Go to the cafeteria"',
-                      brief='Let the bot decide for you',
-                      aliases=['choice'])
-    async def choose(self, ctx: commands.Context, *choices: str):
+    @app_commands.command(description='Let the bot pick one of up to 5 options for you')
+    async def choose(self, interaction: discord.Interaction, option1: str, option2: str, option3: str | None,
+                     option4: str | None, option5: str | None):
+        choices = [choice for choice in [option1, option2, option3, option4, option5] if choice is not None]
+        await interaction.response.send_message(f'I choose: __{random.choice(choices)}__')
+
+    @app_commands.command(description='Flips a coin')
+    async def coinflip(self, interaction: discord.Interaction):
+        await interaction.response.send_message(random.choice(['Heads', 'Tails']))
+
+    roulette = app_commands.Group(name='roulette', description='Play at a French Roulette table')
+
+    @roulette.command(description='Try and guess the result of a Roulette spin')
+    @app_commands.describe(bet_type='The type of bet you want to make')
+    @app_commands.describe(bet='The bet you want to make')
+    @app_commands.rename(bet_type='type')
+    async def bet(self, interaction: discord.Interaction, bet_type: TRouletteBets, bet: str):
+        if not is_valid_bet(bet_type, bet):
+            return await interaction.response.send_message(f'Invalid Bet for the selected bet type. Please choose a '
+                                                           f'bet from the suggested options.', ephemeral=True)
+        number = random.randint(0, 36)
+        result = roulettecolourfinder(number)
+        won = False
         try:
-            await ctx.send(random.choice(choices))
-        except IndexError:
-            await ctx.send('You have to provide me with something to actually choose from though...')
+            match roulette_bet_types[bet_type]:
+                case 'straight':
+                    won = result == bet
+                case 'colour':
+                    won = ('Black' in result and 'black' == bet.lower()) or ('Red' in result and 'red' == bet.lower())
+                case 'parity':
+                    won = (number % 2 == 0 and 'even' in bet.lower()) or (number % 2 != 0 and 'odd' in bet.lower())
+                case 'hilo':
+                    won = (19 <= number <= 36 and 'high' in bet.lower()) or (1 <= number <= 18 and 'low' in bet.lower())
+        except KeyError:
+            pass
+        await interaction.response.send_message(f'Roulette landed on {result}.\nYou **{"won" if won else "lost"}** '
+                                                f'with your bet on {bet}.')
 
-    @commands.command(description="Flips a coin",
-                      brief="Flip a coin")
-    async def coinflip(self, ctx: commands.Context):
-        await ctx.send(random.choice(['Heads', 'Tails']))
+    @bet.autocomplete('bet')
+    async def bet_autocomplete(self, interaction: discord.Interaction, current: str):
+        bet_type = roulette_bet_types[interaction.namespace['type']]
+        choices: list[app_commands.Choice] = []
+        match bet_type:
+            case 'straight':
+                choices = [choice for choice in red_choices if current.lower() in choice.name.lower()]
+                choices += [choice for choice in black_choices if current.lower() in choice.name.lower()]
+                if '0' in current.lower():
+                    choices += [app_commands.Choice(name='0', value='0')]
+            case 'colour':
+                choices = [choice for choice in colour_choices if current.lower() in choice.name.lower()]
+            case 'parity':
+                choices = [choice for choice in parity_choices if current.lower() in choice.name.lower()]
+            case 'hilo':
+                choices = [choice for choice in hilo_choices if current.lower() in choice.name.lower()]
+        return choices[:25]
 
-    @commands.command(description="Rolls dice in NdN format. (1d6 is rolling a standard, six-sided die once. "
-                                  "3d20 rolls three twenty-sided dice.)\n\nSupported formats:\n"
-                                  "- NdNx: Drop the Lowest Roll from the result. The x needs to be lowercase.\n"
-                                  "- NdNX: Drop the Highest Roll from the result. The X needs to be uppercase.\n"
-                                  "- NdNk: Keep only the Lowest Roll for the result. The k needs to be lowercase.\n"
-                                  "- NdNK: Keep only the Highest Roll for the result. The K needs to be uppercase.\n"
-                                  "(4d6x rolls 4 six-sided dice and removes the lowest roll from the sum.)\n\n"
-                                  "- NdN +/-/* n: Adds n to/ Subtracts n from/ Multiplies n with the result.\n"
-                                  "(1d12 + 2 rolls a 12-sided die once and adds 2 to the result)\n"
-                                  "(5d8 * 3 rolls five 8-sided dice and multiplies the result by three)\n\n"
-                                  "NdNx/X/k/K +/-/* n is supported (pick one of each).\n"
-                                  "(6d4X - 5 rolls 6 4-sided dice, drops the highest result, and then subtracts 5 "
-                                  "from the sum of the remaining rolls)\n"
-                                  "Does NOT support any other CritDice formats.",
-                      brief="Rolls dice in NdN format")
-    @commands.bot_has_permissions(embed_links=True)
-    async def roll(self, ctx: commands.Context, *, dice):
-        total_rolled = 0
-        full_mod = ""
-        try:
-            group = re.match(r'^(\d*)d(\d+)', dice, re.IGNORECASE)
-            if group is None:
-                raise commands.BadArgument("Could not detect NdN pattern for dice. Refer to the command help for info "
-                                           "on the NdN syntax.")
-            num_of_dice, type_of_dice = int(group[1]) if group[1] != '' else 1, int(group[2])
-            if num_of_dice > 150:
-                return await ctx.send(f"Too many dice to roll. Maximum number of dice allowed is 150. "
-                                      f"(You wanted {num_of_dice}.)")
-            _, explanation = rolldice.roll_dice(''.join(dice))
-            # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
-            dice_rolled = f"{num_of_dice}d{type_of_dice}"
-            mode = re.search(rf'((?<={dice_rolled}).)', dice, re.IGNORECASE)
-            mode = "" if mode is None or mode.group(1).lower() not in {'k', 'x'} else mode.group(1)
-            explanation, *modification = explanation.replace(",", ", ").split("]", 1)
-            explanation += "]"
-            explanation = re.sub(r' ~~ ([\d, ]+)', " ~~(\\1)~~", explanation).replace("]]", "]")
+    @roulette.command(description='Spin the Roulette wheel without guessing the result')
+    async def spin(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'Roulette landed on {roulettecolourfinder(random.randint(0, 36))}')
 
-            if str(modification) != "['']":
-                mod = str(modification).strip("[']").split(" ", 3)
-                # we only care about the first modification because handling several is a headache for now
-                operator, modifier, full_mod = mod[1], mod[2], mod[1] + mod[2]
-            kept_dice = re.sub(r' ~~(\([\d, ]*\))~~', "", explanation).strip('[]').split(', ')
-
-            try:
-                for i in kept_dice:
-                    total_rolled += int(i)
-            except ValueError:
-                raise commands.BadArgument("Unsupported operation")  # user probably used NdN a/s/m n or something
-
-            result = eval(str(total_rolled) + full_mod) if full_mod else total_rolled
-            embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"Result: __{result}__",
-                                  description=f"{explanation} {full_mod}")
-            embed.set_footer(text=f"Rolled {dice_rolled}{mode}{full_mod}")
-            await ctx.send(embed=embed)
-
-        except rolldice.DiceGroupException as e:
-            self.bot.help_command.context = ctx
-            usage = self.bot.help_command.get_command_signature(ctx.command)
-            em = discord.Embed(title="Dice have to be in proper NdN format",
-                               description=f"{ctx.command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
-                               colour=self.bot.dtbot_colour)
-            em.set_footer(text=str(e))
-            await ctx.channel.send(embed=em)
-
-    @commands.command(description="It's Russian Roulette with a 5-barrel revolver. One chamber is loaded. Good luck.",
-                      brief="Play some Russian Roulette",
-                      aliases=['russianroulette', 'rusroulette'])
-    async def rroulette(self, ctx: commands.Context):
-        await ctx.send(random.choices(['Alive', 'Dead'], [0.8, 0.2])[0])
-
-    @commands.command(description="Play some French Roulette (bet optional)\n\n"
-                                  "For a nicer overview of the distribution of numbers across the colours, use "
-                                  "+show roulette\n\n"
-                                  "Red:       1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36\n"
-                                  "Black:     2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35\n"
-                                  "No colour: 0\n\n"
-                                  "Bet options: No Bet / Straight bet (Red 3) / Colour Bet (Red) / Even/Odd Bet (Odd)"
-                                  "\n\nUsage:\n+roulette OR +roulette Red 3 OR +roulette 0 OR +roulette Odd",
-                      brief="Play some Roulette")
-    async def roulette(self, ctx: commands.Context, *bet):
-        result_eo = result_c = win_type = ""
-        black = (2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35)
-        # red = (1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36)
-        result_n = random.randint(0, 36)
-
-        if result_n == 0:
-            endresult = f"{result_n}"
-        else:
-            result_iseven = (result_n % 2) == 0
-            result_eo = "Even" if result_iseven else "Odd"
-            result_c = "Black" if result_n in black else "Red"
-            endresult = f"{result_c} {result_n} ({result_eo})"
-
-        if bet:
-            bet_n = ''.join(x for x in bet if x.isdigit())
-            bet = ' '.join(bet).lower()
-            try:
-                bet_n = int(bet_n)
-            except ValueError:
-                pass
-            if result_n == bet_n:
-                # no number has a variable colour, so it doesn't matter if the user mentions a colour in their bet,
-                # we award them a Straight Bet with or without a colour in the bet if they guess the number
-                win_type = f" Straight Bet on {roulettecolourfinder(bet_n, black)}"
-            elif result_eo.lower() in bet:
-                win_type = f"n {result_eo} Bet"
-            elif result_c.lower() in bet:
-                win_type = f" Bet on {result_c}"
-
-            endresult = f"{endresult}\n**You win with a{win_type}!**" if win_type else f"{endresult}\n**You lost!**"
-        await ctx.send(endresult)
-
-    @commands.group(hidden=True,
-                    description="")
-    @commands.bot_has_permissions(embed_links=True)
-    async def show(self, ctx: commands.Context):
-        if ctx.invoked_subcommand is None:
-            return
-
-    @show.command(name="roulette",
-                  description="")
-    async def _roulette(self, ctx: commands.Context):
+    @roulette.command(description='Show the distribution of numbers of a French Roulette Table')
+    async def table(self, interaction: discord.Interaction):
         embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description="Distribution of numbers and colours on the French Roulette table:\n")
-        embed.set_image(url="https://i.imgur.com/jtMZJXR.png")
-        await ctx.send(embed=embed)
+                              description='Distribution of numbers and colours on the French Roulette table:\n'
+                                          '0 is counted as neither Red nor Black.')
+        embed.set_image(url='https://i.imgur.com/jtMZJXR.png')
+        await interaction.response.send_message(embed=embed)
 
-    @commands.command(description='Find out how shippable your ship is\nNeeds to include "and" between ship items.'
-                                  '\n\nUsage:\n+ship The entire internet and pineapple on pizza',
-                      brief='Ship things')
-    @commands.bot_has_permissions(embed_links=True)
-    async def ship(self, ctx: commands.Context, *ship):
-        ship = ' '.join(ship)
-        ship = re.split(" and ", ship, 1, flags=re.IGNORECASE)
+    @app_commands.command(description='Russian Roulette with a 5-barrel revolver. One chamber is loaded. Good luck.')
+    async def russianroulette(self, interaction: discord.Interaction):
+        await interaction.response.send_message(random.choices(['Alive', 'Dead'], [0.8, 0.2])[0])
+
+    @app_commands.command(description='Roll dice')
+    @app_commands.describe(num_of_dice='The number of dice to roll')
+    @app_commands.describe(dice_sides='How many sides the die should have (enter 20 to roll a d20, etc.)')
+    @app_commands.describe(options='Drop lowest roll / Drop highest / Keep lowest / Keep highest')
+    @app_commands.describe(mod_type='What kind of modifier (+, -, *) to apply to the dice rolls (must specify '
+                                    '`modifier` as well)')
+    @app_commands.describe(modifier='The modifier to add/subtract/multipy with the result (must specify `mod_type` as '
+                                    'well)')
+    @app_commands.checks.bot_has_permissions(embed_links=True)
+    async def roll(self, interaction: discord.Interaction, num_of_dice: app_commands.Range[int, 1, 150],
+                   dice_sides: app_commands.Range[int, 1], options: TRollOptions | None, mod_type: TRollModTypes | None,
+                   modifier: int | None):
+        if mod_type is not None and modifier is None:
+            return await interaction.response.send_message('When selecting a modifier type, please also provide the '
+                                                           'value for said modifier.', ephemeral=True)
+        elif mod_type is None and modifier is not None:
+            return await interaction.response.send_message('When entering a modifier, please also provide the modifier '
+                                                           'type.', ephemeral=True)
+        await interaction.response.defer()
+        mod_type = mod_type if mod_type is not None else ''
+        modifier = modifier if modifier is not None else ''
+        dice = f'{num_of_dice}d{dice_sides}{roll_options[options]} {mod_type}{modifier}'
+        _, explanation = rolldice.roll_dice(''.join(dice))
+        # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
+        explanation, _ = explanation.replace(',', ', ').split(']', 1)
+        explanation += ']'
+        explanation = re.sub(r' ~~ ([\d, ]+)', ' ~~(\\1)~~', explanation).replace(']]', ']')
+        kept_dice = re.sub(r' ~~(\([\d, ]*\))~~', '', explanation).strip('[]').split(', ')
+
+        total_rolled = sum(int(die) for die in kept_dice if die.isdigit())
+
+        match mod_type:
+            case '+':
+                result = total_rolled + modifier
+            case '-':
+                result = total_rolled - modifier
+            case '*':
+                result = total_rolled * modifier
+            case _:
+                result = total_rolled
+        embed = discord.Embed(colour=self.bot.dtbot_colour, title=f'Result: __{result}__',
+                              description=f'{explanation} {mod_type}{modifier if modifier is not None else ""}')
+        embed.set_footer(text=f'Rolled {dice}')
+        await interaction.followup.send(embed=embed)
+
+    @app_commands.command(description='Find out how shippable your ship is')
+    @app_commands.describe(first='The first half of your ship')
+    @app_commands.describe(second='The second half of your ship')
+    @app_commands.checks.bot_has_permissions(embed_links=True)
+    async def ship(self, interaction: discord.Interaction, first: str, second: str):
         shipping = random.random() * 100
-        emote_choice = ":broken_heart:" if shipping < 50 else ":heart:"
+        emote_choice = ':broken_heart:' if shipping < 50 else ':heart:'
         embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description=f"{ship[0]} and {ship[1]}? `{shipping:.2f}%` shippable. {emote_choice}")
-        await ctx.send(embed=embed)
+                              description=f'{first} and {second}? `{shipping:.2f}%` shippable. {emote_choice}')
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: DTbot):
