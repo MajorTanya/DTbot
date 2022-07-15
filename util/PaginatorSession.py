@@ -1,108 +1,96 @@
-import asyncio
-from collections import OrderedDict
+from typing import Coroutine
 
-import discord
+import discord.ui
+
+FIRST_PAGE = '⏮'
+PREV_PAGE = '◀'
+STOP = '⏹'
+NEXT_PAGE = '▶'
+LAST_PAGE = '⏭'
+CUTOFFS: dict[str, int] = {
+    FIRST_PAGE: 3,
+    PREV_PAGE: 1,
+    STOP: 1,
+    NEXT_PAGE: 1,
+    LAST_PAGE: 3
+}
 
 
-class PaginatorSession:
-    def __init__(self, ctx, timeout=60, pages=None, footer=''):
+class NavButton(discord.ui.Button):
+    """Custom subclass that takes a Coroutine callback for the button in its constructor"""
+
+    def __init__(self, *, callback: Coroutine, style: discord.ButtonStyle = discord.ButtonStyle.secondary,
+                 label: str | None = None, disabled: bool = False, custom_id: str | None = None, url: str | None = None,
+                 emoji: str | discord.Emoji | discord.PartialEmoji | None = None, row: int | None = None):
+        super().__init__(style=style, label=label, disabled=disabled, custom_id=custom_id, url=url, emoji=emoji,
+                         row=row)
+        self.callback = callback
+
+
+class PaginatorSession(discord.ui.View):
+    def __init__(self, *, pages: list[discord.Embed] = None):
+        super().__init__()
+        self.callbacks: dict[str, Coroutine] = {
+            FIRST_PAGE: self.first_page,
+            PREV_PAGE: self.prev_page,
+            STOP: self.stop_session,
+            NEXT_PAGE: self.next_page,
+            LAST_PAGE: self.last_page
+        }
         if pages is None:
             pages = []
-        self.footer = footer
-        self.ctx = ctx
-        self.timeout = timeout
         self.pages = pages
-        self.running = False
-        self.message = None
         self.current = 0
-        self.reactions = OrderedDict({
-            '⏮': self.first_page,
-            '◀': self.previous_page,
-            '⏹': self.close,
-            '▶': self.next_page,
-            '⏭': self.last_page
-        })
+        self.message: discord.Message | None = None
 
-    def add_page(self, page):
-        if isinstance(page, discord.Embed):
-            self.pages.append(page)
-        else:
-            raise TypeError('Page must be a discord.Embed.')
+    async def start(self, interaction: discord.Interaction):
+        self.message = await interaction.original_message()
+        # add buttons manually, so we have first/last page skippers and normal next/prev/stop buttons only when needed
+        view = discord.ui.View.from_message(self.message).clear_items()
+        skippers_needed = len(self.pages) > CUTOFFS[FIRST_PAGE]
+        pagers_needed = len(self.pages) > CUTOFFS[PREV_PAGE]
+        if skippers_needed:
+            view.add_item(NavButton(callback=self.callbacks[FIRST_PAGE], label=FIRST_PAGE))
+        if pagers_needed:
+            view.add_item(NavButton(callback=self.callbacks[PREV_PAGE], label=PREV_PAGE))
+            view.add_item(NavButton(callback=self.callbacks[STOP], label=STOP))
+            view.add_item(NavButton(callback=self.callbacks[NEXT_PAGE], label=NEXT_PAGE))
+        if skippers_needed:
+            view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], label=LAST_PAGE))
+        self.message = await interaction.edit_original_message(content=None, embed=self.pages[0], view=view)
 
-    def valid_page(self, index):
-        return index >= 0 or index < len(self.pages)
+    async def on_timeout(self) -> None:
+        await super().on_timeout()
+        if self.message:
+            await self.message.edit(view=None)
+            self.stop()
 
-    async def show_page(self, index: int):
-        if not self.valid_page(index):
-            return
+    async def first_page(self, interaction: discord.Interaction):
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        self.current = 0
+        await interaction.edit_original_message(embed=self.pages[self.current])
 
-        self.current = index
-        page = self.pages[index]
-        page.set_footer(text=self.footer)
+    async def prev_page(self, interaction: discord.Interaction):
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        self.current = (self.current - 1) % len(self.pages)
+        await interaction.edit_original_message(embed=self.pages[self.current])
 
-        if self.running:
-            await self.message.edit(embed=page)
-        else:
-            self.running = True
-            self.message = await self.ctx.send(embed=page)
+    async def stop_session(self, interaction: discord.Interaction):
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        await interaction.edit_original_message(view=None)
+        self.stop()
 
-            for reaction in self.reactions.keys():
-                if len(self.pages) == 1 and reaction in '⏮◀▶⏭':
-                    continue
-                elif len(self.pages) == 2 and reaction in '⏮⏭':
-                    continue
-                await self.message.add_reaction(reaction)
+    async def next_page(self, interaction: discord.Interaction):
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        self.current = (self.current + 1) % len(self.pages)
+        await interaction.edit_original_message(embed=self.pages[self.current])
 
-    def react_check(self, reaction, user):
-        """Check to make sure it only responds to reactions from the sender and on the same message"""
-        if reaction.message.id != self.message.id:
-            return False  # not the same message
-        if user.id != self.ctx.author.id:
-            return False  # not the same user
-        if reaction.emoji in self.reactions.keys():
-            return True  # reaction was one of the pagination emojis
-
-    async def run(self):
-        if not self.running:
-            await self.show_page(0)
-        while self.running:
-            try:
-                reaction, user = await self.ctx.bot.wait_for('reaction_add', check=self.react_check,
-                                                             timeout=self.timeout)
-            except asyncio.TimeoutError:
-                self.running = False
-                try:
-                    await self.message.clear_reactions()
-                except:
-                    pass
-                finally:
-                    break
-            else:
-                try:
-                    await self.message.remove_reaction(reaction, user)
-                except:
-                    pass
-
-                action = self.reactions[reaction.emoji]
-                await action()
-
-    async def first_page(self):
-        return await self.show_page(0)
-
-    async def last_page(self):
-        return await self.show_page(len(self.pages) - 1)
-
-    async def next_page(self):
-        return await self.show_page((self.current + 1) % len(self.pages))
-
-    async def previous_page(self):
-        return await self.show_page((self.current - 1) % len(self.pages))
-
-    async def close(self):
-        self.running = False
-        try:
-            await self.message.clear_reactions()
-            return
-        except:
-            pass
-            return
+    async def last_page(self, interaction: discord.Interaction):
+        if not interaction.response.is_done():
+            await interaction.response.defer()
+        self.current = len(self.pages) - 1
+        await interaction.edit_original_message(embed=self.pages[self.current])

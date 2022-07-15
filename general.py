@@ -175,8 +175,8 @@ class General(commands.Cog):
             pages.append(discord.Embed(colour=role.colour,
                                        title=f'{len(role.members)} users with {role.name} - Page {i + 1}/{page_count}',
                                        description=page_members))
-        p_sess = PaginatorSession(ctx, pages=pages)
-        await p_sess.run()
+        p_sess = PaginatorSession(pages=pages)
+        # await p_sess.run()
 
     @commands.command(description="Shows a user's XP points. If no user is mentioned, it will default to command user.",
                       brief="Check user's XP")
