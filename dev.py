@@ -1,31 +1,30 @@
 import datetime
 import sys
+from asyncio import sleep
 from configparser import ConfigParser
 
 import discord
-from discord import Game
+from discord import app_commands
 from discord.ext import commands, tasks
 
 from DTbot import DTbot
-
-config = ConfigParser()
-config.read('./config/config.ini')
-dtbot_version = config.get('Info', 'dtbot_version')
-last_updated = config.get('Info', 'last_updated')
-h_code = config.get('Developers', 'h_code')
-hb_freq = config.getint('Heartbeat', 'hb_freq')
-sdb_code = config.get('Developers', 'sdb_code')
+from util.utils import dbcallprocedure
 
 
-class Dev(commands.Cog, command_attrs=dict(hidden=True)):
+class Dev(commands.GroupCog):
     """Developer Commands and DTbot Management"""
+
+    HB_FREQ: float = 60
 
     def __init__(self, bot: DTbot):
         self.bot = bot
-        self.hb_chamber = None
-        if len(sys.argv) < 2 or sys.argv[1] == '1':
-            # run "python launcher.py 1" to start DTbot with a heartbeat message, 0 if not
-            # if no parameter is provided, defaults to run with a heartbeat
+        Dev.HB_FREQ = self.bot.bot_config.getint('Heartbeat', 'hb_freq')
+        self.H_CODE = self.bot.bot_config.get('Developers', 'h_code')
+        self.SDB_CODE = self.bot.bot_config.get('Developers', 'sdb_code')
+        self.hb_chamber: discord.TextChannel | None = None
+        if '--no-heartbeat' not in sys.argv:
+            # run "python launcher.py --no-heartbeat" to start DTbot without the heartbeat messages
+            # If not provided, run with a heartbeat
             self.heartbeat.start()
 
     def cog_unload(self):
@@ -34,27 +33,27 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         except:
             pass
 
-    async def cog_check(self, ctx: commands.Context):
-        return await self.bot.is_owner(ctx.message.author)
-
-    @tasks.loop(seconds=hb_freq)
+    @tasks.loop(seconds=HB_FREQ)
     async def heartbeat(self):
         if not self.bot.is_closed():
             now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
             now_ts = int(now_dt.timestamp())
             startup_ts = int(self.bot.bot_startup.timestamp())
             uptime = now_dt - self.bot.bot_startup
+            dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
             beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                        description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
             beat_embed.add_field(name="Uptime:", value=uptime)
             beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
-            await self.hb_chamber.send(embed=beat_embed, delete_after=hb_freq)
+            msg: discord.Message = await self.hb_chamber.send(embed=beat_embed)
+            await msg.delete(delay=Dev.HB_FREQ)
 
     @heartbeat.before_loop
     async def before_heartbeat(self):
         await self.bot.wait_until_ready()
+        self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
         self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint('Heartbeat', 'hb_chamber'))
         startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
@@ -64,91 +63,142 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.change_presence(activity=Game(name=f"Do @\u200bDTbot help (v. {dtbot_version})"))
+        dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
+        await self.bot.change_presence(activity=discord.Game(name=f"Do @\u200bDTbot help (v. {dtbot_version})"))
 
-    @commands.group(description="Manages the heartbeat of DTbot. Developers only.")
-    async def heart(self, ctx: commands.Context):
-        if ctx.invoked_subcommand is None:
-            pass
+    heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.",
+                               guild_ids=[DTbot.DEV_GUILD.id])
 
-    @heart.command(description="Stops the heartbeat of DTbot. Developers only.")
-    async def stop(self, ctx: commands.Context, code=None):
-        if code == h_code:
+    @heart.command(description="Stops the heartbeat of DTbot.")
+    async def stop(self, interaction: discord.Interaction, code: str):
+        await interaction.response.defer(ephemeral=True)
+        if code == self.H_CODE:
             self.heartbeat.stop()
-            self.bot.log.info(f'Heartbeat stopped by user {ctx.author}.')
-            await ctx.send(f'Heartbeat stopped by user {ctx.author}.')
+            self.bot.log.info(f'Heartbeat stopped by user {interaction.user}.')
+            await interaction.followup.send(f'Heartbeat stopped by user {interaction.user}.', ephemeral=True)
+        else:
+            await interaction.followup.send(f'Invalid code.', ephemeral=True)
 
-    @heart.command(description="Starts the heartbeat of DTbot. Developers only.")
-    async def start(self, ctx: commands.Context, code=None):
-        if code == h_code:
+    @heart.command(description="Starts the heartbeat of DTbot.")
+    async def start(self, interaction: discord.Interaction, code: str):
+        await interaction.response.defer(ephemeral=True)
+        if code == self.H_CODE:
             self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
-            self.bot.log.info(f'Heartbeat started by user {ctx.author}.')
-            await ctx.send(f'Heartbeat started by user {ctx.author}.')
+            self.bot.log.info(f'Heartbeat started by user {interaction.user}.')
+            await interaction.followup.send(f'Heartbeat started by user {interaction.user}.', ephemeral=True)
+        else:
+            await interaction.followup.send(f'Invalid code.', ephemeral=True)
 
-    @commands.command(description="Can load additional extensions into DTbot. Developers only.",
-                      brief="Load an extension. Developers only.")
-    async def load(self, ctx: commands.Context, extension_name: str):
-        await self.bot.load_extension(extension_name)
-        self.bot.log.info(f"Module `{extension_name}` loaded by user {ctx.author}.")
-        await ctx.send(f"Module `{extension_name}` loaded successfully.")
+    @app_commands.command(description="Load an extension. Optionally syncs Slash Commands.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def load(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
+                   global_sync: bool | None = False):
+        await interaction.response.defer(ephemeral=True)
+        try:
+            await self.bot.load_extension(extension_name)
+            if dev_sync:
+                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
+            if global_sync:
+                await self.bot.tree.sync()
+            self.bot.log.info(f"Module `{extension_name}` loaded by user {interaction.user}.")
+            await interaction.followup.send(f'Module `{extension_name}` loaded successfully.')
+        except commands.ExtensionError as e:
+            await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
-    @commands.command(description="Unload an extension. Developers only.",
-                      brief="Unload an extension. Developers only.")
-    async def unload(self, ctx: commands.Context, extension_name: str):
-        await self.bot.unload_extension(extension_name)
-        self.bot.log.info(f"Module `{extension_name}` unloaded by user {ctx.author}.")
-        await ctx.send(f"Module `{extension_name}` unloaded successfully.")
+    @load.autocomplete('extension_name')
+    async def load_autocomplete(self, _interaction: discord.Interaction, current: str):
+        loaded = [cog.__class__.__name__.lower() for cog in self.bot.cogs.values()]
+        not_loaded = [cog for key, cog in self.bot.bot_config.items('Extensions') if key.lower() not in loaded]
+        return [
+            app_commands.Choice(name=cog.title().replace('Rng', 'RNG'), value=cog)
+            for cog in not_loaded if current.lower() in cog.lower()
+        ]
 
-    @commands.command(description="First unload and then immediately reload a module. Developers only.",
-                      brief="Reload an extension. Developers only.")
-    async def reload(self, ctx: commands.Context, extension_name: str):
-        await self.bot.reload_extension(extension_name)
-        self.bot.log.info(f"Module `{extension_name}` reloaded by user {ctx.author}.")
-        await ctx.send(f"Module `{extension_name}` reloaded successfully.")
+    @app_commands.command(description="Unload an extension. Optionally syncs Slash Commands.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def unload(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
+                     global_sync: bool | None = False):
+        await interaction.response.defer(ephemeral=True)
+        try:
+            await self.bot.unload_extension(extension_name)
+            if dev_sync:
+                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
+            if global_sync:
+                await self.bot.tree.sync()
+            self.bot.log.info(f"Module `{extension_name}` unloaded by user {interaction.user}.")
+            await interaction.followup.send(f'Module `{extension_name}` unloaded successfully.')
+        except commands.ExtensionError as e:
+            await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
-    @commands.command(description="Update / Refresh DTbot's Rich Presence. Developers only.",
-                      brief="Update DTbot's Rich Presence. Developers only.")
-    async def updaterp(self, ctx: commands.Context, *caption: str):
+    @app_commands.command(description="Atomically reload an extension. Optionally syncs Slash Commands.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def reload(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
+                     global_sync: bool | None = False):
+        await interaction.response.defer(ephemeral=True)
+        try:
+            await self.bot.reload_extension(extension_name)
+            if dev_sync:
+                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
+            if global_sync:
+                await self.bot.tree.sync()
+            self.bot.log.info(f"Module `{extension_name}` reloaded by user {interaction.user}.")
+            await interaction.followup.send(f'Module `{extension_name}` reloaded successfully.')
+        except commands.ExtensionError as e:
+            await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
+
+    @unload.autocomplete('extension_name')
+    @reload.autocomplete('extension_name')
+    async def unreload_autocomplete(self, _interaction: discord.Interaction, current: str):
+        return [
+            app_commands.Choice(name=cog.qualified_name,
+                                value=cog.__class__.__name__.lower()
+                                .replace('databasemanagement', 'database_management')
+                                .replace('errorhandler', 'error_handler'))
+            for cog in (self.bot.cogs.values()) if current.lower() in cog.__class__.__name__.lower()
+        ]
+
+    @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def updaterp(self, interaction: discord.Interaction, caption: str | None, reload_config: bool | None = False):
+        await interaction.response.defer(ephemeral=True)
+        dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
+        if reload_config:
+            self.bot.bot_config = ConfigParser()
+            self.bot.bot_config.read('./config/config.ini')
+            dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
+            self.bot.log.info(f"{interaction.user} reloaded DTbot config successfully.")
         if caption:
-            caption = " ".join(caption)
-            caption = caption.replace("DTbot", "@\u200bDTbot")
-            caption = caption.replace("dtbot_version", dtbot_version)
+            caption = caption.replace("DTbot", "@\u200bDTbot").replace("dtbot_version", dtbot_version)
         else:
             caption = f"Do @\u200bDTbot help (v. {dtbot_version})"
-        await self.bot.change_presence(activity=Game(name=caption))
-        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {ctx.author}")
-        await ctx.send("Rich Presence updated.")
+        self.bot.log.info("Updating Rich Presence")
+        await self.bot.change_presence(activity=discord.Game(name=caption))
+        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")
+        await interaction.followup.send(f'Successfully updated Rich Presence to: {caption}', ephemeral=True)
 
-    @commands.command(description='Refresh the version number and date of last update from the config.'
-                                  '\nCalls `updaterp Do DTbot (v. dtbot_version)` to update the Rich Presence.'
-                                  '\nCalls `reload general` to update the use of the version'
-                                  'and date in the `info` and `changelog` commands.\nDevelopers only.',
-                      brief='Refresh the version and date of the last update. Developers only.')
-    async def updatever(self, ctx: commands.Context):
-        global dtbot_version, last_updated
-        refreshed_config = ConfigParser()
-        refreshed_config.read('./config/config.ini')
-        dtbot_version = refreshed_config.get('Info', 'dtbot_version')
-        last_updated = refreshed_config.get('Info', 'last_updated')
-        config.set('Info', 'dtbot_version', dtbot_version)
-        config.set('Info', 'last_updated', last_updated)
-        self.bot.log.info(f"{ctx.author} refreshed dtbot_version and last_update.")
-        self.bot.log.info("Updating Rich Presence and reloading General...")
-        # await ctx.invoke(self.bot.get_command('updaterp'), 'Do DTbot help (v. dtbot_version)')
-        # await ctx.invoke(self.bot.get_command('reload'), extension_name='general')
-
-    @commands.command(description='Shutdown command for the bot. Developers only.',
-                      brief='Shut the bot down. Developers only.')
-    async def shutdownbot(self, ctx: commands.Context, passcode: str):
-        if passcode == sdb_code:
+    @app_commands.command(description="Shutdown command for DTbot.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def shutdownbot(self, interaction: discord.Interaction, passcode: str):
+        await interaction.response.defer(ephemeral=True)
+        if passcode == self.SDB_CODE:
             try:
                 self.heartbeat.stop()
             except:
                 pass
+            await interaction.followup.send('Shutting down...', ephemeral=True)
+            await sleep(1)  # race condition can cause the bot to close before it reponds, a short wait prevents this
             await self.bot.close()
         else:
-            return
+            await interaction.followup.send('No.', ephemeral=True)
+
+    @app_commands.command(description="Manually cycles through all servers to refresh the database.")
+    @app_commands.guilds(DTbot.DEV_GUILD)
+    async def refreshservers(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        for guild in self.bot.guilds:
+            dbcallprocedure(self.bot.db_cnx, 'AddNewServer', params=(guild.id, guild.member_count))
+        await interaction.followup.send('Server list refreshed', ephemeral=True)
 
 
 async def setup(bot: DTbot):
-    await bot.add_cog(Dev(bot))
+    await bot.add_cog(Dev(bot), guild=DTbot.DEV_GUILD)
