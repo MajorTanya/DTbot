@@ -25,8 +25,8 @@ log_startup_time = startup_time.strftime('%Y-%m-%d (%H-%M-%S %Z)')
 
 
 class DTbot(commands.Bot):
-    def __init__(self, bot_config: ConfigParser | None = None, det_prefixes=None):
-        super().__init__(case_insensitive=True, command_prefix=det_prefixes, intents=intents)
+    def __init__(self, bot_config: ConfigParser | None = None):
+        super().__init__(case_insensitive=True, command_prefix=commands.when_mentioned, intents=intents)
         if bot_config:
             self.bot_config = bot_config
         else:
