@@ -1,4 +1,5 @@
 import datetime
+from configparser import ConfigParser
 from math import ceil
 
 import discord
@@ -6,12 +7,14 @@ import requests
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
-from DTbot import DTbot, config, startup_time
+from DTbot import DTbot
 from dev import dtbot_version, last_updated
 from linklist import changelog_link
 from util.PaginatorSession import PaginatorSession
 from util.utils import dbcallprocedure
 
+config = ConfigParser()
+config.read('./config/config.ini')
 main_dev_id = config.getint('Developers', 'main dev id')
 main_dev = config.get('Developers', 'main')
 secondary_dev = config.get('Developers', 'secondary')
@@ -75,7 +78,7 @@ class General(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def info(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        uptime = now_dt - startup_time
+        uptime = now_dt - self.bot.bot_startup
         embed = discord.Embed(title=f"{self.bot.user.name}'s info",
                               description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
                                           f"server.\n\nIf you have any command requests, use the `request` "
@@ -127,7 +130,7 @@ class General(commands.Cog):
                       brief="DTbot's uptime")
     async def uptime(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        uptime = now_dt - startup_time
+        uptime = now_dt - self.bot.bot_startup
         await ctx.send(f"{self.bot.user.name}'s uptime is: `{uptime}`")
 
     @commands.command(description="Shows details on user, such as Name, Join Date, or Highest Role",

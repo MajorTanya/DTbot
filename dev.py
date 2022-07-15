@@ -6,8 +6,10 @@ import discord
 from discord import Game
 from discord.ext import commands, tasks
 
-from DTbot import DTbot, config, startup_time
+from DTbot import DTbot
 
+config = ConfigParser()
+config.read('./config/config.ini')
 dtbot_version = config.get('Info', 'dtbot_version')
 last_updated = config.get('Info', 'last_updated')
 h_code = config.get('Developers', 'h_code')
@@ -40,8 +42,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
         if not self.bot.is_closed():
             now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
             now_ts = int(now_dt.timestamp())
-            startup_ts = int(startup_time.timestamp())
-            uptime = now_dt - startup_time
+            startup_ts = int(self.bot.bot_startup.timestamp())
+            uptime = now_dt - self.bot.bot_startup
             beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                        description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
@@ -53,8 +55,8 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
     @heartbeat.before_loop
     async def before_heartbeat(self):
         await self.bot.wait_until_ready()
-        startup_ts = int(startup_time.timestamp())
-        self.hb_chamber = self.bot.get_channel(config.getint('Heartbeat', 'hb_chamber'))
+        startup_ts = int(self.bot.bot_startup.timestamp())
+        self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint('Heartbeat', 'hb_chamber'))
         startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
                                       description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
