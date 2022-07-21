@@ -95,7 +95,7 @@ class General(commands.Cog):
         embed.set_image(url=changelog_link)
         embed.add_field(name=f"Latest Commit", value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
                                                      f"{latest_commit['commit']['message']}")
-        await interaction.followup.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
     @app_commands.checks.bot_has_permissions(embed_links=True)
