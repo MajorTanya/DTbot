@@ -5,17 +5,17 @@ A versatile Discord bot for your server, written with discord.py & nextcord.
 Running in two modes:
 
 * v2 ("classic") (traditional command use, like `@DTbot help` and `+help`)
-* (soon™) v3 (modern Slash Commands, like `/info`)
+* v3 (modern Slash Commands, like `/info`)
 
 ## Announcement Re: Discord restricting Message Content for Bots
 
 ### TL;DR
 
 * DTbot will stay online and work as usual until **September 1st, 2022**.
-* Soon™, DTbot v3 will launch with Slash Commands (*will run in parallel to the current v2*)
+* DTbot v3 with Slash Commands is up and running *in parallel* to v2
 * **Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.
-  * *ALL* prefixes (`+` and custom ones) will cease to work.
-  * Use Slash Commands instead.
+    * *ALL* prefixes (`+` and custom ones) will cease to work.
+    * Use Slash Commands instead.
 
 ### Message Content
 
@@ -36,14 +36,46 @@ kill commands with the mentioning syntax, v2 will be retired for good.
 We aim to provide a vast variety of commands for our users with simplicity of commands being one of our top priorities.
 With our array of command modules, DTbot provides:
 
-* Customizable prefixes on a per-server basis (`@DTbot help changeprefix` for more info)
-* Measurement conversions, especially between Metric and US units (`@DTbot help Conversion`)
-* Interaction commands with expressive gifs to enhance user interaction (`@DTbot help Interaction`)
-* Simple math commands (`@DTbot help Maths`)
-* RNG-based commands like rolling dice (`@DTbot help roll`) or spinning the roulette wheel (`@DTbot help roulette`)
-* Overview and info commands (`@DTbot help General`)
-* Anime/Manga lookup via AniList (`@DTbot help anime` / `@DTbot help manga`)
+* Measurement conversions, especially between Metric and US units
+    * Examples include
+        * `/cmin` for Centimeters to Inches and `/incm` for Inches to Centimeters
+        * `/lgal` for Liters to US Gallons and `/gall` for US Gallons to Liters
+        * `/cf` for Celsius to Fahrenheit and `/fc` for Fahrenheit to Celsius
+    * All Conversion commands are written as `/FromUnitToUnit`
+        * We currently support:
+            * Kilometers <> Miles (`/kmmi` & `/mikm`), Meters <> Feet (`/mft` & `/ftm`), Meters <> Feet & Inches
+              (`/mftin` & `/ftinm`), Centimeters <> Feet (`/cmft` & `/ftcm`), Centimeters <> Inches  (`/cmin` & `/incm`)
+            * Celsius <> Fahrenheit (`/cf` & `/fc`)
+            * Liters <> US Gallons (`/lgal` & `/gall`), Milliliters <> US Fluid Ounces (`/mlfloz` & `/flozml`)
+            * Kilograms <> US Pounds (`/kglbs` & `/lbskg`)
+* Interaction commands with expressive GIFs to enhance user interaction
+    * Examples include
+        * `/handholding [user]`, `/hug [user]`, `/pat [user]`, and many more (currently 31 kinds of interactions)
+* Simple math commands (all begin with `/maths`)
+    * `/maths add`, `/maths subtract`, `/maths square`, `/maths multiply`, `/maths divide`
+    * `/maths percentage` to figure out what percentage something is (15 apples of 60? It's 25%)
+    * `/maths percentof` to figure out what a percentage of something equates to (25% of 60? It's 15)
+* RNG-based commands like rolling dice (`/roll`) or spinning the roulette wheel (`/roulette spin` or `/roulette bet`)
+    * `/roll` supports a variety of options and modifiers, like dropping the lowest roll, adding something to the
+      result, and more. Check out the options and modifiers available in the command.
+    * `/roulette spin` lets you spin the roulette wheel
+    * `/roulette bet` lets you guess the result of the spin with several types of bets¹
+        * We currently support
+            * Straight Bet (guess the exact number the wheel will land on)
+            * Colour Bet
+            * Even/Odd Bet
+            * High (19-36)/Low (1-18) Bet
+
+      ¹(you can only win the satisfaction of getting it right, nothing else)
+* Various utility commands
+    * `/avatar [user]`, `/changelog`, `/info`, `/userinfo [user]`, `/whohas [role]`, `/ping`, `/uptime`, `/xp [user]`
+* Anime/Manga lookup via AniList (`/anime [title]` and `/manga [title]`)
 * and more!
+
+### Suggestions?
+
+If you have an idea for a command for DTbot (or you want a removed command back), you can use the `/request` command to
+suggest it.
 
 ## Permissions
 
@@ -57,10 +89,10 @@ DTbot requires certain permissions in order to function as intended. The invite 
 - **Embed Links**: Many of DTbot's commands use Discord's rich embeds to make nice-looking messages. If this is not
   provided, those commands will fail with an error message.
 
-- **Use External Emoji**: DTbot uses some emotes from its support server in messages.
+- **Use External Emoji**: DTbot uses some emotes from its support and developer servers in messages.
 
-- **Add Reactions**: Several commands have users interact with DTbot through the reactions on DTbot's message. These
-  commands won't work if DTbot is denied this permission. (Including the `@DTbot help` command)
+- **Add Reactions**: (v2 only) Several commands have users interact with DTbot through the reactions on DTbot's message.
+  These commands won't work if DTbot is denied this permission. (Including the `@DTbot help` command)
 
 ## Hosting & Adding DTbot to your Server
 
@@ -82,7 +114,7 @@ Ask away in the [DTbot Support Server](https://discord.gg/kSPMd2v).
 
 ## Requirements
 
-* Python 3.8+
-* nextcord <2.0.0b1 (b1 breaks prefix recognition)
+* Python 3.10+
+* discord.py 2.0.0+
 * MariaDB 10.4+ (server-side)
 * (other) Dependencies listed in `requirements.txt`
