@@ -66,7 +66,6 @@ class General(commands.Cog):
 
     @app_commands.command(description='Current DTbot announcements')
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def announcements(self, interaction: discord.Interaction):
         embed = discord.Embed(colour=self.bot.dtbot_colour, title='Announcement',
                               url=self.ANNOUNCEMENT_LINK,
