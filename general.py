@@ -20,7 +20,7 @@ class RequestModal(discord.ui.Modal, title='Request for DTbot'):
         super().__init__()
         self.bot = bot
 
-    functionality = discord.ui.TextInput(label='Functionality', placeholder='Short description here')
+    functionality = discord.ui.TextInput(label='Functionality', placeholder='Short description here', max_length=100)
     description = discord.ui.TextInput(label='Description', style=discord.TextStyle.long,
                                        placeholder='Describe the feature in more detail here', max_length=500)
 
