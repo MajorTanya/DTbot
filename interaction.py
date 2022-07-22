@@ -319,7 +319,7 @@ class Interaction(commands.Cog):
                                 other_tag_msg=f"{interaction.user.mention} waved at {user.mention}.")
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="Whip someone (rather kinky)")
+    @app_commands.command(description="Whip someone (rather lewd)")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(user="The user to whip")
     async def whip(self, interaction: discord.Interaction, user: discord.Member):
