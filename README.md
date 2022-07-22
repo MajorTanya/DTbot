@@ -50,7 +50,7 @@ With our array of command modules, DTbot provides:
             * Kilograms <> US Pounds (`/kglbs` & `/lbskg`)
 * Interaction commands with expressive GIFs to enhance user interaction
     * Examples include
-        * `/handholding [user]`, `/hug [user]`, `/pat [user]`, and many more (currently 31 kinds of interactions)
+        * `/handholding [user]`, `/hug [user]`, `/pat [user]`, and many more (currently 30 kinds of interactions)
 * Simple math commands (all begin with `/maths`)
     * `/maths add`, `/maths subtract`, `/maths square`, `/maths multiply`, `/maths divide`
     * `/maths percentage` to figure out what percentage something is (15 apples of 60? It's 25%)

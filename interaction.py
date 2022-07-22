@@ -46,16 +46,6 @@ class Interaction(commands.Cog):
                                 self_tag_img=False)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="Bitch slaps someone")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to bitchslap")
-    async def bitchslap(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=['https://i.imgur.com/bTGigCv.gif'],
-                                self_tag_msg=f"{user.mention} tried to give themselves a mean bitch slap. All they "
-                                             f"decide to do is rub their cheeks.",
-                                other_tag_msg=f"{user.mention} got a bitch slap.", self_tag_img=False)
-        await interaction.response.send_message(embed=embed)
-
     @app_commands.command(description="Bite someone")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(user="The user to bite")

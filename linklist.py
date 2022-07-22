@@ -397,7 +397,8 @@ slap_links = [
     'https://i.imgur.com/DfRsmUY.gif',
     'https://i.imgur.com/yTTzzKv.gif',
     'https://i.imgur.com/77DY4CF.jpg',
-    'https://i.imgur.com/2PZxr7X.gif'
+    'https://i.imgur.com/2PZxr7X.gif',
+    'https://i.imgur.com/bTGigCv.gif'
 ]
 
 stab_links = [
