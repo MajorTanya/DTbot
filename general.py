@@ -139,7 +139,7 @@ class General(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Request some new functionality for DTbot. Limited to twice per day, per user.")
-    @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user_id)  # 86400 seconds = 60 * 60 * 24
+    @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user.id)  # 86400 seconds = 60 * 60 * 24
     async def request(self, interaction: discord.Interaction):
         await interaction.response.send_modal(RequestModal(self.bot))
 
