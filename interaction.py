@@ -115,16 +115,15 @@ class Interaction(commands.Cog):
     async def dance(self, interaction: discord.Interaction, user1: discord.Member | None,
                     user2: discord.Member | None, user3: discord.Member | None,
                     user4: discord.Member | None, user5: discord.Member | None):
-        dancers = {user1, user2, user3, user4, user5}.difference({None})  # Remove None entry
+        dancers = {user1, user2, user3, user4, user5}.difference({None, interaction.user})  # Remove None and Invoker
         if len(dancers) == 0:
             msg = f'{interaction.user.mention} started dancing by themselves! Everyone, come and join them! ' \
                   f'DANCE PARTY!'
         else:
-            dancers_str = ""
-            for dancer in dancers:
-                dancers_str += dancer.mention + ', and '
-            msg = f'{interaction.user.mention} started dancing with ' \
-                  f'{dancers_str.rstrip(", and ").replace(", and ", ", ", len(dancers) - 2)}!'
+            res = ', and '.join(c.mention for c in dancers)
+            # 'user1 and user2' with only two dancers, else 'user1, user2[, ...], and userN'
+            res = res.replace(', and ', ' and ') if len(dancers) == 2 else res.replace(", and ", ", ", len(dancers) - 2)
+            msg = f'{interaction.user.mention} started dancing with {res}!'
         embed = self.make_embed(interaction.user.id, user=None, links=dance_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
