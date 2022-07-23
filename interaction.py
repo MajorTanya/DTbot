@@ -120,7 +120,11 @@ class Interaction(commands.Cog):
             msg = f'{interaction.user.mention} started dancing by themselves! Everyone, come and join them! ' \
                   f'DANCE PARTY!'
         else:
-            msg = f'{interaction.user.mention} started dancing with {(d.mention + ", " for d in dancers)}'.rstrip(', ')
+            dancers_str = ""
+            for dancer in dancers:
+                dancers_str += dancer.mention + ', and '
+            msg = f'{interaction.user.mention} started dancing with ' \
+                  f'{dancers_str.rstrip(", and ").replace(", and ", ", ", len(dancers) - 2)}!'
         embed = self.make_embed(interaction.user.id, user=None, links=dance_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
