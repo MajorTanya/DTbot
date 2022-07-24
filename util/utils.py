@@ -34,6 +34,16 @@ def checkdbforuser(pool: pooling.MySQLConnectionPool, message: discord.Message):
         dbcallprocedure(pool, 'AddNewUser', params=(message.author.id,))
 
 
+def even_out_embed_fields(embed: discord.Embed):
+    """Evens out Embed fields to avoid a misaligned last row
+    (does not account for inline=False being set on any field)"""
+    if len(embed.fields) % 3 != 0:  # even out the last line of embed fields
+        embed.add_field(name='\u200b', value='\u200b')
+        if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
+            embed.add_field(name='\u200b', value='\u200b')
+    return embed
+
+
 # TODO: need on_interaction_complete (https://github.com/Rapptz/discord.py/issues/8126) to bring back commandstats
 
 def rint(flt: float) -> int | float:

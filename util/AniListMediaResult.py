@@ -7,6 +7,7 @@ import requests
 
 from DTbot import DTbot
 from error_handler import AniMangaLookupError
+from util.utils import even_out_embed_fields
 
 config = ConfigParser()
 config.read('./config/config.ini')
@@ -133,13 +134,8 @@ class AniListMediaResult:
             end_date = make_date(result['endDate'])
             embed.add_field(name='End Date', value=end_date)
 
-        if len(embed.fields) % 3 != 0:  # even out the last line of info embed fields
-            embed.add_field(name='\u200b', value='\u200b')
-            if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
-                embed.add_field(name='\u200b', value='\u200b')
-
         self.AL = al_url
         self.Kitsu = kitsu if kitsu else None
         self.MAL = mal if mal else None
 
-        return embed
+        return even_out_embed_fields(embed)
