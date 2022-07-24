@@ -10,7 +10,7 @@ from DTbot import DTbot
 from linklist import changelog_link
 from util.AniListMediaResult import AniListMediaResult
 from util.PaginatorSession import PaginatorSession
-from util.utils import dbcallprocedure
+from util.utils import dbcallprocedure, even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
 
@@ -142,6 +142,46 @@ class General(commands.Cog):
     @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user.id)  # 86400 seconds = 60 * 60 * 24
     async def request(self, interaction: discord.Interaction):
         await interaction.response.send_modal(RequestModal(self.bot))
+
+    @app_commands.command(description="Shows details on this server, such as Name, Member amounts, Role count, etc.")
+    @app_commands.guild_only()
+    async def serverinfo(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        guild = interaction.guild
+        embed = discord.Embed(colour=self.bot.dtbot_colour, title=f'About {guild.name}')
+        if guild.description:
+            embed.description = guild.description
+        if guild.icon:
+            embed.set_thumbnail(url=guild.icon.url)
+        if guild.banner:
+            embed.set_image(url=guild.banner.url)
+        embed.add_field(name='Name', value=guild.name)
+        embed.add_field(name='Owner', value=guild.owner.mention)
+        created_at = int(guild.created_at.timestamp())
+        embed.add_field(name='Created at', value=f'<t:{created_at}:D> - <t:{created_at}:T> (<t:{created_at}:R>)')
+        embed.add_field(name='Nitro Level',
+                        value=f'Level {guild.premium_tier} with {guild.premium_subscription_count} '
+                              f'Booster{"s" if guild.premium_subscription_count != 1 else ""}')
+        embed.add_field(name='Channels',
+                        value=f'{len(guild.channels)} channel{"s" if len(guild.channels) != 1 else ""} in '
+                              f'{len(guild.categories)} categor{"ies" if len(guild.categories) != 1 else "y"}')
+        bot_count = len([m for m in guild.members if m.bot])
+        embed.add_field(name='Members',
+                        value=f'{guild.member_count - bot_count} user{"s" if guild.member_count != 1 else ""} '
+                              f'and {bot_count} bot{"s" if bot_count != 1 else ""} ({guild.member_count} total)')
+        embed.add_field(name='Roles', value=f'{len(guild.roles)}')
+        embed.add_field(name='Emotes',
+                        value=f'{len([e for e in guild.emojis if not e.animated])} of {guild.emoji_limit} max')
+        embed.add_field(name='Animated Emotes',
+                        value=f'{len([e for e in guild.emojis if e.animated])} of {guild.emoji_limit} max')
+        embed.add_field(name='Stickers', value=f'{len(guild.stickers)} of {guild.sticker_limit} max')
+        if guild.vanity_url:
+            embed.add_field(name='Vanity Invite', value=f'[{guild.vanity_url_code}]({guild.vanity_url})')
+        if guild.rules_channel:
+            embed.add_field(name='Rules Channel', value=f'{guild.rules_channel.mention}')
+        embed = even_out_embed_fields(embed)
+        embed.set_footer(text=f'ID: {guild.id}', icon_url=guild.icon.url if guild.icon else None)
+        await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Gives the bot's uptime since the last restart.")
     async def uptime(self, interaction: discord.Interaction):
