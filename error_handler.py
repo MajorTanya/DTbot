@@ -38,6 +38,8 @@ class ErrorHandler(commands.Cog):
             # Something goes wrong with isinstance here, this is the best workaround
             error: AniMangaLookupError = error  # type: ignore
             await send(f"Couldn't find \"{error.title}\" on AniList.")
+        elif isinstance(error, app_commands.CheckFailure):
+            await send(f"**/{command}** can only be used by the DTbot owners.", ephemeral=True)
         else:
             self.bot.log.error(type(error).__name__)
             self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
