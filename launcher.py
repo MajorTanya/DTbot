@@ -10,9 +10,8 @@ if __name__ == '__main__':
     bot = DTbot(bot_config=config)
 
     db_config = dict(bot.bot_config.items('Database'))
-    commandstats_default = bot.bot_config.get('Database defaults', 'commandstats_default')
-    servers_default = bot.bot_config.get('Database defaults', 'servers_default')
-    users_default = bot.bot_config.get('Database defaults', 'users_default')
+    tables = bot.bot_config.items('Database defaults')
+    procedures = config.items("Database procedures")
 
     # to ensure we have a database, create it on launch with a non-pooled connection
     cnx = mariadb.connect(user=db_config.get('user'), password=db_config.get('password'))
@@ -24,13 +23,19 @@ if __name__ == '__main__':
         cursor.execute(f"USE {db_config['database']}")
         bot.log.debug(f"Using database: {db_config['database']}")
 
-        tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
-
-        for table_name in tables:
-            table_description = tables[table_name]
+        for table_name, table_description in tables:
             try:
-                bot.log.debug(f"Creating table {table_name}: ")
+                bot.log.debug(f"Creating table {table_name}")
                 cursor.execute(table_description)
+            except mariadb.Error as err:
+                bot.log.error(err.msg)
+            else:
+                bot.log.debug("OK")
+
+        for procedure_name, procedure_description in procedures:
+            try:
+                bot.log.debug(f"Creating procedure {procedure_name}")
+                cursor.execute(procedure_description)
             except mariadb.Error as err:
                 bot.log.error(err.msg)
             else:
