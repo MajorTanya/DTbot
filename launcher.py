@@ -8,9 +8,8 @@ config.read('./config/config.ini')
 default_prefix = config.get('General', 'prefix')
 
 db_config = dict(config.items('Database'))
-commandstats_default = config.get('Database defaults', 'commandstats_default')
-servers_default = config.get('Database defaults', 'servers_default')
-users_default = config.get('Database defaults', 'users_default')
+tables = config.items('Database defaults')
+procedures = config.items("Database procedures")
 
 
 def det_prefixes(bot, msg):
@@ -31,7 +30,7 @@ def ensuredb():
     firstcursor = fcnx.cursor()
     try:
         firstcursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_config['database']} DEFAULT CHARACTER SET 'utf8'")
-        bot.log.info(f"Successfully created database {db_config['database']}")
+        bot.log.debug(f"Successfully created database {db_config['database']}")
     except mariadb.Error as err:
         bot.log.error(f"Failed creating database: {err}")
     finally:
@@ -44,19 +43,26 @@ def start_db():
         db = cnx.get_connection()
         cursor = db.cursor()
         cursor.execute(f"USE {db_config['database']}")
-        bot.log.info(f"Using database: {db_config['database']}")
+        bot.log.debug(f"Using database: {db_config['database']}")
 
-        tables = {'users': users_default, 'commandstats': commandstats_default, 'servers': servers_default}
-
-        for table_name in tables:
-            table_description = tables[table_name]
+        for table_name, table_description in tables:
             try:
-                bot.log.info(f"Creating table {table_name}: ")
+                bot.log.debug(f"Creating table {table_name}: ")
                 cursor.execute(table_description)
             except mariadb.Error as err:
                 bot.log.error(err.msg)
             else:
-                bot.log.info("OK")
+                bot.log.debug("OK")
+
+        for procedure_name, procedure_description in procedures:
+            try:
+                bot.log.debug(f"Creating procedure {procedure_name}")
+                cursor.execute(procedure_description)
+            except mariadb.Error as err:
+                bot.log.error(err.msg)
+            else:
+                bot.log.debug("OK")
+
         db.close()
     except mariadb.Error as err:
         bot.log.error(f"Error connecting to {db_config['database']}.")
