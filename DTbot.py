@@ -4,6 +4,7 @@ import sys
 from configparser import ConfigParser
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from mysql.connector import pooling as mariadbpooling
 
@@ -65,6 +66,16 @@ class DTbot(commands.Bot):
             checkdbforuser(self.db_cnx, message)
         finally:
             pass
+
+    async def on_app_command_completion(self, interaction: discord.Interaction, command: app_commands.Command):
+        result = dbcallprocedure(self.db_cnx, 'CheckAppCommandExist', returns=True,
+                                 params=(command.qualified_name, '@res'))
+        if result:
+            dbcallprocedure(self.db_cnx, 'IncrementAppCommandUsage', params=(command.qualified_name,))
+        else:
+            dbcallprocedure(self.db_cnx, 'AddNewAppCommand', params=(command.qualified_name,))
+            # because the command was used this one time, we increment the default value (0) by 1
+            dbcallprocedure(self.db_cnx, 'IncrementAppCommandUsage', params=(command.qualified_name,))
 
     async def on_ready(self):
         # online confimation
