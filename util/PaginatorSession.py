@@ -1,7 +1,7 @@
 import asyncio
 from collections import OrderedDict
 
-import nextcord
+import discord
 
 
 class PaginatorSession:
@@ -24,10 +24,10 @@ class PaginatorSession:
         })
 
     def add_page(self, page):
-        if isinstance(page, nextcord.Embed):
+        if isinstance(page, discord.Embed):
             self.pages.append(page)
         else:
-            raise TypeError('Page must be a nextcord.Embed.')
+            raise TypeError('Page must be a discord.Embed.')
 
     def valid_page(self, index):
         return index >= 0 or index < len(self.pages)

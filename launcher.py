@@ -1,6 +1,6 @@
 import mysql.connector as mariadb
+from discord.ext import commands
 from mysql.connector import pooling
-from nextcord.ext import commands
 
 from DTbot import DTbot, config
 

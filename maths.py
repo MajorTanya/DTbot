@@ -1,6 +1,6 @@
 import re
 
-from nextcord.ext import commands
+from discord.ext import commands
 
 from DTbot import DTbot
 from util.utils import rint

@@ -1,6 +1,6 @@
 import re
 
-from nextcord.ext import commands
+from discord.ext import commands
 
 from util.utils import rint
 

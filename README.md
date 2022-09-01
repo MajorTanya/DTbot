@@ -1,6 +1,6 @@
 # DTbot
 
-A versatile Discord bot for your server, written with discord.py & nextcord.
+A versatile Discord bot for your server, written with discord.py
 
 Running in two modes:
 
@@ -12,7 +12,7 @@ Running in two modes:
 ### TL;DR
 
 * DTbot will stay online and work as usual until **September 1st, 2022**.
-* Soon™, DTbot v3 will launch with Slash Commands (*will run in parallel to the current v2*)
+* DTbot v3 has been launched with Slash Commands (*runs in parallel to the v2*)
 * **Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.
   * *ALL* prefixes (`+` and custom ones) will cease to work.
   * Use Slash Commands instead.
@@ -83,6 +83,6 @@ Ask away in the [DTbot Support Server](https://discord.gg/kSPMd2v).
 ## Requirements
 
 * Python 3.8+
-* nextcord <2.0.0b1 (b1 breaks prefix recognition)
+* discord.py 2.0+
 * MariaDB 10.4+ (server-side)
 * (other) Dependencies listed in `requirements.txt`
