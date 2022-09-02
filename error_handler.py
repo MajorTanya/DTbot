@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 
 from DTbot import DTbot
@@ -43,6 +44,16 @@ class ErrorHandler(commands.Cog):
 
     def __init__(self, bot: DTbot):
         self.bot = bot
+        self._std_on_error = self.bot.tree.on_error
+        self.bot.tree.on_error = self.on_app_command_error
+
+    async def cog_unload(self):
+        # in case ErrorHandler gets unload, restore the normal behaviour
+        self.bot.tree.on_error = self._std_on_error
+
+    async def on_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        # This is v2, we don't care about "Application command 'xyz' not found" errors
+        pass
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
