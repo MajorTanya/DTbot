@@ -230,5 +230,5 @@ class General(commands.Cog):
             await ctx.send("User hasn't talked yet.")
 
 
-def setup(bot: DTbot):
-    bot.add_cog(General(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(General(bot))

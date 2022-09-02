@@ -55,5 +55,5 @@ class Maths(commands.Cog):
         await ctx.send(f'{rint(percentage_re)}% of {rint(whole)} = {rint((percentage_re / 100) * whole)}')
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Maths(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Maths(bot))

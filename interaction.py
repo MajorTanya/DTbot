@@ -448,5 +448,5 @@ class Interaction(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Interaction(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Interaction(bot))

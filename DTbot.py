@@ -36,9 +36,10 @@ class DTbot(commands.Bot):
         self.log.addHandler(filehandler)
         self.log.addHandler(streamhandler)
 
+    async def setup_hook(self):
         for extension in startup_extensions:
             try:
-                self.load_extension(extension)
+                await self.load_extension(extension)
                 print(f'Successfully loaded extension {extension}.')
             except Exception as e:
                 exc = f'{type(e).__name__}: {e}'

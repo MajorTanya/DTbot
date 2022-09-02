@@ -87,5 +87,5 @@ class ErrorHandler(commands.Cog):
             self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
-def setup(bot: DTbot):
-    bot.add_cog(ErrorHandler(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(ErrorHandler(bot))

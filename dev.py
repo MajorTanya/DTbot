@@ -148,5 +148,5 @@ class Dev(commands.Cog, command_attrs=dict(hidden=True)):
             return
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Dev(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Dev(bot))

@@ -142,5 +142,5 @@ class Help(commands.Cog):
             await p_sess.run()
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Help(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Help(bot))

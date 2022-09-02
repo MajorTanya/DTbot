@@ -201,5 +201,5 @@ class Rng(commands.Cog, name='RNG'):
         await ctx.send(embed=embed)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Rng(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Rng(bot))

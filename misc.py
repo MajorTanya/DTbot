@@ -65,7 +65,7 @@ class Misc(commands.Cog):
                       aliases=['lookupanime', 'searchanime', 'animesearch'])
     @commands.bot_has_permissions(embed_links=True)
     @anilist_cooldown
-    async def anime(self, ctx, *anime_title):
+    async def anime(self, ctx: commands.Context, *anime_title):
         anime = ' '.join(anime_title)
         if anime == '':
             try:
@@ -73,7 +73,7 @@ class Misc(commands.Cog):
             except discord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
-            await ctx.trigger_typing()
+            await ctx.typing()
             result = AniListMediaResult(anime, is_manga=False, bot=self.bot)
             await ctx.send(embed=result.embed)
 
@@ -87,7 +87,7 @@ class Misc(commands.Cog):
                       aliases=['lookupmanga', 'searchmanga', 'mangasearch'])
     @commands.bot_has_permissions(embed_links=True)
     @anilist_cooldown
-    async def manga(self, ctx, *manga_title):
+    async def manga(self, ctx: commands.Context, *manga_title):
         manga = ' '.join(manga_title)
         if manga == '':
             try:
@@ -95,7 +95,7 @@ class Misc(commands.Cog):
             except discord.Forbidden:  # not allowed to send embeds
                 await send_cmd_help(self.bot, ctx, "", plain=True)
         else:
-            await ctx.trigger_typing()
+            await ctx.typing()
             result = AniListMediaResult(manga, is_manga=True, bot=self.bot)
             await ctx.send(embed=result.embed)
 
@@ -131,5 +131,5 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(Misc(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(Misc(bot))

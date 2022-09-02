@@ -86,5 +86,5 @@ class DatabaseManagement(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send('Server list refreshed.', delete_after=5)
 
 
-def setup(bot: DTbot):
-    bot.add_cog(DatabaseManagement(bot))
+async def setup(bot: DTbot):
+    await bot.add_cog(DatabaseManagement(bot))
