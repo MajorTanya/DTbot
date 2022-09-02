@@ -22,8 +22,8 @@ log_startup_time = startup_time.strftime('%Y-%m-%d (%H-%M-%S %Z)')
 
 
 class DTbot(commands.Bot):
-    def __init__(self, det_prefixes=None):
-        super().__init__(case_insensitive=True, command_prefix=det_prefixes, intents=intents)
+    def __init__(self):
+        super().__init__(case_insensitive=True, command_prefix=commands.when_mentioned, intents=intents)
         self.dtbot_colour = discord.Colour(0x5e51a8)
         self.remove_command('help')
         # set up logging and bind to instance

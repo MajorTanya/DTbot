@@ -6,10 +6,10 @@ import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
 
-from DTbot import DTbot
-from launcher import db_config
+from DTbot import DTbot, config
 
-# open the pooled connection used for everything but prefix checks
+db_config = dict(config.items('Database'))
+# open the pooled connection used for all stored procedure calls
 cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
 
 
