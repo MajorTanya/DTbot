@@ -40,7 +40,7 @@ class Maths(commands.GroupCog):
         if whole == 0:
             await interaction.response.send_message("Can't have a percentage of an empty whole")
         else:
-            await interaction.response.send_message(f'{rint(part)} / {rint(whole)} = {rint(part / whole):.2%}')
+            await interaction.response.send_message(f'{rint(part)} / {rint(whole)} = {rint(part / whole, 4):.2%}')
 
     @app_commands.command(description="Calculate how much a percentage equates to (25% of 60? It's 15)")
     async def percentof(self, interaction: discord.Interaction, percentage: float, whole: float):

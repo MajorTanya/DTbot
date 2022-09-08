@@ -44,8 +44,6 @@ def even_out_embed_fields(embed: discord.Embed):
     return embed
 
 
-# TODO: need on_interaction_complete (https://github.com/Rapptz/discord.py/issues/8126) to bring back commandstats
-
-def rint(flt: float) -> int | float:
-    """Round to 2 digits. Returns int if rounded float has only zeroes after the decimal point."""
-    return int(rounded) if (rounded := round(flt, 2)).is_integer() else rounded
+def rint(flt: float, digits: int = 2) -> int | float:
+    """Round to [digits] (default: 2) digits. Returns int if rounded float has only zeroes after the decimal point."""
+    return int(rounded) if (rounded := round(flt, digits)).is_integer() else rounded
