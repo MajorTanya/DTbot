@@ -44,7 +44,7 @@ class PaginatorSession(discord.ui.View):
         self.message: discord.Message | None = None
 
     async def start(self, interaction: discord.Interaction):
-        self.message = await interaction.original_message()
+        self.message = await interaction.original_response()
         # add buttons manually, so we have first/last page skippers and normal next/prev/stop buttons only when needed
         view = discord.ui.View.from_message(self.message).clear_items()
         skippers_needed = len(self.pages) > CUTOFFS[FIRST_PAGE]
@@ -57,7 +57,7 @@ class PaginatorSession(discord.ui.View):
             view.add_item(NavButton(callback=self.callbacks[NEXT_PAGE], label=NEXT_PAGE))
         if skippers_needed:
             view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], label=LAST_PAGE))
-        self.message = await interaction.edit_original_message(content=None, embed=self.pages[0], view=view)
+        self.message = await interaction.edit_original_response(content=None, embed=self.pages[0], view=view)
 
     async def on_timeout(self) -> None:
         await super().on_timeout()
@@ -69,28 +69,28 @@ class PaginatorSession(discord.ui.View):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = 0
-        await interaction.edit_original_message(embed=self.pages[self.current])
+        await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def prev_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = (self.current - 1) % len(self.pages)
-        await interaction.edit_original_message(embed=self.pages[self.current])
+        await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def stop_session(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
             await interaction.response.defer()
-        await interaction.edit_original_message(view=None)
+        await interaction.edit_original_response(view=None)
         self.stop()
 
     async def next_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = (self.current + 1) % len(self.pages)
-        await interaction.edit_original_message(embed=self.pages[self.current])
+        await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def last_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = len(self.pages) - 1
-        await interaction.edit_original_message(embed=self.pages[self.current])
+        await interaction.edit_original_response(embed=self.pages[self.current])
