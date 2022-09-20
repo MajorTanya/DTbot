@@ -28,7 +28,7 @@ class IllegalCustomCommandAccess(commands.CommandError):
 async def send_cmd_help(bot, ctx, error_msg, delete_after=None, plain=False):
     bot.help_command.context = ctx
     command = ctx.subcommand if ctx.invoked_subcommand else ctx.command
-    usage = bot.help_command.get_command_signature(command=command)
+    usage = bot.help_command.get_command_signature(command)
     if not plain:
         em = discord.Embed(description=f"{command.description}\n\n{usage.replace('<', '[').replace('>', ']')}",
                            colour=bot.dtbot_colour)
