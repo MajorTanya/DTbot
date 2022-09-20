@@ -1,14 +1,13 @@
 from mysql import connector as mariadb
 
-from DTbot import DTbot, config
+from DTbot import DTbot
 
 if __name__ == '__main__':
     bot = DTbot()
 
-    config.read('./config/config.ini')
-    db_config = dict(config.items('Database'))
-    tables = config.items('Database defaults')
-    procedures = config.items("Database procedures")
+    db_config = dict(bot.bot_config.items('Database'))
+    tables = bot.bot_config.items('Database defaults')
+    procedures = bot.bot_config.items("Database procedures")
 
     # to ensure we have a database, create it on launch with a non-pooled connection
     cnx = mariadb.connect(user=db_config.get('user'), password=db_config.get('password'))

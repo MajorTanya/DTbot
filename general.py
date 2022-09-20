@@ -6,24 +6,10 @@ import requests
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
-from DTbot import DTbot, config, startup_time
+from DTbot import DTbot
 from database_management import dbcallprocedure
-from dev import dtbot_version, last_updated
 from linklist import changelog_link
 from util.PaginatorSession import PaginatorSession
-
-main_dev_id = config.getint('Developers', 'main dev id')
-main_dev = config.get('Developers', 'main')
-secondary_dev = config.get('Developers', 'secondary')
-dtbot_devs = f'{main_dev}\n{secondary_dev}'
-INVITE = config.get('General', 'INVITE')
-PERMSEXPL = config.get('General', 'PERMSEXPL')
-REQHALL = config.getint('General', 'REQHALL')
-
-AVATAR_ARTIST = config.get('About', 'AVATAR ARTIST')
-GH_LINK = config.get('About', 'GH LINK')
-SUPPORT_LINK = config.get('About', 'SUPPORT LINK')
-TWITTER_LINK = config.get('About', 'TWITTER LINK')
 
 
 class General(commands.Cog):
@@ -31,6 +17,19 @@ class General(commands.Cog):
 
     def __init__(self, bot: DTbot):
         self.bot = bot
+        main_dev = self.bot.bot_config.get('Developers', 'main')
+        secondary_dev = self.bot.bot_config.get('Developers', 'secondary')
+        self.MAIN_DEV_ID = self.bot.bot_config.getint('Developers', 'main dev id')
+        self.DTBOT_DEVS = f'{main_dev}\n{secondary_dev}'
+        self.INVITE = self.bot.bot_config.get('General', 'INVITE')
+        self.PERMSEXPL = self.bot.bot_config.get('General', 'PERMSEXPL')
+        self.REQHALL = self.bot.bot_config.getint('General', 'REQHALL')
+        self.AVATAR_ARTIST = self.bot.bot_config.get('About', 'AVATAR ARTIST')
+        self.GH_LINK = self.bot.bot_config.get('About', 'GH LINK')
+        self.SUPPORT_LINK = self.bot.bot_config.get('About', 'SUPPORT LINK')
+        self.TWITTER_LINK = self.bot.bot_config.get('About', 'TWITTER LINK')
+        self.ANNOUNCEMENT_LINK = self.bot.bot_config.get('About', 'ANNOUNCEMENT LINK')
+        self.ANNOUNCEMENT_MSG = self.bot.bot_config.get('About', 'ANNOUNCEMENT MSG')
 
     @commands.command(description="Displays a user's avatar. Defaults to command user's avatar when "
                                   "no user is mentioned.",
@@ -53,8 +52,8 @@ class General(commands.Cog):
                       brief='DTbot announcements')
     async def announcements(self, ctx: commands.Context):
         embed = discord.Embed(colour=self.bot.dtbot_colour, title='Announcement',
-                              url=config.get('About', 'ANNOUNCEMENT LINK'),
-                              description=config.get('About', 'ANNOUNCEMENT MSG'))
+                              url=self.ANNOUNCEMENT_LINK,
+                              description=self.ANNOUNCEMENT_MSG)
         await ctx.send(embed=embed)
 
     @commands.command(description="Get an overview over the recentmost update of DTbot",
@@ -62,6 +61,8 @@ class General(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def changelog(self, ctx: commands.Context):
         latest_commit = requests.get("https://api.github.com/repos/MajorTanya/DTbot/commits").json()[0]
+        dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
+        last_updated = self.bot.bot_config.get('Info', 'last_updated')
         embed = discord.Embed(colour=self.bot.dtbot_colour,
                               description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
                                           f'({last_updated})')
@@ -83,22 +84,23 @@ class General(commands.Cog):
     @commands.bot_has_permissions(embed_links=True)
     async def info(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        uptime = now_dt - startup_time
+        uptime = now_dt - self.bot.bot_startup
+        dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
         embed = discord.Embed(title=f"{self.bot.user.name}'s info",
                               description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
                                           f"server.\n\nIf you have any command requests, use the `request` "
                                           f"command.\n\nThank you and have a good day.\n\n[__**"
-                                          f"{self.bot.user.name} Support Server**__]({SUPPORT_LINK})",
+                                          f"{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})",
                               colour=self.bot.dtbot_colour)
-        embed.add_field(name="Authors", value=dtbot_devs)
-        embed.add_field(name="GitHub repository", value=f"Find me [here]({GH_LINK})")
-        embed.add_field(name="Twitter", value=f"[Tweet @DTbotDiscord]({TWITTER_LINK})", inline=True)
+        embed.add_field(name="Authors", value=self.DTBOT_DEVS)
+        embed.add_field(name="GitHub repository", value=f"Find me [here]({self.GH_LINK})")
+        embed.add_field(name="Twitter", value=f"[Tweet @DTbotDiscord]({self.TWITTER_LINK})", inline=True)
         embed.add_field(name="Stats", value=f"In {len(self.bot.guilds)} servers with {len(self.bot.users)} members")
         embed.add_field(name="\u200b", value="\u200b")
         embed.add_field(name="Uptime", value=uptime)
-        embed.add_field(name="Invite me", value=f"[Invite me]({INVITE}) to your server too.\n[Explanation]({PERMSEXPL})"
-                                                f" for DTbot's permissions")
-        embed.add_field(name="Avatar by", value=AVATAR_ARTIST, inline=False)
+        embed.add_field(name="Invite me", value=f"[Invite me]({self.INVITE}) to your server too.\n"
+                                                f"[Explanation]({self.PERMSEXPL}) for DTbot's permissions")
+        embed.add_field(name="Avatar by", value=self.AVATAR_ARTIST, inline=False)
         embed.set_footer(text=f"DTbot v. {dtbot_version}")
         await ctx.send(embed=embed)
 
@@ -120,8 +122,8 @@ class General(commands.Cog):
                       aliases=['req'])
     @cooldown(2, 86400, commands.BucketType.user)
     async def request(self, ctx: commands.Context, command: str, *functionality: str):
-        reqhall = self.bot.get_channel(REQHALL)
-        dev_dm = self.bot.get_user(main_dev_id)
+        reqhall = self.bot.get_channel(self.REQHALL)
+        dev_dm = self.bot.get_user(self.MAIN_DEV_ID)
         embed = discord.Embed(title=f"New request by {ctx.author.name}",
                               description=f'{ctx.author} (ID: {ctx.author.id}) requested the following command:',
                               colour=ctx.author.colour)
@@ -144,7 +146,7 @@ class General(commands.Cog):
                       brief="DTbot's uptime")
     async def uptime(self, ctx: commands.Context):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        uptime = now_dt - startup_time
+        uptime = now_dt - self.bot.bot_startup
         await ctx.send(f"{self.bot.user.name}'s uptime is: `{uptime}`")
 
     @commands.command(description="Shows details on user, such as Name, Join Date, or Highest Role",

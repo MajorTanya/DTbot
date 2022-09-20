@@ -1,16 +1,18 @@
 import random
 import time
+from configparser import ConfigParser
 
 import discord
 import mysql.connector as mariadb
 from discord.ext import commands
 from mysql.connector import pooling
 
-from DTbot import DTbot, config
+from DTbot import DTbot
 
-db_config = dict(config.items('Database'))
+db_config = ConfigParser()
+db_config.read('./config/config.ini')
 # open the pooled connection used for all stored procedure calls
-cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
+cnx = mariadb.pooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **(dict(db_config.items('Database'))))
 
 
 def dbcallprocedure(procedure, *, returns: bool = False, params: tuple):

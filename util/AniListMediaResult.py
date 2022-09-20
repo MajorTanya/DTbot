@@ -1,12 +1,15 @@
 import re
 import urllib.parse
+from configparser import ConfigParser
 
 import discord
 import requests
 
-from DTbot import config
+from DTbot import DTbot
 from error_handler import AniMangaLookupError
 
+config = ConfigParser()
+config.read('./config/config.ini')
 AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
 KITSU_URL = config.get('AniManga Lookup', 'kitsu_url')
 MAL_URL = config.get('AniManga Lookup', 'mal_url')
@@ -37,7 +40,7 @@ def make_date(date: dict):
 
 
 class AniListMediaResult:
-    def __init__(self, title, is_manga: bool, bot):
+    def __init__(self, title, is_manga: bool, bot: DTbot):
         self.bot = bot
         self.MAL = ''
         self.Kitsu = ''
