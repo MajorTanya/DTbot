@@ -4,9 +4,9 @@ import sys
 from configparser import ConfigParser
 
 import discord
+import mariadb
 from discord import app_commands
 from discord.ext import commands
-from mysql.connector import pooling as mariadbpooling
 
 from util.utils import checkdbforuser, dbcallprocedure
 
@@ -28,7 +28,7 @@ class DTbot(commands.Bot):
             self.bot_config.read('./config/config.ini')
         DTbot.DEV_GUILD = discord.Object(id=(bot_config.getint('General', 'DEV_GUILD')))
         db_config = dict(self.bot_config.items('Database'))
-        self.db_cnx = mariadbpooling.MySQLConnectionPool(pool_size=10, pool_reset_session=True, **db_config)
+        self.db_cnx = mariadb.ConnectionPool(pool_size=10, **db_config)
         self.dtbot_colour = discord.Colour(0x5e51a8)
         # set up logging and bind to instance
         self.log = logging.getLogger('dtbot')

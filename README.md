@@ -117,4 +117,5 @@ Ask away in the [DTbot Support Server](https://discord.gg/kSPMd2v).
 * Python 3.10+
 * discord.py 2.0.0+
 * MariaDB 10.4+ (server-side)
+* MariaDB Connector/C (server-side, for MariaDB Connector/Python)
 * (other) Dependencies listed in `requirements.txt`

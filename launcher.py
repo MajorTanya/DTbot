@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 
-from mysql import connector as mariadb
+import mariadb
 
 from DTbot import DTbot
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
                 bot.log.debug(f"Creating table {table_name}")
                 cursor.execute(table_description)
             except mariadb.Error as err:
-                bot.log.error(err.msg)
+                bot.log.error(err)
             else:
                 bot.log.debug("OK")
 
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 bot.log.debug(f"Creating procedure {procedure_name}")
                 cursor.execute(procedure_description)
             except mariadb.Error as err:
-                bot.log.error(err.msg)
+                bot.log.error(err)
             else:
                 bot.log.debug("OK")
 
@@ -45,6 +45,7 @@ if __name__ == '__main__':
         bot.log.error(f"Failed during database startup: {err}")
 
     finally:
+        cursor.close()
         cnx.close()
 
     bot.run()
