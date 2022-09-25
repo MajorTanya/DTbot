@@ -28,7 +28,7 @@ class DTbot(commands.Bot):
             self.bot_config.read('./config/config.ini')
         DTbot.DEV_GUILD = discord.Object(id=(bot_config.getint('General', 'DEV_GUILD')))
         db_config = dict(self.bot_config.items('Database'))
-        self.db_cnx = mariadb.ConnectionPool(pool_size=10, **db_config)
+        self.db_cnx = mariadb.ConnectionPool(pool_size=10, reconnect=True, **db_config)
         self.dtbot_colour = discord.Colour(0x5e51a8)
         # set up logging and bind to instance
         self.log = logging.getLogger('dtbot')
