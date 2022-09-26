@@ -10,19 +10,17 @@ TProcedures = typing.Literal['AddNewAppCommand', 'CheckAppCommandExist', 'Increm
 
 
 def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: TProcedures, *, returns: bool = False, params: tuple = ()):
-    pconn: mariadb.Connection = pool.get_connection()
-    cursor: mariadb.Cursor = pconn.cursor()
-    cursor.callproc(procedure, params)
-    if returns:
-        # we can be certain that the return value is at index [0] from all stored procedures
-        # but since we return, we need to ensure the closing of the cursor and database connection first, then return
-        result = cursor.fetchone()[0]
-        cursor.close()
-        pconn.close()
+    pconn: mariadb.Connection
+    result = None
+    with pool.get_connection() as pconn:
+        with pconn.cursor() as cursor:
+            cursor.callproc(procedure, params)
+            if returns:
+                # we can be certain that the return value is at index [0] from all stored procedures
+                result = cursor.fetchone()[0]
+        pconn.commit()
+    if returns and result is not None:
         return result
-    pconn.commit()
-    cursor.close()
-    pconn.close()
 
 
 def checkdbforuser(pool: mariadb.ConnectionPool, message: discord.Message):
