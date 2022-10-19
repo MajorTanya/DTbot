@@ -46,17 +46,6 @@ class Interaction(commands.Cog):
                                 self_tag_img=False)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="Bite someone")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to bite")
-    async def bite(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=bite_links,
-                                self_tag_msg=f"{user.mention} thought about biting themselves. You're not you when "
-                                             f"you're hungry, so how about a snack instead?",
-                                other_tag_msg=f"{user.mention} got bitten by {interaction.user.mention}.",
-                                self_tag_img=False)
-        await interaction.response.send_message(embed=embed)
-
     @app_commands.command(description="Blush - Can be given a reason")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(reason="The reason you blushed")
@@ -75,17 +64,6 @@ class Interaction(commands.Cog):
                                 self_tag_msg=f"{user.mention} booped themselves. But they were such a cutie doing it "
                                              f"that we can't show it here.",
                                 other_tag_msg=f"{user.mention} got booped.", self_tag_img=False)
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(description="Choke em good")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to choke")
-    async def choke(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=choke_links,
-                                self_tag_msg=f"{user.mention} wanted to choke themselves. They stopped when they "
-                                             f"remembered their favorite food.",
-                                other_tag_msg=f"{user.mention} was choked by {interaction.user.mention}.",
-                                self_tag_img=False)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Cry - Can be given a reason")
@@ -166,27 +144,6 @@ class Interaction(commands.Cog):
                                 other_tag_msg=f"{user.mention} got hugged.")
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="KICK THEIR ASS - (NOT a moderation command to kick a user from a server.)")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to kick")
-    async def kick(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=kick_links,
-                                self_tag_msg=f"{user.mention} aimed to kick themselves. As they noticed, it's quite "
-                                             f"hard to actually do. So they didn't and went to watch their favorite "
-                                             f"show.",
-                                other_tag_msg=f"{user.mention} got kicked.", self_tag_img=False)
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(description="What do you think it does")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to kill")
-    async def kill(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=None,
-                                self_tag_msg=f"{user.mention} tried to kill themselves. Luckily, they changed their "
-                                             f"mind and went to get food instead.",
-                                other_tag_msg=f"{user.mention} got killed.")
-        await interaction.response.send_message(embed=embed)
-
     @app_commands.command(description="Kiss someone")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(user="The user to kiss")
@@ -195,18 +152,6 @@ class Interaction(commands.Cog):
                                 self_tag_msg=f"{user.mention} gave themselves a kiss! Self-love is very important "
                                              f"after all.",
                                 other_tag_msg=f"{user.mention} got kissed.")
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(description="Call out someone for being lewd")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to call out for being lewd")
-    async def lewd(self, interaction: discord.Interaction, user: discord.Member | None):
-        mention = user.mention if user is not None else ""
-        embed = self.make_embed(interaction.user.id, user=user, links=lewd_links,
-                                self_tag_msg=f"Calling yourself out for being lewd, {mention}? How self-aware you "
-                                             f"are. And yes. Why you gotta be so lewd?",
-                                other_tag_msg=f"Why you gotta be so lewd, {mention}?",
-                                no_tag_msg="Why you gotta be so lewd?")
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Lick someone")
@@ -320,17 +265,6 @@ class Interaction(commands.Cog):
                                 self_tag_msg=f"{user.mention} waved at themselves. They seem incredibly happy and "
                                              f"energetic today. How cute!",
                                 other_tag_msg=f"{interaction.user.mention} waved at {user.mention}.")
-        await interaction.response.send_message(embed=embed)
-
-    @app_commands.command(description="Whip someone (rather lewd)")
-    @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.describe(user="The user to whip")
-    async def whip(self, interaction: discord.Interaction, user: discord.Member):
-        embed = self.make_embed(interaction.user.id, user=user, links=whip_links,
-                                self_tag_msg=f"{user.mention} wants to whip themselves. They must be really kinky.",
-                                other_tag_msg=f"Bow down, {user.mention}. Time to get whipped by "
-                                              f"{interaction.user.mention}!",
-                                self_tag_img=False)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Woop woop!")
