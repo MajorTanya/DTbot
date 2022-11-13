@@ -27,7 +27,22 @@ class NavButton(discord.ui.Button):
         self.callback = callback
 
 
-class PaginatorSession(discord.ui.View):
+class NavButtonView(discord.ui.View):
+    """Custom subclass that handles a timeout by clearing the interaction's view"""
+
+    def __init__(self, *, interaction: discord.Interaction, timeout: float | None = 180.0):
+        super().__init__(timeout=timeout)
+        self.interaction = interaction
+
+    async def on_timeout(self):
+        if self.interaction:
+            if not self.interaction.response.is_done():
+                await self.interaction.response.defer()
+            await self.interaction.edit_original_response(view=None)
+        self.stop()
+
+
+class PaginatorSession(object):
     def __init__(self, *, pages: list[discord.Embed] = None):
         super().__init__()
         self.callbacks: dict[str, Coroutine] = {
@@ -41,29 +56,22 @@ class PaginatorSession(discord.ui.View):
             pages = []
         self.pages = pages
         self.current = 0
-        self.message: discord.Message | None = None
+        self.view: NavButtonView | None = None
 
     async def start(self, interaction: discord.Interaction):
-        self.message = await interaction.original_response()
         # add buttons manually, so we have first/last page skippers and normal next/prev/stop buttons only when needed
-        view = discord.ui.View.from_message(self.message).clear_items()
+        self.view = NavButtonView(interaction=interaction)  # default timeout of 180 seconds (3 minutes)
         skippers_needed = len(self.pages) > CUTOFFS[FIRST_PAGE]
         pagers_needed = len(self.pages) > CUTOFFS[PREV_PAGE]
         if skippers_needed:
-            view.add_item(NavButton(callback=self.callbacks[FIRST_PAGE], label=FIRST_PAGE))
+            self.view.add_item(NavButton(callback=self.callbacks[FIRST_PAGE], emoji=FIRST_PAGE))
         if pagers_needed:
-            view.add_item(NavButton(callback=self.callbacks[PREV_PAGE], label=PREV_PAGE))
-            view.add_item(NavButton(callback=self.callbacks[STOP], label=STOP))
-            view.add_item(NavButton(callback=self.callbacks[NEXT_PAGE], label=NEXT_PAGE))
+            self.view.add_item(NavButton(callback=self.callbacks[PREV_PAGE], emoji=PREV_PAGE))
+            self.view.add_item(NavButton(callback=self.callbacks[STOP], emoji=STOP))
+            self.view.add_item(NavButton(callback=self.callbacks[NEXT_PAGE], emoji=NEXT_PAGE))
         if skippers_needed:
-            view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], label=LAST_PAGE))
-        self.message = await interaction.edit_original_response(content=None, embed=self.pages[0], view=view)
-
-    async def on_timeout(self) -> None:
-        await super().on_timeout()
-        if self.message:
-            await self.message.edit(view=None)
-            self.stop()
+            self.view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], emoji=LAST_PAGE))
+        await interaction.edit_original_response(content=None, embed=self.pages[0], view=self.view)
 
     async def first_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
@@ -81,7 +89,7 @@ class PaginatorSession(discord.ui.View):
         if not interaction.response.is_done():
             await interaction.response.defer()
         await interaction.edit_original_response(view=None)
-        self.stop()
+        self.view.stop()
 
     async def next_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():
