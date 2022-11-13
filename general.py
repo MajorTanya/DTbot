@@ -1,5 +1,6 @@
 import datetime
-from math import ceil
+import itertools
+import math
 
 import discord
 import requests
@@ -208,28 +209,44 @@ class General(commands.Cog):
         embed.set_thumbnail(url=user.display_avatar.url)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description='Shows how many users have a particular role (max. 10 pages)')
+    @app_commands.command(description='Shows how many users have a particular role (max. 15 pages)')
     @app_commands.describe(role='The role to check out')
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def whohas(self, interaction: discord.Interaction, role: discord.Role):
+        if len(role.members) == 0:
+            embed = discord.Embed(colour=role.colour, title=f'0 users with {role.name}',
+                                  description=f'No members with the role {role.mention} exist.')
+            return await interaction.response.send_message(embed=embed)
+
         await interaction.response.defer()
+        pages: list[discord.Embed] = []
+        # unchanging values between calls
+        max_pages = 15
         embed_desc_max_size = 2048  # former max char count in embed.description of a discord.Embed, better than 4096
-        pages = []
-        role_members = [member.mention for member in role.members]
-        # get character count in role_members, divide by 2048 (max size of embed.description) = pages needed
-        page_count = ceil(len(str(role_members).strip("[]").replace("'", "")) / embed_desc_max_size)
-        for i in range(0, min(page_count, 10)):  # we allow 10 pages max
-            page_members = f"{len(role.members)} members with {role.mention}\n\n" if i == 0 else ""
-            role_members.reverse()  # so we can pop() "from the front"
-            try:
-                while (len(page_members) + len(role_members[0])) < embed_desc_max_size:
-                    page_members += f'{role_members.pop()}, '
-            except IndexError:  # list is empty now, ignore and continue
-                pass
+        max_user_id_length = 19  # current max length of a user snowflake ID, can be shorter for older accounts
+        max_mention_length = len('<@>, ') + max_user_id_length  # (24) mention string syntax & separators in listing
+        users_per_page = math.floor(embed_desc_max_size / max_mention_length)  # (85) users / page
+
+        role_member_count = len(role.members)
+        # overshoots real value because older Discord users have shorter IDs, but makes the calculations a bit simpler
+        needed_page_count: int = math.ceil((max_mention_length * role_member_count) / embed_desc_max_size)
+        page_count = min(needed_page_count, max_pages)  # max. 15 pages allowed
+        max_users = page_count * users_per_page  # max. 1275 total (15 pages * 85 users/page = 1275 users total)
+
+        mentions_generator = (member.mention for member in role.members)
+        # only evaluate the generator as many times as we can display users
+        role_members = list(itertools.islice(mentions_generator, max_users))
+        role_members.reverse()  # so we can pop() "from the front"
+
+        for i in range(page_count):
+            page_members = f"{role_member_count} members with {role.mention}\n\n" if i == 0 else ""
+            while len(role_members) > 0 and ((len(page_members) + len(role_members[0])) < embed_desc_max_size):
+                page_members += f'{role_members.pop()}, '
             page_members = page_members.rstrip(", ")
-            pages.append(discord.Embed(colour=role.colour,
-                                       title=f'{len(role.members)} users with {role.name} - Page {i + 1}/{page_count}',
-                                       description=page_members))
+            embed = discord.Embed(colour=role.colour,
+                                  title=f'{role_member_count} users with {role.name} - Page {i + 1}/{page_count}',
+                                  description=page_members)
+            pages.append(embed)
         pager = PaginatorSession(pages=pages)
         await pager.start(interaction=interaction)
 
