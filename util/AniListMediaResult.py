@@ -88,16 +88,13 @@ class AniListMediaResult:
         else:
             colour = self.bot.dtbot_colour
         title = result['title']['romaji']
-        description = re.sub('<.*?>', '', result['description']) if result['description'] else ""
+        description = re.sub('<.*?>', '', result['description']) if result['description'] else ''
         embed = discord.Embed(colour=colour, title=title, description=description)
 
         cover_image = result['coverImage']['large']
         embed.set_image(url=cover_image)
 
-        genres = ""
-        for genre in result['genres']:
-            genres += genre + ', '
-        genres = genres[:len(genres) - 2] if result['genres'] != [] else 'N/A'
+        genres = ', '.join(result['genres']) if result['genres'] != [] else 'N/A'
         embed.add_field(name='Genres', value=genres)
 
         ft = result['format'].replace('_', ' ').title().replace('Tv', 'TV').replace('Ova', 'OVA').replace('Ona', 'ONA')
@@ -108,18 +105,17 @@ class AniListMediaResult:
             chapters = result['chapters']
             volumes = result['volumes']
             if chapters and chapters != 0:
-                ch_str = f'{chapters} Chapter' if chapters == 1 else f'{chapters} Chapters'
+                ch_str = f'{chapters} Chapter{"s" if chapters != 1 else ""}'
                 vol_str = ''
                 if volumes and volumes != 0:
-                    vol_str = f'{volumes} Volume' if volumes == 1 else f'{volumes} Volumes'
-                media_entries = ['Chapters', f'{ch_str}{" in " + vol_str if vol_str else ""}']
+                    vol_str = f' in {volumes} Volume{"s" if volumes != 1 else ""}'
+                media_entries = ['Chapters', f'{ch_str}{vol_str}']
         else:
             if result['episodes']:
-                episodes = f"{result['episodes']} Episode"
-                if result['episodes'] != 1:
-                    episodes = f'{episodes}s'
-                duration_str = 'Minutes' if result['duration'] != 1 else 'Minute'
-                duration = f" à {result['duration']} {duration_str}" if result['duration'] else ''
+                episodes = f'{result["episodes"]} Episode{"s" if result["episodes"] != 1 else ""}'
+                duration = ''
+                if result['duration']:
+                    duration = f' à {result["duration"]} Minute{"s" if result["duration"] != 1 else ""}'
                 media_entries = ['Episodes', f'{episodes}{duration}']
         if media_entries[0]:
             embed.add_field(name=media_entries[0], value=media_entries[1])
@@ -127,11 +123,11 @@ class AniListMediaResult:
         embed.add_field(name='Status', value=(result['status'].replace('_', ' ').title()))
 
         if result['averageScore']:
-            embed.add_field(name='Average Score', value=f"{result['averageScore']}%")
+            embed.add_field(name='Average Score', value=f'{result["averageScore"]}%')
 
         if not manga:
             season = result['season'].title() if result['season'] else None
-            season_str = f"{season} {result['seasonYear']}" if result['status'] != 'NOT_YET_RELEASED' else 'Unknown'
+            season_str = f'{season} {result["seasonYear"]}' if result['status'] != 'NOT_YET_RELEASED' else 'Unknown'
             if season_str != 'None None':
                 embed.add_field(name='Season', value=season_str)
 
