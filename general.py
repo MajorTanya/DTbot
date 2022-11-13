@@ -2,8 +2,8 @@ import datetime
 import itertools
 import math
 
+import aiohttp
 import discord
-import requests
 from discord import app_commands
 from discord.ext import commands
 
@@ -62,8 +62,9 @@ class General(commands.Cog):
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def anime(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        result = AniListMediaResult(title, is_manga=False, bot=self.bot)
-        await interaction.followup.send(embed=result.embed, view=result.view)
+        media_result = AniListMediaResult(bot=self.bot)
+        embed, view = await media_result.lookup(title=title, is_manga=False)
+        await interaction.followup.send(embed=embed, view=view)
 
     @app_commands.command(description='Current DTbot announcements')
     @app_commands.checks.bot_has_permissions(embed_links=True)
@@ -89,14 +90,18 @@ class General(commands.Cog):
         await interaction.response.defer()
         dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
         last_updated = self.bot.bot_config.get('Info', 'last_updated')
-        latest_commit = requests.get(self.COMMITS_URL).json()[0]
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
-                              description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
-                                          f'({last_updated})')
-        embed.set_image(url=changelog_link)
-        embed.add_field(name=f"Latest Commit", value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
-                                                     f"{latest_commit['commit']['message']}")
-        await interaction.followup.send(embed=embed)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self.COMMITS_URL) as r:
+                response = await r.json()
+                latest_commit = response[0]
+                embed = discord.Embed(colour=self.bot.dtbot_colour,
+                                      description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
+                                                  f'({last_updated})')
+                embed.set_image(url=changelog_link)
+                embed.add_field(name=f"Latest Commit",
+                                value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
+                                      f"{latest_commit['commit']['message']}")
+                await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
     @app_commands.checks.bot_has_permissions(embed_links=True)
@@ -128,8 +133,9 @@ class General(commands.Cog):
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def manga(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        result = AniListMediaResult(title, is_manga=True, bot=self.bot)
-        await interaction.followup.send(embed=result.embed, view=result.view)
+        media_result = AniListMediaResult(bot=self.bot)
+        embed, view = await media_result.lookup(title=title, is_manga=True)
+        await interaction.followup.send(embed=embed, view=view)
 
     @app_commands.command(description="Show the latency between DTbot and the Discord web servers")
     @app_commands.checks.bot_has_permissions(embed_links=True)

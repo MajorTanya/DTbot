@@ -2,8 +2,8 @@ import re
 import urllib.parse
 from configparser import ConfigParser
 
+import aiohttp
 import discord
-import requests
 
 from DTbot import DTbot
 from error_handler import AniMangaLookupError
@@ -22,14 +22,16 @@ kitsu_filters = urllib.parse.quote(config.get('AniManga Lookup', 'kitsu_filters'
 kitsu_query += kitsu_filters
 
 
-def request(title: str, is_manga: bool):  # request the entry from AniList
+async def request(title: str, is_manga: bool):  # request the entry from AniList
     query = manga_query if is_manga else anime_query
-    response = requests.post(AL_API_URL, json={'query': query, 'variables': {'search': title}})
-    result = response.json()['data']['Page']
-    if result['pageInfo']['total'] == 0:  # nothing found
-        raise AniMangaLookupError(title=title)
-    else:
-        return result['media'][0]
+    async with aiohttp.ClientSession() as session:
+        async with session.post(AL_API_URL, json={'query': query, 'variables': {'search': title}}) as r:
+            response = await r.json()
+            result = response['data']['Page']
+            if result['pageInfo']['total'] == 0:  # nothing found
+                raise AniMangaLookupError(title=title)
+            else:
+                return result['media'][0]
 
 
 def make_date(date: dict):
@@ -52,27 +54,33 @@ class AniListMediaResultView(discord.ui.View):
 
 
 class AniListMediaResult:
-    def __init__(self, title: str, is_manga: bool, bot: DTbot):
+    def __init__(self, bot: DTbot):
         self.bot = bot
         self.AL: str | None = None
         self.MAL: str | None = None
         self.Kitsu: str | None = None
-        result = request(title, is_manga)
-        self.embed = self.process_result(result['idMal'], is_manga, result)
-        self.view = AniListMediaResultView(anilist=self.AL, kitsu=self.Kitsu, mal=self.MAL)
 
-    def process_result(self, mal_id, manga: bool, result):
+    async def lookup(self, title: str, is_manga: bool) -> tuple[discord.Embed, AniListMediaResultView]:
+        result = await request(title, is_manga)
+        embed = await self.process_result(result['idMal'], is_manga, result)
+        view = AniListMediaResultView(anilist=self.AL, kitsu=self.Kitsu, mal=self.MAL)
+        return embed, view
+
+    async def process_result(self, mal_id, manga: bool, result):
         mal, kitsu = '', ''
         al_url = result['siteUrl']
         if mal_id:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
             mal = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
             kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
-            k_res = requests.get(kitsu_req).json()
-            try:  # fetch the entry itself from Kitsu again because the above is not a full entry
-                k_res2 = requests.get(k_res['data'][0]['relationships']['item']['links']['self']).json()
-                kitsu = f'{KITSU_URL}/{result["type"].lower()}/{k_res2["data"]["id"]}'
-            except IndexError:
-                pass
+            async with aiohttp.ClientSession() as session:
+                async with session.get(kitsu_req) as k_r:
+                    k_res = await k_r.json()
+                    try:  # fetch the entry itself from Kitsu again because the above is not a full entry
+                        async with session.get(k_res['data'][0]['relationships']['item']['links']['self']) as k_r2:
+                            k_res2 = await k_r2.json()
+                            kitsu = f'{KITSU_URL}/{result["type"].lower()}/{k_res2["data"]["id"]}'
+                    except IndexError:
+                        pass
 
         if result['coverImage']['color']:
             rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
