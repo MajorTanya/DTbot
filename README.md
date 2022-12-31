@@ -2,10 +2,31 @@
 
 A versatile Discord bot for your server, written with discord.py & nextcord.
 
-Running in two modes:
+Currently running:
 
-* v2 ("classic") (traditional command use, like `@DTbot help` and `+help`)
 * v3 (modern Slash Commands, like `/info`)
+
+## Announcement Re: DTbot v2 shutdown
+(Announcement made: 2022-12-31)
+
+### TL;DR
+
+* DTbot v2 ('classic', the mention syntax version) will shut down **January 1st, 2023 at 00:00 UTC**
+* v3 (Slash Commands based version, like `/info`) will continue to work
+* There was little to no use of v2, shutting it down enables full focus on v3 and beyond.
+
+### Shutting down DTbot v2 ('classic')
+
+For quite a while, we've encouraged the use of Slash Commands, and many new users probably didn't even know DTbot
+supported the mentioning syntax, or even the prefix-based syntax, as they will have discovered DTbot's Slash 
+Commands through Discord's built-in discovery tools.
+There have been some slight headaches recently with DTbot's access to the new App Discovery feature, and having only
+one version active makes adjusting to policy changes a lot easier, as well as allowing full focus on fixes and new
+features.
+
+We thank you for your long-time use of text-based and mention-based DTbot versions, but it is time to look towards
+the future, and what better opportunity than the change of the year. With that, we wish you a Happy New Year 2023 and
+a lot of fun using DTbot v3!
 
 ## Announcement Re: Discord restricting Message Content for Bots
 
@@ -13,8 +34,8 @@ Running in two modes:
 
 * DTbot will stay online and work as usual until **September 1st, 2022**.
 * DTbot v3 with Slash Commands is up and running *in parallel* to v2
-* **Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.
-    * *ALL* prefixes (`+` and custom ones) will cease to work.
+* **v2 has been retired, see above** ~**Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.~
+    * ~*ALL* prefixes (`+` and custom ones) will cease to work.~
     * Use Slash Commands instead.
 
 ### Message Content
@@ -50,7 +71,7 @@ With our array of command modules, DTbot provides:
             * Kilograms <> US Pounds (`/kglbs` & `/lbskg`)
 * Interaction commands with expressive GIFs to enhance user interaction
     * Examples include
-        * `/handholding [user]`, `/hug [user]`, `/pat [user]`, and many more (currently 30 kinds of interactions)
+        * `/handholding [user]`, `/hug [user]`, `/pat [user]`, and many more (currently 20+ kinds of interactions)
 * Simple math commands (all begin with `/maths`)
     * `/maths add`, `/maths subtract`, `/maths square`, `/maths multiply`, `/maths divide`
     * `/maths percentage` to figure out what percentage something is (15 apples of 60? It's 25%)
@@ -58,15 +79,6 @@ With our array of command modules, DTbot provides:
 * RNG-based commands like rolling dice (`/roll`) or spinning the roulette wheel (`/roulette spin` or `/roulette bet`)
     * `/roll` supports a variety of options and modifiers, like dropping the lowest roll, adding something to the
       result, and more. Check out the options and modifiers available in the command.
-    * `/roulette spin` lets you spin the roulette wheel
-    * `/roulette bet` lets you guess the result of the spin with several types of bets¹
-        * We currently support
-            * Straight Bet (guess the exact number the wheel will land on)
-            * Colour Bet
-            * Even/Odd Bet
-            * High (19-36)/Low (1-18) Bet
-
-      ¹(you can only win the satisfaction of getting it right, nothing else)
 * Various utility commands
     * `/avatar [user]`, `/changelog`, `/info`, `/userinfo [user]`, `/whohas [role]`, `/ping`, `/uptime`, `/xp [user]`
 * Anime/Manga lookup via AniList (`/anime [title]` and `/manga [title]`)
