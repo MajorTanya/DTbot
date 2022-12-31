@@ -29,6 +29,7 @@ the future, and what better opportunity than the change of the year. With that, 
 a lot of fun using DTbot v3!
 
 ## Announcement Re: Discord restricting Message Content for Bots
+(Announcement made: 2022-06-22)
 
 ### TL;DR
 
