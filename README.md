@@ -2,19 +2,42 @@
 
 A versatile Discord bot for your server, written with discord.py
 
-Running in two modes:
+Currently running:
 
-* v2 ("classic") (traditional command use, like `@DTbot help` and `+help`)
-* (soon™) v3 (modern Slash Commands, like `/info`)
+* **v2 has been retired, see below** ~v2 ("classic") (traditional command use, like @DTbot help and +help)~
+* v3 (modern Slash Commands, like `/info`) (check the [`v3`](https://github.com/MajorTanya/DTbot/tree/v3) branch)
+
+## Announcement Re: DTbot v2 shutdown
+(Announcement made: 2022-12-31)
+
+### TL;DR
+
+* DTbot v2 ('classic', the mention syntax version) will shut down **January 1st, 2023 at 00:00 UTC**
+* v3 (Slash Commands based version, like `/info`) will continue to work
+* There was little to no use of v2, shutting it down enables full focus on v3 and beyond.
+
+### Shutting down DTbot v2 ('classic')
+
+For quite a while, we've encouraged the use of Slash Commands, and many new users probably didn't even know DTbot
+supported the mentioning syntax, or even the prefix-based syntax, as they will have discovered DTbot's Slash 
+Commands through Discord's built-in discovery tools.
+There have been some slight headaches recently with DTbot's access to the new App Discovery feature, and having only
+one version active makes adjusting to policy changes a lot easier, as well as allowing full focus on fixes and new
+features.
+
+We thank you for your long-time use of text-based and mention-based DTbot versions, but it is time to look towards
+the future, and what better opportunity than the change of the year. With that, we wish you a Happy New Year 2023 and
+a lot of fun using DTbot v3!
 
 ## Announcement Re: Discord restricting Message Content for Bots
+(Announcement made: 2022-06-22)
 
 ### TL;DR
 
 * DTbot will stay online and work as usual until **September 1st, 2022**.
-* DTbot v3 has been launched with Slash Commands (*runs in parallel to the v2*)
-* **Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.
-  * *ALL* prefixes (`+` and custom ones) will cease to work.
+* DTbot v3 has been launched with Slash Commands ~(*runs in parallel to the v2*)~
+* **v2 has been retired, see above** ~**Past September 1st**, v2 commands will only work with `@DTbot info`, `@DTbot hug @someone`, etc.~
+  * ~*ALL* prefixes (`+` and custom ones) will cease to work.~
   * Use Slash Commands instead.
 
 ### Message Content
