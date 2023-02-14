@@ -72,7 +72,7 @@ class Dev(commands.GroupCog):
     @commands.Cog.listener()
     async def on_ready(self):
         dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
-        await self.bot.change_presence(activity=discord.Game(name=f"Do @\u200bDTbot help (v. {dtbot_version})"))
+        await self.bot.change_presence(activity=discord.Game(name=f"Check /announcements (v. {dtbot_version})"))
 
     heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.",
                                guild_ids=[DTbot.DEV_GUILD.id])
@@ -184,7 +184,7 @@ class Dev(commands.GroupCog):
         if caption:
             caption = caption.replace("DTbot", "@\u200bDTbot").replace("dtbot_version", dtbot_version)
         else:
-            caption = f"Do @\u200bDTbot help (v. {dtbot_version})"
+            caption = f"Check /announcements (v. {dtbot_version})"
         self.bot.log.info("Updating Rich Presence")
         await self.bot.change_presence(activity=discord.Game(name=caption))
         self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")
