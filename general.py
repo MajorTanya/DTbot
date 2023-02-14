@@ -69,7 +69,7 @@ class General(commands.Cog):
     @app_commands.command(description='Current DTbot announcements')
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def announcements(self, interaction: discord.Interaction):
-        embed = discord.Embed(colour=self.bot.dtbot_colour, title='Announcement',
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title='Announcement',
                               url=self.ANNOUNCEMENT_LINK,
                               description=self.ANNOUNCEMENT_MSG)
         await interaction.response.send_message(embed=embed)
@@ -79,7 +79,7 @@ class General(commands.Cog):
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def avatar(self, interaction: discord.Interaction, user: discord.Member | discord.User | None):
         user = user if user else interaction.user
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR,
                               description=f"{user.mention}'s avatar\n\n[Avatar Link]({user.display_avatar.url})")
         embed.set_image(url=user.display_avatar.url)
         await interaction.response.send_message(embed=embed)
@@ -94,7 +94,7 @@ class General(commands.Cog):
             async with session.get(self.COMMITS_URL) as r:
                 response = await r.json()
                 latest_commit = response[0]
-                embed = discord.Embed(colour=self.bot.dtbot_colour,
+                embed = discord.Embed(colour=DTbot.DTBOT_COLOUR,
                                       description=f'__Recent changes to DTbot:__\nNewest version: {dtbot_version} '
                                                   f'({last_updated})')
                 embed.set_image(url=changelog_link)
@@ -114,7 +114,7 @@ class General(commands.Cog):
                                           f"server.\n\nIf you have any command requests, use the `request` command.\n\n"
                                           f"Thank you and have a good day.\n\n"
                                           f"[__**{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})",
-                              colour=self.bot.dtbot_colour)
+                              colour=DTbot.DTBOT_COLOUR)
         embed.add_field(name="Authors", value=self.DTBOT_DEVS)
         embed.add_field(name="GitHub repository", value=f"Find me [here]({self.GH_LINK})")
         embed.add_field(name="Twitter", value=f"[Tweet @DTbotDiscord]({self.TWITTER_LINK})", inline=True)
@@ -141,7 +141,7 @@ class General(commands.Cog):
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.checks.cooldown(3, 30.0, key=lambda i: i.guild_id)
     async def ping(self, interaction: discord.Interaction):
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR,
                               description=f':ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__')
         await interaction.response.send_message(embed=embed)
 
@@ -155,7 +155,7 @@ class General(commands.Cog):
     async def serverinfo(self, interaction: discord.Interaction):
         await interaction.response.defer()
         guild = interaction.guild
-        embed = discord.Embed(colour=self.bot.dtbot_colour, title=f'About {guild.name}')
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f'About {guild.name}')
         if guild.description:
             embed.description = guild.description
         if guild.icon:

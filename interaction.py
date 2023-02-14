@@ -19,7 +19,7 @@ class Interaction(commands.Cog):
                    self_tag_img: bool = True) -> discord.Embed:
         chosen = random.choice(links) if links else ""
         markdown_link = f"\n\n[Image link]({chosen})" if links else ""
-        embed = discord.Embed(colour=self.bot.dtbot_colour)
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR)
         if user:
             if user.id == invoker_id:
                 embed.description = self_tag_msg
@@ -271,7 +271,7 @@ class Interaction(commands.Cog):
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def woop(self, interaction: discord.Interaction):
         chosen = random.choice(woop_links)
-        embed = discord.Embed(colour=self.bot.dtbot_colour, description=f'[Image link]({chosen})')
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, description=f'[Image link]({chosen})')
         embed.set_image(url=f"{chosen}")
         await interaction.response.send_message(embed=embed)
 

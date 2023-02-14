@@ -86,7 +86,7 @@ class AniListMediaResult:
             rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
             colour = discord.Colour.from_rgb(rgb[0], rgb[1], rgb[2])
         else:
-            colour = self.bot.dtbot_colour
+            colour = DTbot.DTBOT_COLOUR
         title = result['title']['romaji']
         description = re.sub('<.*?>', '', result['description']) if result['description'] else ''
         embed = discord.Embed(colour=colour, title=title, description=description)

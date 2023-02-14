@@ -84,7 +84,7 @@ class Rng(commands.Cog, name='RNG'):
                 result = total_rolled * modifier
             case _:
                 result = total_rolled
-        embed = discord.Embed(colour=self.bot.dtbot_colour, title=f'Result: __{result}__',
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f'Result: __{result}__',
                               description=f'{explanation} {mod_type}{modifier if modifier is not None else ""}')
         embed.set_footer(text=f'Rolled {dice}')
         await interaction.followup.send(embed=embed)
@@ -96,7 +96,7 @@ class Rng(commands.Cog, name='RNG'):
     async def ship(self, interaction: discord.Interaction, first: str, second: str):
         shipping = random.random() * 100
         emote_choice = ':broken_heart:' if shipping < 50 else ':heart:'
-        embed = discord.Embed(colour=self.bot.dtbot_colour,
+        embed = discord.Embed(colour=DTbot.DTBOT_COLOUR,
                               description=f'{first} and {second}? `{shipping:.2f}%` shippable. {emote_choice}')
         await interaction.response.send_message(embed=embed)
 

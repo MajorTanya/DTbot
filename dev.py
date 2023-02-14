@@ -49,7 +49,7 @@ class Dev(commands.GroupCog):
             startup_ts = int(self.bot.bot_startup.timestamp())
             uptime = now_dt - self.bot.bot_startup
             dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
-            beat_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+            beat_embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f"{self.bot.user.name}'s Heartbeat",
                                        description=f"{self.bot.user.name} is still alive and running!")
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
@@ -64,7 +64,7 @@ class Dev(commands.GroupCog):
         self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
         self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint('Heartbeat', 'hb_chamber'))
-        startup_embed = discord.Embed(colour=self.bot.dtbot_colour, title=f"{self.bot.user.name}'s Heartbeat",
+        startup_embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f"{self.bot.user.name}'s Heartbeat",
                                       description=f"{self.bot.user.name} is starting up!")
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
         await self.hb_chamber.send(embed=startup_embed)

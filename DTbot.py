@@ -16,6 +16,7 @@ intents.members = True
 
 class DTbot(commands.Bot):
     DEV_GUILD: discord.Object = None
+    DTBOT_COLOUR: discord.Colour = discord.Colour(0x5e51a8)
 
     def __init__(self, bot_config: ConfigParser | None = None):
         super().__init__(case_insensitive=True, command_prefix=commands.when_mentioned, intents=intents,
@@ -29,7 +30,6 @@ class DTbot(commands.Bot):
         DTbot.DEV_GUILD = discord.Object(id=(bot_config.getint('General', 'DEV_GUILD')))
         db_config = dict(self.bot_config.items('Database'))
         self.db_cnx = mariadb.ConnectionPool(pool_size=10, reconnect=True, **db_config)
-        self.dtbot_colour = discord.Colour(0x5e51a8)
         # set up logging and bind to instance
         self.log = logging.getLogger('dtbot')
         self.log.setLevel(logging.DEBUG)
