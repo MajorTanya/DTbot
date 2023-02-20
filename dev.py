@@ -107,10 +107,7 @@ class Dev(commands.GroupCog):
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.load_extension(extension_name)
-            if dev_sync:
-                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
-            if global_sync:
-                await self.bot.tree.sync()
+            await self.sync(dev_sync=dev_sync, global_sync=global_sync)
             self.bot.log.info(f"Module `{extension_name}` loaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` loaded successfully.')
         except commands.ExtensionError as e:
@@ -133,10 +130,7 @@ class Dev(commands.GroupCog):
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.unload_extension(extension_name)
-            if dev_sync:
-                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
-            if global_sync:
-                await self.bot.tree.sync()
+            await self.sync(dev_sync=dev_sync, global_sync=global_sync)
             self.bot.log.info(f"Module `{extension_name}` unloaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` unloaded successfully.')
         except commands.ExtensionError as e:
@@ -150,10 +144,7 @@ class Dev(commands.GroupCog):
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.reload_extension(extension_name)
-            if dev_sync:
-                await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
-            if global_sync:
-                await self.bot.tree.sync()
+            await self.sync(dev_sync=dev_sync, global_sync=global_sync)
             self.bot.log.info(f"Module `{extension_name}` reloaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` reloaded successfully.')
         except commands.ExtensionError as e:
@@ -214,6 +205,12 @@ class Dev(commands.GroupCog):
         for guild in self.bot.guilds:
             dbcallprocedure(self.bot.db_cnx, 'AddNewServer', params=(guild.id, guild.member_count))
         await interaction.followup.send('Server list refreshed', ephemeral=True)
+
+    async def sync(self, *, dev_sync: bool = False, global_sync: bool = False):
+        if dev_sync:
+            await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
+        if global_sync:
+            await self.bot.tree.sync()
 
 
 async def setup(bot: DTbot):
