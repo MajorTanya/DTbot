@@ -11,6 +11,7 @@ from DTbot import DTbot
 from util.utils import dbcallprocedure
 
 
+@app_commands.guilds(DTbot.DEV_GUILD)
 class Dev(commands.GroupCog):
     """Developer Commands and DTbot Management"""
 
@@ -70,8 +71,7 @@ class Dev(commands.GroupCog):
         dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
         await self.bot.change_presence(activity=discord.Game(name=f"Check /announcements (v. {dtbot_version})"))
 
-    heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.",
-                               guild_ids=[DTbot.DEV_GUILD.id])
+    heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.")
 
     @heart.command(description="Stops the heartbeat of DTbot.")
     async def stop(self, interaction: discord.Interaction, code: str):
@@ -94,7 +94,6 @@ class Dev(commands.GroupCog):
             await interaction.followup.send(f'Invalid code.', ephemeral=True)
 
     @app_commands.command(description="Load an extension. Optionally syncs Slash Commands.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def load(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
                    global_sync: bool | None = False):
         await interaction.response.defer(ephemeral=True)
@@ -116,7 +115,6 @@ class Dev(commands.GroupCog):
         ]
 
     @app_commands.command(description="Unload an extension. Optionally syncs Slash Commands.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def unload(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
                      global_sync: bool | None = False):
         await interaction.response.defer(ephemeral=True)
@@ -129,7 +127,6 @@ class Dev(commands.GroupCog):
             await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
     @app_commands.command(description="Atomically reload an extension. Optionally syncs Slash Commands.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def reload(self, interaction: discord.Interaction, extension_name: str, dev_sync: bool | None = False,
                      global_sync: bool | None = False):
         await interaction.response.defer(ephemeral=True)
@@ -153,7 +150,6 @@ class Dev(commands.GroupCog):
         ]
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def updaterp(self, interaction: discord.Interaction, caption: str | None, reload_config: bool | None = False):
         await interaction.response.defer(ephemeral=True)
         dtbot_version = self.bot.bot_config.get('Info', 'dtbot_version')
@@ -172,7 +168,6 @@ class Dev(commands.GroupCog):
         await interaction.followup.send(f'Successfully updated Rich Presence to: {caption}', ephemeral=True)
 
     @app_commands.command(description="Shutdown command for DTbot.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def shutdownbot(self, interaction: discord.Interaction, passcode: str):
         await interaction.response.defer(ephemeral=True)
         if passcode == self.SDB_CODE:
@@ -187,7 +182,6 @@ class Dev(commands.GroupCog):
             await interaction.followup.send('No.', ephemeral=True)
 
     @app_commands.command(description="Manually cycles through all servers to refresh the database.")
-    @app_commands.guilds(DTbot.DEV_GUILD)
     async def refreshservers(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
         for guild in self.bot.guilds:
