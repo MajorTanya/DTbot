@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from DTbot import DTbot
 from linklist import changelog_link
-from util.AniListMediaResult import AniListMediaResult
+from util.AniListMediaResult import AniListMediaQuery
 from util.PaginatorSession import PaginatorSession
 from util.utils import dbcallprocedure, even_out_embed_fields
 
@@ -62,8 +62,8 @@ class General(commands.Cog):
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def anime(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        media_result = AniListMediaResult(bot=self.bot)
-        embed, view = await media_result.lookup(title=title, is_manga=False)
+        media_query = AniListMediaQuery(bot=self.bot)
+        embed, view = await media_query.lookup(title=title, is_manga=False)
         await interaction.followup.send(embed=embed, view=view)
 
     @app_commands.command(description='Current DTbot announcements')
@@ -133,8 +133,8 @@ class General(commands.Cog):
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def manga(self, interaction: discord.Interaction, title: str):
         await interaction.response.defer()
-        media_result = AniListMediaResult(bot=self.bot)
-        embed, view = await media_result.lookup(title=title, is_manga=True)
+        media_query = AniListMediaQuery(bot=self.bot)
+        embed, view = await media_query.lookup(title=title, is_manga=True)
         await interaction.followup.send(embed=embed, view=view)
 
     @app_commands.command(description="Show the latency between DTbot and the Discord web servers")

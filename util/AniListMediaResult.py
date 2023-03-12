@@ -1,145 +1,157 @@
 import re
 import urllib.parse
-from configparser import ConfigParser
 
 import aiohttp
 import discord
 
 from DTbot import DTbot
 from error_handler import AniMangaLookupError
-from util.utils import even_out_embed_fields
+from util.AniListResponseDTO import AniListResponseDTO
 
-config = ConfigParser()
-config.read('./config/config.ini')
-AL_API_URL = config.get('AniManga Lookup', 'AL_API_URL')
-KITSU_URL = config.get('AniManga Lookup', 'kitsu_url')
-MAL_URL = config.get('AniManga Lookup', 'mal_url')
-anime_query = config.get('AniManga Lookup', 'anime_query')
-manga_query = config.get('AniManga Lookup', 'manga_query')
-kitsu_query = config.get('AniManga Lookup', 'kitsu_query')
-# Kitsu needs URL encoded strings, except for '&' and '=', which would break the filters if encoded
-kitsu_filters = urllib.parse.quote(config.get('AniManga Lookup', 'kitsu_filters'), safe='&=')
-kitsu_query += kitsu_filters
-
-
-async def request(title: str, is_manga: bool):  # request the entry from AniList
-    query = manga_query if is_manga else anime_query
-    async with aiohttp.ClientSession() as session:
-        async with session.post(AL_API_URL, json={'query': query, 'variables': {'search': title}}) as r:
-            response = await r.json()
-            result = response['data']['Page']
-            if result['pageInfo']['total'] == 0:  # nothing found
-                raise AniMangaLookupError(title=title)
-            else:
-                return result['media'][0]
-
-
-def make_date(date: dict):
-    # combine dates to YYYY-MM-DD with None as question marks because some entries may be None from the API
-    year = date['year'] if date['year'] else '????'
-    month = date['month'] if date['month'] else '??'
-    day = date['day'] if date['day'] else '??'
-    return f'{year}-{str(month).rjust(2, "0")}-{str(day).rjust(2, "0")}'
+AL_EMOTE = '<:AniList:742063839259918336>'
+KITSU_EMOTE = '<:Kitsu:742063838555275337>'
+MAL_EMOTE = '<:MyAnimeList:742063838760927323>'
 
 
 class AniListMediaResultView(discord.ui.View):
-
     def __init__(self, *, anilist: str, kitsu: str | None = None, mal: str | None = None):
         super().__init__()
-        self.add_item(discord.ui.Button(label=f'AniList', url=anilist, emoji='<:AniList:742063839259918336>'))
-        self.add_item(discord.ui.Button(label=f'Kitsu', disabled=kitsu is None, url=kitsu,
-                                        emoji='<:Kitsu:742063838555275337>'))
-        self.add_item(discord.ui.Button(label=f'MyAnimeList', disabled=mal is None, url=mal,
-                                        emoji='<:MyAnimeList:742063838760927323>'))
+        self.add_item(discord.ui.Button(label=f'AniList', url=anilist, emoji=AL_EMOTE))
+        self.add_item(discord.ui.Button(label=f'Kitsu', disabled=kitsu is None, url=kitsu, emoji=KITSU_EMOTE))
+        self.add_item(discord.ui.Button(label=f'MyAnimeList', disabled=mal is None, url=mal, emoji=MAL_EMOTE))
 
 
-class AniListMediaResult:
+class AniListMediaQuery:
     def __init__(self, bot: DTbot):
         self.bot = bot
-        self.AL: str | None = None
-        self.MAL: str | None = None
-        self.Kitsu: str | None = None
+        self._AniList: str
+        self._MyAnimeList: str | None = None
+        self._Kitsu: str | None = None
+        self._is_manga_request: bool | None = None
+        self._AL_API_URL = self.bot.bot_config.get('AniManga Lookup', 'AL_API_URL')
+        self._KITSU_URL = self.bot.bot_config.get('AniManga Lookup', 'kitsu_url')
+        self._MAL_URL = self.bot.bot_config.get('AniManga Lookup', 'mal_url')
+        self._anilist_query = self.bot.bot_config.get('AniManga Lookup', 'anilist_query')
+        self._kitsu_query = self.bot.bot_config.get('AniManga Lookup', 'kitsu_query')
+        # Kitsu needs URL encoded strings, except for '&' and '=', which would break the filters if encoded
+        kitsu_filters = urllib.parse.quote(self.bot.bot_config.get('AniManga Lookup', 'kitsu_filters'), safe='&=')
+        self._kitsu_query += kitsu_filters
 
     async def lookup(self, title: str, is_manga: bool) -> tuple[discord.Embed, AniListMediaResultView]:
-        result = await request(title, is_manga)
-        embed = await self.process_result(result['idMal'], is_manga, result)
-        view = AniListMediaResultView(anilist=self.AL, kitsu=self.Kitsu, mal=self.MAL)
+        """Look up an Anime or Manga on AniList, Kitsu, and MyAnimeList - Returns an Embed and a View"""
+        self._is_manga_request = is_manga
+        anilist_dto = await self._fetch_from_anilist(title)
+        embed = await self._process_result(anilist_dto)
+        view = AniListMediaResultView(anilist=self._AniList, kitsu=self._Kitsu, mal=self._MyAnimeList)
         return embed, view
 
-    async def process_result(self, mal_id, manga: bool, result):
-        mal, kitsu = '', ''
-        al_url = result['siteUrl']
-        if mal_id:  # if AL doesn't know what the ID on MAL is, we just don't bother to get Kitsu
-            mal = f'{MAL_URL}/{result["type"].lower()}/{mal_id}'
-            kitsu_req = kitsu_query.replace('MALIDHERE', str(mal_id)).replace('TYPE', result['type'].lower())
-            async with aiohttp.ClientSession() as session:
-                async with session.get(kitsu_req) as k_r:
-                    k_res = await k_r.json()
-                    try:  # fetch the entry itself from Kitsu again because the above is not a full entry
-                        async with session.get(k_res['data'][0]['relationships']['item']['links']['self']) as k_r2:
-                            k_res2 = await k_r2.json()
-                            kitsu = f'{KITSU_URL}/{result["type"].lower()}/{k_res2["data"]["id"]}'
-                    except IndexError:
-                        pass
+    async def _fetch_from_anilist(self, title: str) -> AniListResponseDTO:
+        """Searches AniList for the title - Returns an AniListResponseDTO, or raises an AniMangaLookupError"""
+        query = self._anilist_query.replace('INSERTTYPE', 'MANGA' if self._is_manga_request else 'ANIME')
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self._AL_API_URL, json={'query': query, 'variables': {'search': title}}) as r:
+                response = await r.json()
+                result = response['data']['Page']
+                if result['pageInfo']['total'] == 0:  # nothing found
+                    raise AniMangaLookupError(title=title)
+                else:
+                    return AniListResponseDTO.from_media_response(result['media'][0])
 
-        if result['coverImage']['color']:
-            rgb = tuple(int(result['coverImage']['color'].lstrip('#')[i:i + 2], 16) for i in (0, 2, 4))
-            colour = discord.Colour.from_rgb(rgb[0], rgb[1], rgb[2])
+    async def _fetch_from_kitsu(self, anilist_id: int) -> str | None:
+        """Fetches Kitsu info for an AniList ID - Returns the Kitsu URL, or None if no valid AL->Kitsu mapping exists"""
+        media_type = 'manga' if self._is_manga_request else 'anime'
+        kitsu_url = None
+        kitsu_req = self._kitsu_query.replace('ALIDHERE', str(anilist_id)).replace('TYPE', media_type)
+        async with aiohttp.ClientSession() as session:
+            async with session.get(kitsu_req) as r:
+                try:
+                    kitsu_response = await r.json()
+                    if kitsu_response['meta']['count'] != 0:
+                        kitsu_url = f'{self._KITSU_URL}/{media_type}/{kitsu_response["included"][0]["id"]}'
+                except (IndexError, KeyError):
+                    pass
+        return kitsu_url
+
+    async def _process_result(self, dto: AniListResponseDTO) -> discord.Embed:
+        """Processes the AniListResponseDTO to build an Embed - Returns the built Embed"""
+        colour = DTbot.DTBOT_COLOUR
+        self._AniList = dto.site_url
+        self._Kitsu = await self._fetch_from_kitsu(dto.id_al)
+
+        if dto.id_mal:
+            self._MyAnimeList = f'{self._MAL_URL}/{"manga" if dto.is_manga else "anime"}/{dto.id_mal}'
+
+        if dto.cover_image and dto.cover_image.rgb:
+            colour = discord.Colour.from_rgb(dto.cover_image.rgb[0], dto.cover_image.rgb[1], dto.cover_image.rgb[2])
+
+        description = re.sub('<.*?>', '', dto.description) if dto.description is not None else None
+        embed = discord.Embed(colour=colour, title=dto.title.romaji, description=description)
+
+        if dto.cover_image:
+            embed.set_image(url=dto.cover_image.url)
+
+        if dto.title.english and dto.title.english.casefold() != dto.title.romaji.casefold():
+            embed.add_field(name='English Title', value=dto.title.english)
+
+        if dto.source_type:
+            embed.add_field(name='Source', value=dto.source_type)
+
+        if dto.genres:
+            embed.add_field(name='Genres', value=', '.join(dto.genres))
+
+        if dto.format:
+            embed.add_field(name='Format', value=dto.format)
+
+        if entries_strs := _make_entries_string(dto):
+            embed.add_field(name='Chapters' if dto.is_manga else 'Episodes', value=entries_strs)
+
+        if dto.status:
+            embed.add_field(name='Status', value=dto.status)
+
+        if dto.average_score:
+            embed.add_field(name='Average Score', value=f'{dto.average_score}%')
+
+        if not dto.is_manga and dto.season and dto.season_year:
+            embed.add_field(name='Season', value=f'{dto.season.title()} {dto.season_year}')
+
+        if dto.start_date and dto.end_date and dto.start_date == dto.end_date:
+            embed.add_field(name='Relase Date', value=dto.start_date)
         else:
-            colour = DTbot.DTBOT_COLOUR
-        title = result['title']['romaji']
-        description = re.sub('<.*?>', '', result['description']) if result['description'] else ''
-        embed = discord.Embed(colour=colour, title=title, description=description)
+            if dto.start_date:
+                embed.add_field(name='Start Date', value=dto.start_date)
+            if dto.end_date:
+                embed.add_field(name='End Date', value=dto.end_date)
 
-        cover_image = result['coverImage']['large']
-        embed.set_image(url=cover_image)
+        if not dto.is_manga and dto.next_airing_episode:
+            timestamp_str = f'<t:{dto.next_airing_episode}:F> (<t:{dto.next_airing_episode}:R>)'
+            embed.add_field(name=f'Next Episode Date', value=timestamp_str)
 
-        genres = ', '.join(result['genres']) if result['genres'] != [] else 'N/A'
-        embed.add_field(name='Genres', value=genres)
+        if dto.studio:
+            embed.add_field(name='Studio', value=f'[{dto.studio.name}]({dto.studio.site_url})')
 
-        ft = result['format'].replace('_', ' ').title().replace('Tv', 'TV').replace('Ova', 'OVA').replace('Ona', 'ONA')
-        embed.add_field(name='Format', value=ft)
+        if dto.staff:
+            staff = ''
+            for staffer in dto.staff:
+                staffer_entry = f'- {staffer.role}: {staffer.name}\n'
+                if (len(staff) + len(staffer_entry)) > 1024:  # max length of embed field
+                    break
+                staff += staffer_entry
+            embed.add_field(name='Staff', value=staff.strip(), inline=False)
 
-        media_entries = [None, '']
-        if manga:
-            chapters = result['chapters']
-            volumes = result['volumes']
-            if chapters and chapters != 0:
-                ch_str = f'{chapters} Chapter{"s" if chapters != 1 else ""}'
-                vol_str = ''
-                if volumes and volumes != 0:
-                    vol_str = f' in {volumes} Volume{"s" if volumes != 1 else ""}'
-                media_entries = ['Chapters', f'{ch_str}{vol_str}']
-        else:
-            if result['episodes']:
-                episodes = f'{result["episodes"]} Episode{"s" if result["episodes"] != 1 else ""}'
-                duration = ''
-                if result['duration']:
-                    duration = f' à {result["duration"]} Minute{"s" if result["duration"] != 1 else ""}'
-                media_entries = ['Episodes', f'{episodes}{duration}']
-        if media_entries[0]:
-            embed.add_field(name=media_entries[0], value=media_entries[1])
+        return embed
 
-        embed.add_field(name='Status', value=(result['status'].replace('_', ' ').title()))
 
-        if result['averageScore']:
-            embed.add_field(name='Average Score', value=f'{result["averageScore"]}%')
+def _make_entries_string(dto: AniListResponseDTO) -> str | None:
+    """Create "`X Chapter{s}[in Y Volume{s}]`" or "`X Episode{s}[à Y Minute{s}]`" style strings"""
+    if (dto.is_manga and not dto.chapters) or (not dto.is_manga and not dto.episodes):
+        return None
+    entry_amount = dto.chapters if dto.is_manga else dto.episodes
+    entries_str = f'{entry_amount} {"Chapter" if dto.is_manga else "Episode"}{"s" if entry_amount != 1 else ""}'
+    vols_or_dur = ''
 
-        if not manga:
-            season = result['season'].title() if result['season'] else None
-            season_str = f'{season} {result["seasonYear"]}' if result['status'] != 'NOT_YET_RELEASED' else 'Unknown'
-            if season_str != 'None None':
-                embed.add_field(name='Season', value=season_str)
+    if dto.is_manga and dto.volumes:
+        vols_or_dur = f' in {dto.volumes} Volume{"s" if dto.volumes != 1 else ""}'
+    elif not dto.is_manga and dto.duration:
+        vols_or_dur = f' à {dto.duration} Minute{"s" if dto.duration != 1 else ""}'
 
-        if result['status'] != 'NOT_YET_RELEASED':
-            start_date = make_date(result['startDate'])
-            embed.add_field(name='Start Date', value=start_date)
-        if result['status'] == 'FINISHED':
-            end_date = make_date(result['endDate'])
-            embed.add_field(name='End Date', value=end_date)
-
-        self.AL = al_url
-        self.Kitsu = kitsu if kitsu else None
-        self.MAL = mal if mal else None
-
-        return even_out_embed_fields(embed)
+    return f'{entries_str}{vols_or_dur}'
