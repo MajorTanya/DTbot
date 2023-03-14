@@ -20,10 +20,11 @@ class RequestModal(discord.ui.Modal, title='Request for DTbot'):
     def __init__(self, bot: DTbot):
         super().__init__()
         self.bot = bot
-
-    functionality = discord.ui.TextInput(label='Functionality', placeholder='Short description here', max_length=100)
-    description = discord.ui.TextInput(label='Description', style=discord.TextStyle.long,
-                                       placeholder='Describe the feature in more detail here', max_length=500)
+        self.functionality = self.add_item(discord.ui.TextInput(label='Functionality',
+                                                                placeholder='Short description here', max_length=100))
+        self.description = self.add_item(discord.ui.TextInput(label='Description', style=discord.TextStyle.long,
+                                                              placeholder='Describe the feature in more detail here',
+                                                              max_length=500))
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f'Thank you for your request, {interaction.user.name}.',
