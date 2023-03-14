@@ -103,6 +103,7 @@ class Dev(commands.GroupCog):
             self.bot.log.info(f"Module `{extension_name}` loaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` loaded successfully.')
         except commands.ExtensionError as e:
+            self.bot.log.error(f'Error loading Module {extension_name}:', exc_info=e)
             await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
     @load.autocomplete('extension_name')
@@ -124,6 +125,7 @@ class Dev(commands.GroupCog):
             self.bot.log.info(f"Module `{extension_name}` unloaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` unloaded successfully.')
         except commands.ExtensionError as e:
+            self.bot.log.error(f'Error unloading Module {extension_name}:', exc_info=e)
             await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
     @app_commands.command(description="Atomically reload an extension. Optionally syncs Slash Commands.")
@@ -136,6 +138,7 @@ class Dev(commands.GroupCog):
             self.bot.log.info(f"Module `{extension_name}` reloaded by user {interaction.user}.")
             await interaction.followup.send(f'Module `{extension_name}` reloaded successfully.')
         except commands.ExtensionError as e:
+            self.bot.log.error(f'Error reloading Module {extension_name}:', exc_info=e)
             await interaction.followup.send(f'{type(e).__name__}', ephemeral=True)
 
     @unload.autocomplete('extension_name')
