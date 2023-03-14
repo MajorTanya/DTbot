@@ -8,7 +8,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 
 from DTbot import DTbot
-from util.utils import dbcallprocedure
+from util.utils import DBProcedure, dbcallprocedure
 
 
 @app_commands.guilds(DTbot.DEV_GUILD)
@@ -188,7 +188,7 @@ class Dev(commands.GroupCog):
     async def refreshservers(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
         for guild in self.bot.guilds:
-            dbcallprocedure(self.bot.db_cnx, 'AddNewServer', params=(guild.id, guild.member_count))
+            dbcallprocedure(self.bot.db_cnx, DBProcedure.AddNewServer, params=(guild.id, guild.member_count))
         await interaction.followup.send('Server list refreshed', ephemeral=True)
 
     async def sync(self, *, dev_sync: bool = False, global_sync: bool = False):

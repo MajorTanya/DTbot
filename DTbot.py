@@ -8,7 +8,7 @@ import mariadb
 from discord import app_commands
 from discord.ext import commands
 
-from util.utils import checkdbforuser, dbcallprocedure
+from util.utils import DBProcedure, checkdbforuser, dbcallprocedure
 
 intents = discord.Intents.default()
 intents.members = True
@@ -57,7 +57,7 @@ class DTbot(commands.Bot):
             await self.tree.sync()
 
     async def on_guild_join(self, guild: discord.Guild):
-        dbcallprocedure(self.db_cnx, 'AddNewServer', params=(guild.id, guild.member_count))
+        dbcallprocedure(self.db_cnx, DBProcedure.AddNewServer, params=(guild.id, guild.member_count))
 
     async def on_message(self, message: discord.Message):
         if (message.author == self.user) or message.author.bot:
@@ -67,15 +67,14 @@ class DTbot(commands.Bot):
         finally:
             pass
 
-    async def on_app_command_completion(self, interaction: discord.Interaction, command: app_commands.Command):
-        result = dbcallprocedure(self.db_cnx, 'CheckAppCommandExist', returns=True,
-                                 params=(command.qualified_name, '@res'))
+    async def on_app_command_completion(self, _: discord.Interaction, command: app_commands.Command):
+        result = dbcallprocedure(self.db_cnx, DBProcedure.CheckAppCommandExist, params=(command.qualified_name, '@res'))
         if result:
-            dbcallprocedure(self.db_cnx, 'IncrementAppCommandUsage', params=(command.qualified_name,))
+            dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
         else:
-            dbcallprocedure(self.db_cnx, 'AddNewAppCommand', params=(command.qualified_name,))
+            dbcallprocedure(self.db_cnx, DBProcedure.AddNewAppCommand, params=(command.qualified_name,))
             # because the command was used this one time, we increment the default value (0) by 1
-            dbcallprocedure(self.db_cnx, 'IncrementAppCommandUsage', params=(command.qualified_name,))
+            dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
 
     async def on_ready(self):
         # online confimation

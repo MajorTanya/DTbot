@@ -11,7 +11,7 @@ from DTbot import DTbot
 from linklist import changelog_link
 from util.AniListMediaQuery import AniListMediaQuery
 from util.PaginatorSession import PaginatorSession
-from util.utils import dbcallprocedure, even_out_embed_fields
+from util.utils import DBProcedure, dbcallprocedure, even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
 
@@ -264,7 +264,7 @@ class General(commands.Cog):
         if user.bot:
             return await interaction.response.send_message("Bots don't get XP. :robot:")
         await interaction.response.defer()
-        xp = dbcallprocedure(self.bot.db_cnx, 'GetUserXp', returns=True, params=(user.id, '@res'))
+        xp = dbcallprocedure(self.bot.db_cnx, DBProcedure.GetUserXp, params=(user.id, '@res'))
         if xp > 0:
             await interaction.followup.send(f"**{user.display_name}** has `{xp}` XP.")
         else:
