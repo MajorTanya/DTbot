@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from DTbot import DTbot
 from linklist import changelog_link
-from util.AniListMediaResult import AniListMediaQuery
+from util.AniListMediaQuery import AniListMediaQuery
 from util.PaginatorSession import PaginatorSession
 from util.utils import dbcallprocedure, even_out_embed_fields
 
