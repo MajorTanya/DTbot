@@ -1,10 +1,45 @@
+import datetime
 import enum
+import logging
 import random
 import time
 import typing
 
 import discord
 import mariadb  # type: ignore
+
+DEFAULT_LOG_FORMATTER = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', '%Y-%m-%d %H:%M:%S',
+                                          style='{')
+
+
+def add_file_logging(logger: logging.Logger, formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
+                     level: int = logging.INFO, logs_folder: str = './logs',
+                     startup_time: datetime.datetime | None = None) -> logging.FileHandler:
+    """Adds a FileHandler to the provided Logger with the given formatter and level (default: WARNING) and returns it
+    for future use.
+
+    The created log file will be named after the startup_time and reside in the **./logs/** folder by default.
+
+    If no startup_time is provided, it will be generated based on the time of calling this method."""
+    if startup_time is None:
+        now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        date_str = now.strftime("%Y-%m-%d (%H-%M-%S %Z)")
+    else:
+        date_str = startup_time.strftime("%Y-%m-%d (%H-%M-%S %Z)")
+    file_handler = logging.FileHandler(filename=f'{logs_folder.rstrip("/")}/{date_str}.log', encoding='utf-8', mode='w')
+    file_handler.setLevel(level)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    return file_handler
+
+
+def add_stderr_logging(logger: logging.Logger, formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
+                       level: int = logging.WARNING) -> None:
+    """Adds a stderr StreamHandler to the provided Logger with the given formatter and level (default: WARNING)"""
+    stream_handler = logging.StreamHandler()
+    stream_handler.setLevel(level)  # will log to stderr, more immediately visible than file
+    stream_handler.setFormatter(formatter)
+    logger.addHandler(stream_handler)
 
 
 class DBProcedure(enum.StrEnum):

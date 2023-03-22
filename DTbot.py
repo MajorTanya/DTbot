@@ -8,7 +8,7 @@ import mariadb
 from discord import app_commands
 from discord.ext import commands
 
-from util.utils import DBProcedure, checkdbforuser, dbcallprocedure
+from util.utils import DBProcedure, add_file_logging, add_stderr_logging, checkdbforuser, dbcallprocedure
 
 intents = discord.Intents.default()
 intents.members = True
@@ -33,16 +33,14 @@ class DTbot(commands.Bot):
         # set up logging and bind to instance
         self.log = logging.getLogger('dtbot')
         self.log.setLevel(logging.DEBUG)
-        file_handler = logging.FileHandler(filename=f'./logs/{self.bot_startup.strftime("%Y-%m-%d (%H-%M-%S %Z)")}.log',
-                                           encoding='utf-8', mode='w')
-        stream_handler = logging.StreamHandler()
-        file_handler.setLevel(logging.INFO)
-        stream_handler.setLevel(logging.WARNING)  # will log to syserr, more immediately visible than file
-        formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', '%Y-%m-%d %H:%M:%S', style='{')
-        file_handler.setFormatter(formatter)
-        stream_handler.setFormatter(formatter)
-        self.log.addHandler(file_handler)
-        self.log.addHandler(stream_handler)
+        self._file_handler: logging.FileHandler = discord.utils.MISSING
+        if not self.in_dev_mode:
+            self._file_handler = add_file_logging(self.log, logs_folder='./logs', startup_time=self.bot_startup)
+            add_stderr_logging(self.log)
+
+    @property
+    def in_dev_mode(self) -> bool:
+        return '--dev' in sys.argv
 
     async def setup_hook(self) -> None:
         await super().setup_hook()
@@ -53,7 +51,7 @@ class DTbot(commands.Bot):
             except Exception as e:
                 self.log.error(f'Failed to load extension {extension}\n{type(e).__name__}: {e}.')
         await self.tree.sync(guild=DTbot.DEV_GUILD)
-        if '--dev' not in sys.argv:
+        if not self.in_dev_mode:
             await self.tree.sync()
 
     async def on_guild_join(self, guild: discord.Guild):
@@ -84,4 +82,4 @@ class DTbot(commands.Bot):
         print('------')
 
     def run(self, **kwargs):
-        super().run(self.bot_config.get('General', 'TOKEN'), log_handler=self.log.handlers[0], **kwargs)
+        super().run(self.bot_config.get('General', 'TOKEN'), log_handler=self._file_handler, **kwargs)
