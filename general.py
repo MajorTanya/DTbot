@@ -20,16 +20,15 @@ class RequestModal(discord.ui.Modal, title='Request for DTbot'):
     def __init__(self, bot: DTbot):
         super().__init__()
         self.bot = bot
-        self.functionality = self.add_item(discord.ui.TextInput(label='Functionality',
-                                                                placeholder='Short description here', max_length=100))
-        self.description = self.add_item(discord.ui.TextInput(label='Description', style=discord.TextStyle.long,
-                                                              placeholder='Describe the feature in more detail here',
-                                                              max_length=500))
+        self.functionality = discord.ui.TextInput(label='Functionality', placeholder='Short description here',
+                                                  max_length=100)
+        self.description = discord.ui.TextInput(label='Description', style=discord.TextStyle.long,
+                                                placeholder='Describe the feature in more detail here', max_length=500)
+        self.add_item(self.functionality).add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'Thank you for your request, {interaction.user.name}.',
-                                                ephemeral=True)
-        embed = discord.Embed(title=f'Requested: {self.functionality}', description=self.description)
+        await interaction.response.send_message(f'Thank you for your request, {interaction.user.name}.', ephemeral=True)
+        embed = discord.Embed(title=f'Requested: {self.functionality.value}', description=self.description.value)
         req_hall = self.bot.get_channel(self.bot.bot_config.getint('General', 'REQHALL'))
         await req_hall.send(f'{interaction.user} filed the following feature request:', embed=embed)
 
