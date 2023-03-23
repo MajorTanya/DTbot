@@ -8,7 +8,8 @@ import mariadb
 from discord import app_commands
 from discord.ext import commands
 
-from util.utils import DBProcedure, add_file_logging, add_stderr_logging, checkdbforuser, dbcallprocedure
+from util.database_utils import DBProcedure, checkdbforuser, dbcallprocedure
+from util.utils import add_file_logging, add_stderr_logging
 
 intents = discord.Intents.default()
 intents.members = True

@@ -8,7 +8,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 
 from DTbot import DTbot
-from util.utils import DBProcedure, dbcallprocedure
+from util.database_utils import DBProcedure, dbcallprocedure
 
 
 @app_commands.guilds(DTbot.DEV_GUILD)

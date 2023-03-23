@@ -11,7 +11,8 @@ from DTbot import DTbot
 from linklist import changelog_link
 from util.AniListMediaQuery import AniListMediaQuery
 from util.PaginatorSession import PaginatorSession
-from util.utils import DBProcedure, dbcallprocedure, even_out_embed_fields
+from util.database_utils import DBProcedure, dbcallprocedure
+from util.utils import even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
 
