@@ -77,7 +77,7 @@ With our array of command modules, DTbot provides:
     * `/maths add`, `/maths subtract`, `/maths square`, `/maths multiply`, `/maths divide`
     * `/maths percentage` to figure out what percentage something is (15 apples of 60? It's 25%)
     * `/maths percentof` to figure out what a percentage of something equates to (25% of 60? It's 15)
-* RNG-based commands like rolling dice (`/roll`) or spinning the roulette wheel (`/roulette spin` or `/roulette bet`)
+* RNG-based commands like rolling dice (`/roll`), flipping a coin (`/coinflip`), or a Magic 8 Ball (`/8ball`)
     * `/roll` supports a variety of options and modifiers, like dropping the lowest roll, adding something to the
       result, and more. Check out the options and modifiers available in the command.
 * Various utility commands
@@ -104,8 +104,12 @@ DTbot requires certain permissions in order to function as intended. The invite 
 
 - **Use External Emoji**: DTbot uses some emotes from its support and developer servers in messages.
 
-- **Add Reactions**: (v2 only) Several commands have users interact with DTbot through the reactions on DTbot's message.
-  These commands won't work if DTbot is denied this permission. (Including the `@DTbot help` command)
+### Obsolete Permissions
+
+If DTbot still has these permissions in your server from earlier versions, you can remove them without issue:
+
+- **Add Reactions** - This was used in v2 and earlier to handle navigation in multi-embed response such as a paged
+  `/whohas` output. This was replaced by using buttons instead.
 
 ## Hosting & Adding DTbot to your Server
 
@@ -118,7 +122,7 @@ If you already share a server with DTbot, you can click the "Add to Server" butt
 Alternatively, use the `@DTbot info` command and click where it says "Invite me".
 
 DTbot can be invited
-via [this link](https://discord.com/api/oauth2/authorize?client_id=472730689599569921&permissions=281664&scope=applications.commands%20bot)
+via [this link](https://discord.com/api/oauth2/authorize?client_id=472730689599569921&permissions=281600&scope=applications.commands%20bot)
 .
 
 ## Questions?
