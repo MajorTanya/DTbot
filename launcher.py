@@ -4,17 +4,17 @@ import mariadb
 
 from DTbot import DTbot
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     config = ConfigParser()
-    config.read('./config/config.ini')
+    config.read("./config/config.ini")
     bot = DTbot(bot_config=config)
 
-    db_config = dict(bot.bot_config.items('Database'))
-    tables = bot.bot_config.items('Database defaults')
+    db_config = dict(bot.bot_config.items("Database"))
+    tables = bot.bot_config.items("Database defaults")
     procedures = config.items("Database procedures")
     cnx: mariadb.Connection
     cursor: mariadb.Cursor
-    with mariadb.connect(user=db_config.get('user'), password=db_config.get('password')) as cnx:
+    with mariadb.connect(user=db_config.get("user"), password=db_config.get("password")) as cnx:
         with cnx.cursor() as cursor:
             # to ensure we have a database, create it on launch with a non-pooled connection
             try:

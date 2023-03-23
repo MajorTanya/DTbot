@@ -9,7 +9,7 @@ class AniMangaLookupError(app_commands.AppCommandError):
     # raised if something went wrong with the anime/manga lookup with the AL API
     def __init__(self, *, title: str):
         self.title = title
-        super().__init__(f"Something went wrong when looking up \"{title}\" on AniList.")
+        super().__init__(f'Something went wrong when looking up "{title}" on AniList.')
 
 
 class ErrorHandler(commands.Cog):
@@ -17,7 +17,7 @@ class ErrorHandler(commands.Cog):
 
     def __init__(self, bot: DTbot):
         self.bot = bot
-        self.PERMSEXPL = self.bot.bot_config.get('General', 'PERMSEXPL')
+        self.PERMSEXPL = self.bot.bot_config.get("General", "PERMSEXPL")
         self._std_on_error = self.bot.tree.on_error
         self.bot.tree.on_error = self.on_app_command_error
 
@@ -28,16 +28,19 @@ class ErrorHandler(commands.Cog):
         send = interaction.response.send_message if not interaction.response.is_done() else interaction.followup.send
         command = interaction.command.qualified_name
         if isinstance(error, app_commands.BotMissingPermissions):
-            await send(f"`Error: {error.args[0].replace('Bot', 'DTbot').replace('this command', 'properly')}` "
-                       f"Please make sure that the missing permissions are granted to the bot. (You can read about "
-                       f"why DTbot needs these permissions [here]({self.PERMSEXPL}))")
+            missing_perms_msg = (
+                f"`Error: {error.args[0].replace('Bot', 'DTbot').replace('this command', 'properly')}` Please make "
+                f"sure that the missing permissions are granted to the bot. (You can read about why DTbot needs these "
+                f"permissions [here]({self.PERMSEXPL}))"
+            )
+            await send(missing_perms_msg)
         elif isinstance(error, app_commands.CommandOnCooldown):
-            await send(f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._",
-                       ephemeral=True)
+            cooldown_msg = f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._"
+            await send(cooldown_msg, ephemeral=True)
         elif type(error).__name__ == AniMangaLookupError.__name__:
             # Something goes wrong with isinstance here, this is the best workaround
             error: AniMangaLookupError = error  # type: ignore
-            await send(f"Couldn't find \"{error.title}\" on AniList.")
+            await send(f'Couldn\'t find "{error.title}" on AniList.')
         elif isinstance(error, app_commands.CheckFailure):
             await send(f"**/{command}** can only be used by the DTbot owners.", ephemeral=True)
         else:

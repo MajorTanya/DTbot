@@ -8,13 +8,20 @@ import typing
 import discord
 import mariadb  # type: ignore
 
-DEFAULT_LOG_FORMATTER = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}', '%Y-%m-%d %H:%M:%S',
-                                          style='{')
+DEFAULT_LOG_FORMATTER = logging.Formatter(
+    fmt="[{asctime}] [{levelname:<8}] {name}: {message}",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    style="{",
+)
 
 
-def add_file_logging(logger: logging.Logger, formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
-                     level: int = logging.INFO, logs_folder: str = './logs',
-                     startup_time: datetime.datetime | None = None) -> logging.FileHandler:
+def add_file_logging(
+    logger: logging.Logger,
+    formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
+    level: int = logging.INFO,
+    logs_folder: str = "./logs",
+    startup_time: datetime.datetime | None = None,
+) -> logging.FileHandler:
     """Adds a FileHandler to the provided Logger with the given formatter and level (default: WARNING) and returns it
     for future use.
 
@@ -26,15 +33,18 @@ def add_file_logging(logger: logging.Logger, formatter: logging.Formatter = DEFA
         date_str = now.strftime("%Y-%m-%d (%H-%M-%S %Z)")
     else:
         date_str = startup_time.strftime("%Y-%m-%d (%H-%M-%S %Z)")
-    file_handler = logging.FileHandler(filename=f'{logs_folder.rstrip("/")}/{date_str}.log', encoding='utf-8', mode='w')
+    file_handler = logging.FileHandler(filename=f"{logs_folder.rstrip('/')}/{date_str}.log", encoding="utf-8", mode="w")
     file_handler.setLevel(level)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     return file_handler
 
 
-def add_stderr_logging(logger: logging.Logger, formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
-                       level: int = logging.WARNING) -> None:
+def add_stderr_logging(
+    logger: logging.Logger,
+    formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
+    level: int = logging.WARNING,
+) -> None:
     """Adds a stderr StreamHandler to the provided Logger with the given formatter and level (default: WARNING)"""
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(level)  # will log to stderr, more immediately visible than file
@@ -43,15 +53,15 @@ def add_stderr_logging(logger: logging.Logger, formatter: logging.Formatter = DE
 
 
 class DBProcedure(enum.StrEnum):
-    GetUserXp = 'GetUserXp'
-    CheckXPTime = 'CheckXPTime'
-    CheckAppCommandExist = 'CheckAppCommandExist'
-    CheckUserExist = 'CheckUserExist'
-    AddNewAppCommand = 'AddNewAppCommand'
-    IncrementAppCommandUsage = 'IncrementAppCommandUsage'
-    AddNewUser = 'AddNewUser'
-    IncreaseXP = 'IncreaseXP'
-    AddNewServer = 'AddNewServer'
+    GetUserXp = "GetUserXp"
+    CheckXPTime = "CheckXPTime"
+    CheckAppCommandExist = "CheckAppCommandExist"
+    CheckUserExist = "CheckUserExist"
+    AddNewAppCommand = "AddNewAppCommand"
+    IncrementAppCommandUsage = "IncrementAppCommandUsage"
+    AddNewUser = "AddNewUser"
+    IncreaseXP = "IncreaseXP"
+    AddNewServer = "AddNewServer"
 
     @classmethod
     def bool_procedures(cls) -> list[typing.Self]:
@@ -94,25 +104,41 @@ _ReturnProcedures = typing.Literal[
 
 
 @typing.overload
-def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: _BoolProcedures, *,
-                    params: tuple[typing.Any, ...] = ()) -> bool:
+def dbcallprocedure(
+    pool: mariadb.ConnectionPool,
+    procedure: _BoolProcedures,
+    *,
+    params: tuple[typing.Any, ...] = (),
+) -> bool:
     ...
 
 
 @typing.overload
-def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: _IntProcedures, *,
-                    params: tuple[typing.Any, ...] = ()) -> int:
+def dbcallprocedure(
+    pool: mariadb.ConnectionPool,
+    procedure: _IntProcedures,
+    *,
+    params: tuple[typing.Any, ...] = (),
+) -> int:
     ...
 
 
 @typing.overload
-def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: _NoReturnProcedures, *,
-                    params: tuple[typing.Any, ...] = ()) -> None:
+def dbcallprocedure(
+    pool: mariadb.ConnectionPool,
+    procedure: _NoReturnProcedures,
+    *,
+    params: tuple[typing.Any, ...] = (),
+) -> None:
     ...
 
 
-def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: DBProcedure, *,
-                    params: tuple[typing.Any, ...] = ()) -> bool | int | None:
+def dbcallprocedure(
+    pool: mariadb.ConnectionPool,
+    procedure: DBProcedure,
+    *,
+    params: tuple[typing.Any, ...] = (),
+) -> bool | int | None:
     """Calls a stored procedure with the given parameters.
 
     Parameters
@@ -139,10 +165,10 @@ def dbcallprocedure(pool: mariadb.ConnectionPool, procedure: DBProcedure, *,
 
 
 def checkdbforuser(pool: mariadb.ConnectionPool, message: discord.Message):
-    result = dbcallprocedure(pool, DBProcedure.CheckUserExist, params=(message.author.id, '@res'))
+    result = dbcallprocedure(pool, DBProcedure.CheckUserExist, params=(message.author.id, "@res"))
     if result:
         # entry for this user ID exists, proceed to check for last XP gain time, possibly awarding some new XP
-        last_xp_gain = dbcallprocedure(pool, DBProcedure.CheckXPTime, params=(message.author.id, '@res'))
+        last_xp_gain = dbcallprocedure(pool, DBProcedure.CheckXPTime, params=(message.author.id, "@res"))
         unix_now = int(time.time())
         if unix_now - last_xp_gain > 120:
             # user got XP more than two minutes ago, award between 15 and 25 XP and update last XP gain time
@@ -156,9 +182,9 @@ def even_out_embed_fields(embed: discord.Embed):
     """Evens out Embed fields to avoid a misaligned last row
     (does not account for inline=False being set on any field)"""
     if len(embed.fields) % 3 != 0:  # even out the last line of embed fields
-        embed.add_field(name='\u200b', value='\u200b')
+        embed.add_field(name="\u200b", value="\u200b")
         if len(embed.fields) % 3 == 2:  # if we added one and still need one more to make it 3
-            embed.add_field(name='\u200b', value='\u200b')
+            embed.add_field(name="\u200b", value="\u200b")
     return embed
 
 

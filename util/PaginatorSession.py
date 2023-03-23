@@ -2,28 +2,44 @@ from typing import Coroutine
 
 import discord.ui
 
-FIRST_PAGE = '⏮'
-PREV_PAGE = '◀'
-STOP = '⏹'
-NEXT_PAGE = '▶'
-LAST_PAGE = '⏭'
+FIRST_PAGE = "⏮"
+PREV_PAGE = "◀"
+STOP = "⏹"
+NEXT_PAGE = "▶"
+LAST_PAGE = "⏭"
 CUTOFFS: dict[str, int] = {
     FIRST_PAGE: 3,
     PREV_PAGE: 1,
     STOP: 1,
     NEXT_PAGE: 1,
-    LAST_PAGE: 3
+    LAST_PAGE: 3,
 }
 
 
 class NavButton(discord.ui.Button):
     """Custom subclass that takes a Coroutine callback for the button in its constructor"""
 
-    def __init__(self, *, callback: Coroutine, style: discord.ButtonStyle = discord.ButtonStyle.secondary,
-                 label: str | None = None, disabled: bool = False, custom_id: str | None = None, url: str | None = None,
-                 emoji: str | discord.Emoji | discord.PartialEmoji | None = None, row: int | None = None):
-        super().__init__(style=style, label=label, disabled=disabled, custom_id=custom_id, url=url, emoji=emoji,
-                         row=row)
+    def __init__(
+        self,
+        *,
+        callback: Coroutine,
+        style: discord.ButtonStyle = discord.ButtonStyle.secondary,
+        label: str | None = None,
+        disabled: bool = False,
+        custom_id: str | None = None,
+        url: str | None = None,
+        emoji: str | discord.Emoji | discord.PartialEmoji | None = None,
+        row: int | None = None,
+    ):
+        super().__init__(
+            style=style,
+            label=label,
+            disabled=disabled,
+            custom_id=custom_id,
+            url=url,
+            emoji=emoji,
+            row=row,
+        )
         self.callback = callback
 
 
@@ -50,7 +66,7 @@ class PaginatorSession(object):
             PREV_PAGE: self.prev_page,
             STOP: self.stop_session,
             NEXT_PAGE: self.next_page,
-            LAST_PAGE: self.last_page
+            LAST_PAGE: self.last_page,
         }
         if pages is None:
             pages = []
