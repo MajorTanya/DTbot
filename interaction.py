@@ -241,7 +241,6 @@ class Interaction(commands.Cog):
 
     @app_commands.command(description="Salute someone - Can be given a reason")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    @app_commands.guilds(DTbot.DEV_GUILD)
     @app_commands.describe(user="The user you're saluting")
     async def salute(self, interaction: discord.Interaction, user: discord.Member | discord.User | None):
         if user is None:
