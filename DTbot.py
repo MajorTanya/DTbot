@@ -9,7 +9,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from util.database_utils import DBProcedure, checkdbforuser, dbcallprocedure
-from util.utils import add_file_logging, add_stderr_logging
+from util.utils import add_file_logging, add_stream_logging
 
 intents = discord.Intents.default()
 intents.members = True
@@ -41,7 +41,9 @@ class DTbot(commands.Bot):
         self._file_handler: logging.FileHandler = discord.utils.MISSING
         if not self.in_dev_mode:
             self._file_handler = add_file_logging(self.log, logs_folder="./logs", startup_time=self.bot_startup)
-            add_stderr_logging(self.log)
+            add_stream_logging(self.log)
+        else:
+            add_stream_logging(self.log, level=logging.DEBUG, stream=sys.stdout)
 
     @property
     def in_dev_mode(self) -> bool:

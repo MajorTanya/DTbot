@@ -1,5 +1,6 @@
 import datetime
 import logging
+from typing import TextIO
 
 import discord
 import mariadb  # type: ignore
@@ -36,13 +37,15 @@ def add_file_logging(
     return file_handler
 
 
-def add_stderr_logging(
+def add_stream_logging(
     logger: logging.Logger,
     formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
     level: int = logging.WARNING,
+    stream: TextIO | None = None,
 ) -> None:
-    """Adds a stderr StreamHandler to the provided Logger with the given formatter and level (default: WARNING)"""
-    stream_handler = logging.StreamHandler()
+    """Adds a StreamHandler with the given stream (default: stderr) to the provided Logger with the given formatter and
+    level (default: WARNING)"""
+    stream_handler = logging.StreamHandler(stream)
     stream_handler.setLevel(level)  # will log to stderr, more immediately visible than file
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
