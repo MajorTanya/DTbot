@@ -83,12 +83,6 @@ _NoReturnProcedures = typing.Literal[
     DBProcedure.IncrementAppCommandUsage,
     DBProcedure.InvalidateMissingServer,
 ]
-_ReturnProcedures = typing.Literal[
-    DBProcedure.CheckAppCommandExist,
-    DBProcedure.CheckUserExist,
-    DBProcedure.CheckXPTime,
-    DBProcedure.GetUserXp,
-]
 
 
 @typing.overload
