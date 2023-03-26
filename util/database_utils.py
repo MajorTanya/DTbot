@@ -8,53 +8,68 @@ import mariadb
 
 
 class DBProcedure(enum.StrEnum):
-    GetUserXp = "GetUserXp"
-    CheckXPTime = "CheckXPTime"
+    AddNewAppCommand = "AddNewAppCommand"
+    AddNewServer = "AddNewServer"
+    AddNewUser = "AddNewUser"
     CheckAppCommandExist = "CheckAppCommandExist"
     CheckUserExist = "CheckUserExist"
-    AddNewAppCommand = "AddNewAppCommand"
-    IncrementAppCommandUsage = "IncrementAppCommandUsage"
-    AddNewUser = "AddNewUser"
+    CheckXPTime = "CheckXPTime"
+    GetUserXp = "GetUserXp"
     IncreaseXP = "IncreaseXP"
-    AddNewServer = "AddNewServer"
+    IncrementAppCommandUsage = "IncrementAppCommandUsage"
 
     @classmethod
     def bool_procedures(cls) -> list[typing.Self]:
-        return [DBProcedure.CheckUserExist, DBProcedure.CheckAppCommandExist]
+        return [
+            DBProcedure.CheckAppCommandExist,
+            DBProcedure.CheckUserExist,
+        ]
 
     @classmethod
     def int_procedures(cls) -> list[typing.Self]:
-        return [DBProcedure.GetUserXp, DBProcedure.CheckXPTime]
+        return [
+            DBProcedure.CheckXPTime,
+            DBProcedure.GetUserXp,
+        ]
 
     @classmethod
     def returning_procedures(cls) -> list[typing.Self]:
-        return [*DBProcedure.bool_procedures(), *DBProcedure.int_procedures()]
+        return [
+            *DBProcedure.bool_procedures(),
+            *DBProcedure.int_procedures(),
+        ]
 
     @classmethod
     def non_returning_procedures(cls) -> list[typing.Self]:
         return [
             DBProcedure.AddNewAppCommand,
-            DBProcedure.IncrementAppCommandUsage,
+            DBProcedure.AddNewServer,
             DBProcedure.AddNewUser,
             DBProcedure.IncreaseXP,
-            DBProcedure.AddNewServer,
+            DBProcedure.IncrementAppCommandUsage,
         ]
 
 
-_BoolProcedures = typing.Literal[DBProcedure.CheckUserExist, DBProcedure.CheckAppCommandExist]
-_IntProcedures = typing.Literal[DBProcedure.GetUserXp, DBProcedure.CheckXPTime]
+_BoolProcedures = typing.Literal[
+    DBProcedure.CheckAppCommandExist,
+    DBProcedure.CheckUserExist,
+]
+_IntProcedures = typing.Literal[
+    DBProcedure.CheckXPTime,
+    DBProcedure.GetUserXp,
+]
 _NoReturnProcedures = typing.Literal[
     DBProcedure.AddNewAppCommand,
-    DBProcedure.IncrementAppCommandUsage,
+    DBProcedure.AddNewServer,
     DBProcedure.AddNewUser,
     DBProcedure.IncreaseXP,
-    DBProcedure.AddNewServer,
+    DBProcedure.IncrementAppCommandUsage,
 ]
 _ReturnProcedures = typing.Literal[
-    DBProcedure.CheckUserExist,
     DBProcedure.CheckAppCommandExist,
-    DBProcedure.GetUserXp,
+    DBProcedure.CheckUserExist,
     DBProcedure.CheckXPTime,
+    DBProcedure.GetUserXp,
 ]
 
 
