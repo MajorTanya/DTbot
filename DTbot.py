@@ -74,7 +74,7 @@ class DTbot(commands.Bot):
             pass
 
     async def on_app_command_completion(self, _: discord.Interaction, command: app_commands.Command):
-        result = dbcallprocedure(self.db_cnx, DBProcedure.CheckAppCommandExist, params=(command.qualified_name, "@res"))
+        result = dbcallprocedure(self.db_cnx, DBProcedure.CheckAppCommandExist, params=(command.qualified_name,))
         if result:
             dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
         else:

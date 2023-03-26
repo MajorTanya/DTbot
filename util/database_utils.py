@@ -170,10 +170,10 @@ def dbcallprocedure(
 
 
 def checkdbforuser(pool: mariadb.ConnectionPool, message: discord.Message):
-    result = dbcallprocedure(pool, DBProcedure.CheckUserExist, params=(message.author.id, "@res"))
+    result = dbcallprocedure(pool, DBProcedure.CheckUserExist, params=(message.author.id,))
     if result:
         # entry for this user ID exists, proceed to check for last XP gain time, possibly awarding some new XP
-        last_xp_gain = dbcallprocedure(pool, DBProcedure.CheckXPTime, params=(message.author.id, "@res"))
+        last_xp_gain = dbcallprocedure(pool, DBProcedure.CheckXPTime, params=(message.author.id,))
         unix_now = int(time.time())
         if unix_now - last_xp_gain > 120:
             # user got XP more than two minutes ago, award between 15 and 25 XP and update last XP gain time

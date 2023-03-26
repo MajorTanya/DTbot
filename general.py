@@ -297,7 +297,7 @@ class General(commands.Cog):
         if user.bot:
             return await interaction.response.send_message("Bots don't get XP. :robot:")
         await interaction.response.defer()
-        xp = dbcallprocedure(self.bot.db_cnx, DBProcedure.GetUserXp, params=(user.id, "@res"))
+        xp = dbcallprocedure(self.bot.db_cnx, DBProcedure.GetUserXp, params=(user.id,))
         if xp > 0:
             await interaction.followup.send(f"**{user.display_name}** has `{xp}` XP.")
         else:
