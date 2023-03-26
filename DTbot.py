@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import sys
 from configparser import ConfigParser
 
@@ -90,4 +91,4 @@ class DTbot(commands.Bot):
         print("------")
 
     def run(self, **kwargs):
-        super().run(self.bot_config.get("General", "TOKEN"), log_handler=self._file_handler, **kwargs)
+        super().run(os.environ.get("DTBOT_TOKEN"), log_handler=self._file_handler, **kwargs)

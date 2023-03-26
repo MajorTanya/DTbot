@@ -3,3 +3,4 @@ mariadb
 py-rolldice>0.3.9
 aiohttp
 black
+python-dotenv

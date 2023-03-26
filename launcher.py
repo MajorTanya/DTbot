@@ -1,10 +1,13 @@
+import os
 from configparser import ConfigParser
 
 import mariadb
+from dotenv import load_dotenv
 
 from DTbot import DTbot
 
 if __name__ == "__main__":
+    load_dotenv(dotenv_path="./config/.env", override=True)
     config = ConfigParser()
     config.read("./config/config.ini")
     bot = DTbot(bot_config=config)
@@ -14,7 +17,7 @@ if __name__ == "__main__":
     procedures = config.items("Database procedures")
     cnx: mariadb.Connection
     cursor: mariadb.Cursor
-    with mariadb.connect(user=db_config.get("user"), password=db_config.get("password")) as cnx:
+    with mariadb.connect(user=os.environ.get("DTBOT_DB_USER"), password=os.environ.get("DTBOT_DB_PASS")) as cnx:
         with cnx.cursor() as cursor:
             # to ensure we have a database, create it on launch with a non-pooled connection
             try:

@@ -1,4 +1,5 @@
 import datetime
+import os
 import sys
 from asyncio import sleep
 from configparser import ConfigParser
@@ -6,6 +7,7 @@ from configparser import ConfigParser
 import discord
 from discord import app_commands
 from discord.ext import commands, tasks
+from dotenv import load_dotenv
 
 from DTbot import DTbot
 from util.database_utils import DBProcedure, dbcallprocedure
@@ -20,8 +22,8 @@ class Dev(commands.GroupCog):
     def __init__(self, bot: DTbot):
         self.bot = bot
         Dev.HB_FREQ = self.bot.bot_config.getint("Heartbeat", "hb_freq")
-        self.H_CODE = self.bot.bot_config.get("Developers", "h_code")
-        self.SDB_CODE = self.bot.bot_config.get("Developers", "sdb_code")
+        self.H_CODE = os.environ.get("DTBOT_HEARTBEAT_CODE")
+        self.SDB_CODE = os.environ.get("DTBOT_SHUTDOWN_CODE")
         self.hb_chamber: discord.TextChannel | None = None
         if "--no-heartbeat" not in sys.argv:
             # run "python launcher.py --no-heartbeat" to start DTbot without the heartbeat messages
@@ -182,6 +184,7 @@ class Dev(commands.GroupCog):
         await interaction.response.defer(ephemeral=True)
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         if reload_config:
+            load_dotenv(dotenv_path="./config/.env", override=True)
             self.bot.bot_config = ConfigParser()
             self.bot.bot_config.read("./config/config.ini")
             dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
