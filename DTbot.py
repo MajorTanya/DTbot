@@ -27,14 +27,13 @@ class DTbot(commands.Bot):
             help_command=None,
         )
         self.bot_startup = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        self.db_cnx: mariadb.ConnectionPool = None  # type: ignore # this is set properly during setup_hook
         if bot_config:
             self.bot_config = bot_config
         else:
             self.bot_config = ConfigParser()
             self.bot_config.read("./config/config.ini")
         DTbot.DEV_GUILD = discord.Object(id=(bot_config.getint("General", "DEV_GUILD")))
-        db_config = dict(self.bot_config.items("Database"))
-        self.db_cnx = mariadb.ConnectionPool(pool_size=10, reconnect=True, **db_config)
         # set up logging and bind to instance
         self.log = logging.getLogger("dtbot")
         self.log.setLevel(logging.DEBUG)
@@ -50,7 +49,9 @@ class DTbot(commands.Bot):
         return "--dev" in sys.argv
 
     async def setup_hook(self) -> None:
-        await super().setup_hook()
+        db_config = dict(self.bot_config.items("Database"))
+        self.db_cnx = mariadb.ConnectionPool(pool_size=10, reconnect=True, **db_config)
+
         for _, extension in self.bot_config.items("Extensions"):
             try:
                 await self.load_extension(extension)
