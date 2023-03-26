@@ -212,8 +212,15 @@ class Dev(commands.GroupCog):
     @app_commands.command(description="Manually cycles through all servers to refresh the database.")
     async def refreshservers(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
+        stored_guild_ids: list[int] = [g["server_id"] for g in dbcallprocedure(self.bot.db_cnx, DBProcedure.GetServers)]
+        bot_guild_ids = [g.id for g in self.bot.guilds]
+        for stored_id in stored_guild_ids:
+            if stored_id not in bot_guild_ids:
+                dbcallprocedure(self.bot.db_cnx, DBProcedure.InvalidateMissingServer, params=(stored_id,))
         for guild in self.bot.guilds:
-            dbcallprocedure(self.bot.db_cnx, DBProcedure.AddNewServer, params=(guild.id, guild.member_count))
+            if guild.id not in stored_guild_ids:
+                params = (guild.id, guild.member_count if guild.member_count is not None else -1)
+                dbcallprocedure(self.bot.db_cnx, DBProcedure.AddNewServer, params=params)
         await interaction.followup.send("Server list refreshed", ephemeral=True)
 
     async def sync(self, *, dev_sync: bool = False, global_sync: bool = False):

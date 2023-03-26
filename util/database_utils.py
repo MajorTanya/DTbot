@@ -14,9 +14,11 @@ class DBProcedure(enum.StrEnum):
     CheckAppCommandExist = "CheckAppCommandExist"
     CheckUserExist = "CheckUserExist"
     CheckXPTime = "CheckXPTime"
+    GetServers = "GetServers"
     GetUserXp = "GetUserXp"
     IncreaseXP = "IncreaseXP"
     IncrementAppCommandUsage = "IncrementAppCommandUsage"
+    InvalidateMissingServer = "InvalidateMissingServer"
 
     @classmethod
     def bool_procedures(cls) -> list[typing.Self]:
@@ -33,11 +35,22 @@ class DBProcedure(enum.StrEnum):
         ]
 
     @classmethod
+    def list_procedures(cls) -> list[typing.Self]:
+        return [
+            DBProcedure.GetServers,
+        ]
+
+    @classmethod
     def returning_procedures(cls) -> list[typing.Self]:
         return [
             *DBProcedure.bool_procedures(),
             *DBProcedure.int_procedures(),
+            *DBProcedure.list_procedures(),
         ]
+
+    @classmethod
+    def returning_many_procedures(cls) -> list[typing.Self]:
+        return [*DBProcedure.list_procedures()]
 
     @classmethod
     def non_returning_procedures(cls) -> list[typing.Self]:
@@ -47,6 +60,7 @@ class DBProcedure(enum.StrEnum):
             DBProcedure.AddNewUser,
             DBProcedure.IncreaseXP,
             DBProcedure.IncrementAppCommandUsage,
+            DBProcedure.InvalidateMissingServer,
         ]
 
 
@@ -58,12 +72,16 @@ _IntProcedures = typing.Literal[
     DBProcedure.CheckXPTime,
     DBProcedure.GetUserXp,
 ]
+_ListProcedures = typing.Literal[
+    DBProcedure.GetServers,
+]
 _NoReturnProcedures = typing.Literal[
     DBProcedure.AddNewAppCommand,
     DBProcedure.AddNewServer,
     DBProcedure.AddNewUser,
     DBProcedure.IncreaseXP,
     DBProcedure.IncrementAppCommandUsage,
+    DBProcedure.InvalidateMissingServer,
 ]
 _ReturnProcedures = typing.Literal[
     DBProcedure.CheckAppCommandExist,
@@ -96,6 +114,16 @@ def dbcallprocedure(
 @typing.overload
 def dbcallprocedure(
     pool: mariadb.ConnectionPool,
+    procedure: _ListProcedures,
+    *,
+    params: tuple[typing.Any, ...] = (),
+) -> list[dict[str, typing.Any]]:
+    ...
+
+
+@typing.overload
+def dbcallprocedure(
+    pool: mariadb.ConnectionPool,
     procedure: _NoReturnProcedures,
     *,
     params: tuple[typing.Any, ...] = (),
@@ -108,8 +136,11 @@ def dbcallprocedure(
     procedure: DBProcedure,
     *,
     params: tuple[typing.Any, ...] = (),
-) -> bool | int | None:
+) -> bool | int | list[dict[str, typing.Any]] | None:
     """Calls a stored procedure with the given parameters.
+
+    If the procedure returns several results, the returned list will contain dicts representing each row, where the
+    dict key will be the field name, and the dict value will be the field's value.
 
     Parameters
     -----------
@@ -123,12 +154,16 @@ def dbcallprocedure(
     pconn: mariadb.Connection
     result = None
     returns = procedure in DBProcedure.returning_procedures()
+    returns_many = procedure in DBProcedure.returning_many_procedures()
     with pool.get_connection() as pconn:
-        with pconn.cursor() as cursor:
+        with pconn.cursor(dictionary=returns_many) as cursor:
             cursor.callproc(procedure, params)
             if returns:
-                # we can be certain that the return value is at index [0] from all stored procedures
-                result = cursor.fetchone()[0]
+                if returns_many:  # stored procedure returns more than one row of results
+                    result = cursor.fetchall()
+                else:
+                    # we can be certain that the return value is at index [0] from all simple stored procedures
+                    result = cursor.fetchone()[0]
         pconn.commit()
     if returns and result is not None:
         return result
