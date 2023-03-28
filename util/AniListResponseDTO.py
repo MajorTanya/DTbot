@@ -23,7 +23,7 @@ DISPLAYED_STAFF_ROLES = [
 
 # fmt: off
 UNDISPLAYED_STAFF_ROLES = [
-    '(eps ', 'Action', 'ADR', 'Animation', 'Art Design', 'Art Director', 'Assistant',
+    '(ep ', '(eps ', 'Action', 'ADR', 'Animation', 'Art Design', 'Art Director', 'Assistant',
     'CG', 'Chief', 'Episode', 'Photography', 'Sound', 'Sub', 'Touch-up',
 ]  # fmt: on
 
