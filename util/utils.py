@@ -19,7 +19,7 @@ def add_file_logging(
     logs_folder: str = "./logs",
     startup_time: datetime.datetime | None = None,
 ) -> logging.FileHandler:
-    """Adds a FileHandler to the provided Logger with the given formatter and level (default: WARNING) and returns it
+    """Adds a FileHandler to the provided Logger with the given formatter and level (default: INFO) and returns it
     for future use.
 
     The created log file will be named after the startup_time and reside in the **./logs/** folder by default.
