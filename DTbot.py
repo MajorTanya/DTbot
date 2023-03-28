@@ -51,7 +51,13 @@ class DTbot(commands.Bot):
 
     async def setup_hook(self) -> None:
         db_config = dict(self.bot_config.items("Database"))
-        self.db_cnx = mariadb.ConnectionPool(pool_size=10, reconnect=True, **db_config)
+        self.db_cnx = mariadb.ConnectionPool(
+            pool_size=10,
+            reconnect=True,
+            user=os.environ.get("DTBOT_DB_USER"),
+            password=os.environ.get("DTBOT_DB_PASS"),
+            **db_config,
+        )
 
         for _, extension in self.bot_config.items("Extensions"):
             try:
