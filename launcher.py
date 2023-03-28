@@ -15,6 +15,7 @@ if __name__ == "__main__":
     db_config = dict(bot.bot_config.items("Database"))
     tables = bot.bot_config.items("Database defaults")
     procedures = config.items("Database procedures")
+    migrations = config.items("Database migrations")
     cnx: mariadb.Connection
     cursor: mariadb.Cursor
     with mariadb.connect(user=os.environ.get("DTBOT_DB_USER"), password=os.environ.get("DTBOT_DB_PASS")) as cnx:
@@ -31,6 +32,15 @@ if __name__ == "__main__":
                     try:
                         bot.log.debug(f"Creating table {table_name}")
                         cursor.execute(table_description)
+                    except mariadb.Error as err:
+                        bot.log.error(err)
+                    else:
+                        bot.log.debug("OK")
+
+                for migration_name, migration_description in migrations:
+                    try:
+                        bot.log.debug(f"Performing migration {migration_name}")
+                        cursor.execute(migration_description)
                     except mariadb.Error as err:
                         bot.log.error(err)
                     else:
