@@ -37,9 +37,7 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, app_commands.CommandOnCooldown):
             cooldown_msg = f"_This command is currently on cooldown. Try again in `{error.retry_after:.0f}` seconds._"
             await send(cooldown_msg, ephemeral=True)
-        elif type(error).__name__ == AniMangaLookupError.__name__:
-            # Something goes wrong with isinstance here, this is the best workaround
-            error: AniMangaLookupError = error  # type: ignore
+        elif isinstance(error, AniMangaLookupError):
             await send(f'Couldn\'t find "{error.title}" on AniList.')
         elif isinstance(error, app_commands.CheckFailure):
             await send(f"**/{command}** can only be used by the DTbot owners.", ephemeral=True)
