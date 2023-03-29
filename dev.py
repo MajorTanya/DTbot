@@ -65,6 +65,7 @@ class Dev(commands.GroupCog):
         await self.bot.wait_until_ready()
         self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
+        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))
         startup_embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
@@ -72,6 +73,7 @@ class Dev(commands.GroupCog):
             description=f"{self.bot.user.name} is starting up!",
         )
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
+        startup_embed.set_footer(text=f"DTbot v. {dtbot_version}")
         await self.hb_chamber.send(embed=startup_embed)
 
     @commands.Cog.listener()
