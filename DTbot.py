@@ -34,7 +34,7 @@ class DTbot(commands.Bot):
         else:
             self.bot_config = ConfigParser()
             self.bot_config.read("./config/config.ini")
-        DTbot.DEV_GUILD = discord.Object(id=(bot_config.getint("General", "DEV_GUILD")))
+        DTbot.DEV_GUILD = discord.Object(id=(self.bot_config.getint("General", "DEV_GUILD")))
         # set up logging and bind to instance
         self.log = logging.getLogger("dtbot")
         self.log.setLevel(logging.DEBUG)
