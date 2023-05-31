@@ -84,13 +84,13 @@ class Conversion(commands.Cog):
     @app_commands.command(description="Converts from Kilometers to Miles")
     @app_commands.describe(kilometers="The value in Kilometers")
     async def kmmi(self, interaction: discord.Interaction, kilometers: float):
-        miles = rint(kilometers * KM_IN_MI)
+        miles = rint(kilometers / KM_IN_MI)
         await interaction.response.send_message(f"{rint(kilometers)} km = {miles} mi")
 
     @app_commands.command(description="Converts from Miles to Kilometers")
     @app_commands.describe(miles="The value in Miles")
     async def mikm(self, interaction: discord.Interaction, miles: float):
-        kilometers = rint(miles / KM_IN_MI)
+        kilometers = rint(miles * KM_IN_MI)
         await interaction.response.send_message(f"{rint(miles)} mi = {kilometers} km")
 
     @app_commands.command(description="Converts from Kilograms to Pounds")
