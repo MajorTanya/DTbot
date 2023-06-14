@@ -234,7 +234,9 @@ class General(commands.Cog):
         join_ts = int(user.joined_at.timestamp())
         created_ts = int(user.created_at.timestamp())
         embed = discord.Embed(title=f"{user}'s info", description="Here is what I could find:")
-        embed.add_field(name="Nickname", value=f"{user.display_name}")
+        if user.display_name != user.name and user.display_name != user.global_name:
+            embed.add_field(name="Nickname", value=f"{user.display_name}")
+        embed.add_field(name="Display Name", value=f"{user.global_name}")
         embed.add_field(name="ID", value=f"{user.id}", inline=True)
         embed.add_field(name="Status", value=f"{user.status}", inline=True)
         embed.add_field(name="Highest Role", value=f"<@&{user.top_role.id}>", inline=True)
