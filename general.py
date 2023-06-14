@@ -1,6 +1,7 @@
 import datetime
 import itertools
 import math
+from platform import python_version
 
 import aiohttp
 import discord
@@ -145,6 +146,7 @@ class General(commands.Cog):
             f"permissions",
         )
         embed.add_field(name="Avatar by", value=self.AVATAR_ARTIST, inline=False)
+        embed.add_field(name="Made with", value=f"discord.py {discord.__version__} on Python {python_version()}")
         embed.set_footer(text=f"DTbot v. {dtbot_version}")
         await interaction.response.send_message(embed=embed)
 
