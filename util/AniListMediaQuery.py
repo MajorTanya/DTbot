@@ -116,7 +116,7 @@ class AniListMediaQuery:
             embed.add_field(name="Season", value=f"{dto.season.title()} {dto.season_year}")
 
         if dto.start_date and dto.end_date and dto.start_date == dto.end_date:
-            embed.add_field(name="Relase Date", value=dto.start_date)
+            embed.add_field(name="Release Date", value=dto.start_date)
         else:
             if dto.start_date:
                 embed.add_field(name="Start Date", value=dto.start_date)
