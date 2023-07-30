@@ -16,10 +16,6 @@ class Maths(commands.GroupCog):
     async def add(self, interaction: discord.Interaction, left: float, right: float):
         await interaction.response.send_message(f"{rint(left):,} + {rint(right):,} = {rint(left + right):,}")
 
-    @app_commands.command(description="Calculates the square of a number")
-    async def square(self, interaction: discord.Interaction, number: float):
-        await interaction.response.send_message(f"{rint(number):,}² = {rint(pow(number, 2)):,}")
-
     @app_commands.command(description="Subtract two numbers")
     async def subtract(self, interaction: discord.Interaction, first: float, second: float):
         await interaction.response.send_message(f"{rint(first):,} - {rint(second):,} = {rint(first - second):,}")
@@ -36,6 +32,10 @@ class Maths(commands.GroupCog):
             await interaction.response.send_message(
                 f"{rint(dividend):,} / {rint(divisor):,} = {rint(dividend / divisor):,}"
             )
+
+    @app_commands.command(description="Calculates the square of a number")
+    async def square(self, interaction: discord.Interaction, number: float):
+        await interaction.response.send_message(f"{rint(number):,}² = {rint(pow(number, 2)):,}")
 
     @app_commands.command(description="Calculate a percentage (15 apples of 60? It's 25%)")
     async def percentage(self, interaction: discord.Interaction, part: float, whole: float):
