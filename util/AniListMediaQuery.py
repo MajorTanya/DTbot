@@ -103,7 +103,8 @@ class AniListMediaQuery:
             embed.add_field(name="Format", value=dto.format)
 
         if entries_strs := _make_entries_string(dto):
-            embed.add_field(name="Chapters" if dto.is_manga else "Episodes", value=entries_strs)
+            heading = "Runtime" if dto.format == "Movie" else "Episodes"
+            embed.add_field(name="Chapters" if dto.is_manga else heading, value=entries_strs)
 
         if dto.status:
             embed.add_field(name="Status", value=dto.status)
@@ -146,7 +147,8 @@ def _make_entries_string(dto: AniListResponseDTO) -> str | None:
     if (dto.is_manga and not dto.chapters) or (not dto.is_manga and not dto.episodes):
         return None
     entry_amount = dto.chapters if dto.is_manga else dto.episodes
-    entries_str = f"{entry_amount} {'Chapter' if dto.is_manga else 'Episode'}{'s' if entry_amount != 1 else ''}"
+    episode_or_movie = "Movie" if dto.format == "Movie" else "Episode"
+    entries_str = f"{entry_amount} {'Chapter' if dto.is_manga else episode_or_movie}{'s' if entry_amount != 1 else ''}"
     vols_or_dur = ""
 
     if dto.is_manga and dto.volumes:
