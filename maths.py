@@ -1,3 +1,7 @@
+from functools import reduce
+from math import fsum, prod
+from operator import sub
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -13,25 +17,53 @@ class Maths(commands.GroupCog):
         self.bot = bot
 
     @app_commands.command(description="Add two numbers together")
-    async def add(self, interaction: discord.Interaction, first: float, second: float):
-        first = rint(first, digits=3)
-        second = rint(second, digits=3)
-        result = rint(first + second, digits=3)
-        await interaction.response.send_message(f"{first:,} + {second:,} = {result:,}")
+    async def add(
+        self,
+        interaction: discord.Interaction,
+        first: float,
+        second: float,
+        third: float | None,
+        fourth: float | None,
+        fifth: float | None,
+    ):
+        raw_inputs = [first, second, third, fourth, fifth]
+        numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
+        strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
+        result = rint(fsum(numbers), digits=3)
+        await interaction.response.send_message(f"{' + '.join(strs)} = {result:,}")
 
     @app_commands.command(description="Subtract two numbers")
-    async def subtract(self, interaction: discord.Interaction, first: float, second: float):
-        first = rint(first, digits=3)
-        second = rint(second, digits=3)
-        result = rint(first - second, digits=3)
-        await interaction.response.send_message(f"{first:,} - {second:,} = {result:,}")
+    async def subtract(
+        self,
+        interaction: discord.Interaction,
+        first: float,
+        second: float,
+        third: float | None,
+        fourth: float | None,
+        fifth: float | None,
+    ):
+        raw_inputs = [first, second, third, fourth, fifth]
+        numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
+        strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
+        result = rint(reduce(sub, numbers), digits=3)  # type: ignore
+        await interaction.response.send_message(f"{' - '.join(strs)} = {result:,}")
 
     @app_commands.command(description="Multiply two numbers")
-    async def multiply(self, interaction: discord.Interaction, first: float, second: float):
-        first = rint(first, digits=3)
-        second = rint(second, digits=3)
-        result = rint(first * second, digits=3)
-        await interaction.response.send_message(f"{first:,} * {second:,} = {result:,}")
+    async def multiply(
+        self,
+        interaction: discord.Interaction,
+        first: float,
+        second: float,
+        third: float | None,
+        fourth: float | None,
+        fifth: float | None,
+    ):
+        raw_inputs = [first, second, third, fourth, fifth]
+        numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
+        strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
+        result = rint(prod(numbers), digits=3)
+        escaped_asterisk = " \\* "  # Prevent Discord Markdown rendering (f-strings disallow escape sequences in <3.12)
+        await interaction.response.send_message(f"{escaped_asterisk.join(strs)} = {result:,}")
 
     @app_commands.command(description="Divide a number by another number")
     async def divide(self, interaction: discord.Interaction, dividend: float, divisor: float):
