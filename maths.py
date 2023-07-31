@@ -13,41 +13,58 @@ class Maths(commands.GroupCog):
         self.bot = bot
 
     @app_commands.command(description="Add two numbers together")
-    async def add(self, interaction: discord.Interaction, left: float, right: float):
-        await interaction.response.send_message(f"{rint(left):,} + {rint(right):,} = {rint(left + right):,}")
+    async def add(self, interaction: discord.Interaction, first: float, second: float):
+        first = rint(first, digits=3)
+        second = rint(second, digits=3)
+        result = rint(first + second, digits=3)
+        await interaction.response.send_message(f"{first:,} + {first:,} = {result:,}")
 
     @app_commands.command(description="Subtract two numbers")
     async def subtract(self, interaction: discord.Interaction, first: float, second: float):
-        await interaction.response.send_message(f"{rint(first):,} - {rint(second):,} = {rint(first - second):,}")
+        first = rint(first, digits=3)
+        second = rint(second, digits=3)
+        result = rint(first - second, digits=3)
+        await interaction.response.send_message(f"{first:,} - {second:,} = {result:,}")
 
     @app_commands.command(description="Multiply two numbers")
     async def multiply(self, interaction: discord.Interaction, first: float, second: float):
-        await interaction.response.send_message(f"{rint(first):,} * {rint(second):,} = {rint(first * second):,}")
+        first = rint(first, digits=3)
+        second = rint(second, digits=3)
+        result = rint(first * second, digits=3)
+        await interaction.response.send_message(f"{first:,} * {second:,} = {result:,}")
 
     @app_commands.command(description="Divide a number by another number")
     async def divide(self, interaction: discord.Interaction, dividend: float, divisor: float):
         if divisor == 0:
             await interaction.response.send_message("Division by 0 is not allowed.", ephemeral=True)
         else:
-            await interaction.response.send_message(
-                f"{rint(dividend):,} / {rint(divisor):,} = {rint(dividend / divisor):,}"
-            )
+            dividend = rint(dividend, digits=3)
+            divisor = rint(divisor, digits=3)
+            result = rint(dividend / divisor, digits=3)
+            await interaction.response.send_message(f"{dividend:,} / {divisor:,} = {result:,}")
 
     @app_commands.command(description="Calculates the square of a number")
     async def square(self, interaction: discord.Interaction, number: float):
-        await interaction.response.send_message(f"{rint(number):,}² = {rint(pow(number, 2)):,}")
+        number = rint(number, digits=3)
+        result = rint(pow(number, 2), digits=3)
+        await interaction.response.send_message(f"{number:,}² = {result:,}")
 
     @app_commands.command(description="Calculate a percentage (15 apples of 60? It's 25%)")
     async def percentage(self, interaction: discord.Interaction, part: float, whole: float):
         if whole == 0:
             await interaction.response.send_message("Can't have a percentage of an empty whole")
         else:
-            await interaction.response.send_message(f"{rint(part):,} / {rint(whole):,} = {rint(part / whole, 4):,.2%}")
+            part = rint(part, digits=3)
+            whole = rint(whole, digits=3)
+            result = rint(part / whole, digits=6)
+            await interaction.response.send_message(f"{part:,} / {whole:,} = {result:,.2%}")
 
     @app_commands.command(description="Calculate how much a percentage equates to (25% of 60? It's 15)")
     async def percentof(self, interaction: discord.Interaction, percentage: float, whole: float):
-        result = rint((percentage / 100) * whole)
-        await interaction.response.send_message(f"{rint(percentage):,}% of {rint(whole):,} = {result:,}")
+        percentage = rint(percentage, digits=3)
+        whole = rint(whole, digits=3)
+        result = rint((percentage / 100) * whole, digits=3)
+        await interaction.response.send_message(f"{percentage:,}% of {whole:,} = {result:,}")
 
 
 async def setup(bot: DTbot):
