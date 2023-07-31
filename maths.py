@@ -16,7 +16,7 @@ class Maths(commands.GroupCog):
     def __init__(self, bot: DTbot):
         self.bot = bot
 
-    @app_commands.command(description="Add two numbers together")
+    @app_commands.command(description="Add two or more numbers together")
     async def add(
         self,
         interaction: discord.Interaction,
@@ -32,7 +32,7 @@ class Maths(commands.GroupCog):
         result = rint(fsum(numbers), digits=3)
         await interaction.response.send_message(f"{' + '.join(strs)} = {result:,}")
 
-    @app_commands.command(description="Subtract two numbers")
+    @app_commands.command(description="Subtract two or more numbers")
     async def subtract(
         self,
         interaction: discord.Interaction,
@@ -48,7 +48,7 @@ class Maths(commands.GroupCog):
         result = rint(reduce(sub, numbers), digits=3)  # type: ignore
         await interaction.response.send_message(f"{' - '.join(strs)} = {result:,}")
 
-    @app_commands.command(description="Multiply two numbers")
+    @app_commands.command(description="Multiply two or more numbers")
     async def multiply(
         self,
         interaction: discord.Interaction,
