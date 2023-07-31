@@ -17,7 +17,7 @@ class Maths(commands.GroupCog):
         first = rint(first, digits=3)
         second = rint(second, digits=3)
         result = rint(first + second, digits=3)
-        await interaction.response.send_message(f"{first:,} + {first:,} = {result:,}")
+        await interaction.response.send_message(f"{first:,} + {second:,} = {result:,}")
 
     @app_commands.command(description="Subtract two numbers")
     async def subtract(self, interaction: discord.Interaction, first: float, second: float):
