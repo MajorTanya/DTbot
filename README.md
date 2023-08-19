@@ -6,7 +6,7 @@ Currently running:
 
 * v3 (modern Slash Commands, like `/info`)
 
-**For current announcements regarding DTbot, check the ANNOUNCEMENTS.md.**
+**For current announcements regarding DTbot, check the [ANNOUNCEMENTS.md](ANNOUNCEMENTS.md).**
 
 ## Features
 
