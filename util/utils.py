@@ -3,7 +3,6 @@ import logging
 from typing import TextIO
 
 import discord
-import mariadb  # type: ignore
 
 DEFAULT_LOG_FORMATTER = logging.Formatter(
     fmt="[{asctime}] [{levelname:<8}] {name}: {message}",
