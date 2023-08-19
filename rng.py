@@ -82,9 +82,9 @@ class Rng(commands.Cog, name="RNG"):
                 "When entering a modifier, please also provide the modifier type.", ephemeral=True
             )
         await interaction.response.defer()
-        mod_type = mod_type if mod_type is not None else ""
-        modifier = modifier if modifier is not None else ""
-        dice = f"{num_of_dice}d{dice_sides}{roll_options[options]} {mod_type}{modifier}".strip()
+        selected_mod_type = mod_type if mod_type is not None else ""
+        modifier_value = modifier if modifier is not None else ""
+        dice = f"{num_of_dice}d{dice_sides}{roll_options[options]} {selected_mod_type}{modifier_value}".strip()
         _, explanation = rolldice.roll_dice(dice)
         # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
         explanation, _ = explanation.replace(",", ", ").split("]", 1)
@@ -94,19 +94,19 @@ class Rng(commands.Cog, name="RNG"):
 
         total_rolled = sum(int(die) for die in kept_dice if die.isdigit())
 
-        match mod_type:
+        match selected_mod_type:
             case "+":
-                result = total_rolled + modifier
+                result = total_rolled + modifier_value if modifier_value != "" else 0
             case "-":
-                result = total_rolled - modifier
+                result = total_rolled - modifier_value if modifier_value != "" else 0
             case "*":
-                result = total_rolled * modifier
+                result = total_rolled * modifier_value if modifier_value != "" else 1
             case _:
                 result = total_rolled
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             title=f"Result: __{result}__",
-            description=f"{explanation} {mod_type}{modifier if modifier is not None else ''}",
+            description=f"{explanation} {selected_mod_type}{modifier_value}",
         )
         embed.set_footer(text=f"Rolled {dice}")
         await interaction.followup.send(embed=embed)

@@ -1,4 +1,4 @@
-from typing import Coroutine
+from typing import Any, Callable, Coroutine
 
 import discord.ui
 
@@ -22,7 +22,7 @@ class NavButton(discord.ui.Button):
     def __init__(
         self,
         *,
-        callback: Coroutine,
+        callback: Callable[[discord.Interaction[discord.Client]], Coroutine[Any, Any, None]],
         style: discord.ButtonStyle = discord.ButtonStyle.secondary,
         label: str | None = None,
         disabled: bool = False,
@@ -40,7 +40,10 @@ class NavButton(discord.ui.Button):
             emoji=emoji,
             row=row,
         )
-        self.callback = callback
+        self._button_callback = callback
+
+    async def callback(self, interaction: discord.Interaction[discord.Client]) -> Any:
+        await self._button_callback(interaction)
 
 
 class NavButtonView(discord.ui.View):
@@ -59,9 +62,9 @@ class NavButtonView(discord.ui.View):
 
 
 class PaginatorSession(object):
-    def __init__(self, *, pages: list[discord.Embed] = None):
+    def __init__(self, *, pages: list[discord.Embed] | None = None):
         super().__init__()
-        self.callbacks: dict[str, Coroutine] = {
+        self.callbacks: dict[str, Callable[[discord.Interaction[discord.Client]], Coroutine[Any, Any, None]]] = {
             FIRST_PAGE: self.first_page,
             PREV_PAGE: self.prev_page,
             STOP: self.stop_session,
@@ -105,7 +108,8 @@ class PaginatorSession(object):
         if not interaction.response.is_done():
             await interaction.response.defer()
         await interaction.edit_original_response(view=None)
-        self.view.stop()
+        if self.view:
+            self.view.stop()
 
     async def next_page(self, interaction: discord.Interaction):
         if not interaction.response.is_done():

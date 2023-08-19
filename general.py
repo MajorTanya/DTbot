@@ -38,7 +38,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
         embed = discord.Embed(title=f"Requested: {self.functionality.value}", description=self.description.value)
-        req_hall = self.bot.get_channel(self.bot.bot_config.getint("General", "REQHALL"))
+        req_hall: discord.TextChannel = self.bot.get_channel(self.bot.bot_config.getint("General", "REQHALL"))  # type: ignore
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
@@ -128,11 +128,11 @@ class General(commands.Cog):
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
-            title=f"{self.bot.user.name}'s info",
-            description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "
+            title=f"{self.bot.user.name}'s info",  # type: ignore
+            description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "  # type: ignore
             f"server.\n\nIf you have any command requests, use the `request` command.\n\n"
             f"Thank you and have a good day.\n\n"
-            f"[__**{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})",
+            f"[__**{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})",  # type: ignore
         )
         embed.add_field(name="Authors", value=self.DTBOT_DEVS)
         embed.add_field(name="GitHub repository", value=f"Find me [here]({self.GH_LINK})")
@@ -179,7 +179,7 @@ class General(commands.Cog):
     @app_commands.guild_only()
     async def serverinfo(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        guild = interaction.guild
+        guild: discord.Guild = interaction.guild  # type: ignore # the command is set as guild_only, guild will exist
         embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f"About {guild.name}")
         if guild.description:
             embed.description = guild.description
@@ -188,7 +188,8 @@ class General(commands.Cog):
         if guild.banner:
             embed.set_image(url=guild.banner.url)
         embed.add_field(name="Name", value=guild.name)
-        embed.add_field(name="Owner", value=guild.owner.mention)
+        if guild.owner:
+            embed.add_field(name="Owner", value=guild.owner.mention)
 
         created_at = int(guild.created_at.timestamp())
         embed.add_field(name="Created at", value=f"<t:{created_at}:D> - <t:{created_at}:T> (<t:{created_at}:R>)")
@@ -201,7 +202,7 @@ class General(commands.Cog):
         embed.add_field(name="Channels", value=f"{channels} in {categories}")
 
         bot_count = len([m for m in guild.members if m.bot])
-        user_count = guild.member_count - bot_count
+        user_count = len(guild.members) - bot_count
         bots = f"{bot_count} bot{'s' if bot_count != 1 else ''}"
         users = f"{user_count} user{'s' if guild.member_count != 1 else ''}"
         embed.add_field(name="Members", value=f"{users} and {bots} ({guild.member_count} total)")
@@ -226,26 +227,27 @@ class General(commands.Cog):
     async def uptime(self, interaction: discord.Interaction):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
-        await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")
+        await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")  # type: ignore
 
     @app_commands.command(description="Shows details on a user, such as Name, Join Date, or Highest Role")
     @app_commands.describe(user="The user to get some info on")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def userinfo(self, interaction: discord.Interaction, user: discord.Member | None):
-        user = user if user else interaction.user
-        join_ts = int(user.joined_at.timestamp())
-        created_ts = int(user.created_at.timestamp())
-        embed = discord.Embed(title=f"{user}'s info", description="Here is what I could find:")
-        if user.display_name != user.name and user.display_name != user.global_name:
-            embed.add_field(name="Nickname", value=f"{user.display_name}")
-        embed.add_field(name="Display Name", value=f"{user.global_name}")
-        embed.add_field(name="ID", value=f"{user.id}", inline=True)
-        embed.add_field(name="Status", value=f"{user.status}", inline=True)
-        embed.add_field(name="Highest Role", value=f"<@&{user.top_role.id}>", inline=True)
-        embed.add_field(name="Joined at", value=f"<t:{join_ts}:D> - <t:{join_ts}:T>", inline=True)
+        target: discord.Member | discord.User = user if user else interaction.user
+        created_ts = int(target.created_at.timestamp())
+        embed = discord.Embed(title=f"{target}'s info", description="Here is what I could find:")
+        if target.display_name != target.name and target.display_name != target.global_name:
+            embed.add_field(name="Nickname", value=f"{target.display_name}")
+        embed.add_field(name="Display Name", value=f"{target.global_name}")
+        embed.add_field(name="ID", value=f"{target.id}", inline=True)
+        if target is discord.Member:
+            embed.add_field(name="Status", value=f"{target.status}", inline=True)
+            embed.add_field(name="Highest Role", value=f"<@&{target.top_role.id}>", inline=True)
+            join_ts = int(target.joined_at.timestamp())
+            embed.add_field(name="Joined at", value=f"<t:{join_ts}:D> - <t:{join_ts}:T>", inline=True)
         embed.add_field(name="Created at", value=f"<t:{created_ts}:D> - <t:{created_ts}:T>", inline=True)
-        embed.set_footer(text=f"{user.name}'s Info", icon_url=f"{user.display_avatar.url}")
-        embed.set_thumbnail(url=user.display_avatar.url)
+        embed.set_footer(text=f"{target.name}'s Info", icon_url=f"{target.display_avatar.url}")
+        embed.set_thumbnail(url=target.display_avatar.url)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Shows how many users have a particular role (max. 15 pages)")

@@ -26,7 +26,7 @@ class Maths(commands.GroupCog):
         fourth: float | None,
         fifth: float | None,
     ):
-        raw_inputs = [first, second, third, fourth, fifth]
+        raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
         result = rint(fsum(numbers), digits=3)
@@ -42,10 +42,10 @@ class Maths(commands.GroupCog):
         fourth: float | None,
         fifth: float | None,
     ):
-        raw_inputs = [first, second, third, fourth, fifth]
+        raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
-        result = rint(reduce(sub, numbers), digits=3)  # type: ignore
+        result = rint(reduce(sub, numbers), digits=3)
         await interaction.response.send_message(f"{' - '.join(strs)} = {result:,}")
 
     @app_commands.command(description="Multiply two or more numbers")
@@ -58,7 +58,7 @@ class Maths(commands.GroupCog):
         fourth: float | None,
         fifth: float | None,
     ):
-        raw_inputs = [first, second, third, fourth, fifth]
+        raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
         result = rint(prod(numbers), digits=3)

@@ -26,7 +26,7 @@ class ErrorHandler(commands.Cog):
 
     async def on_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
         send = interaction.response.send_message if not interaction.response.is_done() else interaction.followup.send
-        command = interaction.command.qualified_name
+        command = interaction.command.qualified_name if interaction.command else "This command"
         if isinstance(error, app_commands.BotMissingPermissions):
             missing_perms_msg = (
                 f"`Error: {error.args[0].replace('Bot', 'DTbot').replace('this command', 'properly')}` Please make "

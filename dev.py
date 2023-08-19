@@ -50,15 +50,16 @@ class Dev(commands.GroupCog):
             dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
             beat_embed = discord.Embed(
                 colour=DTbot.DTBOT_COLOUR,
-                title=f"{self.bot.user.name}'s Heartbeat",
-                description=f"{self.bot.user.name} is still alive and running!",
+                title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore
+                description=f"{self.bot.user.name} is still alive and running!",  # type: ignore
             )
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
             beat_embed.add_field(name="Uptime:", value=uptime)
             beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
-            msg: discord.Message = await self.hb_chamber.send(embed=beat_embed)
-            await msg.delete(delay=Dev.HB_FREQ)
+            if self.hb_chamber:
+                msg: discord.Message = await self.hb_chamber.send(embed=beat_embed)
+                await msg.delete(delay=Dev.HB_FREQ)
 
     @heartbeat.before_loop
     async def before_heartbeat(self):
@@ -66,15 +67,16 @@ class Dev(commands.GroupCog):
         self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
-        self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))
+        self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))  # type: ignore
         startup_embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
-            title=f"{self.bot.user.name}'s Heartbeat",
-            description=f"{self.bot.user.name} is starting up!",
+            title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore
+            description=f"{self.bot.user.name} is starting up!",  # type: ignore
         )
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
         startup_embed.set_footer(text=f"DTbot v. {dtbot_version}")
-        await self.hb_chamber.send(embed=startup_embed)
+        if self.hb_chamber:
+            await self.hb_chamber.send(embed=startup_embed)  # type: ignore
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -108,8 +110,8 @@ class Dev(commands.GroupCog):
         self,
         interaction: discord.Interaction,
         extension_name: str,
-        dev_sync: bool | None = False,
-        global_sync: bool | None = False,
+        dev_sync: bool = False,
+        global_sync: bool = False,
     ):
         await interaction.response.defer(ephemeral=True)
         try:
@@ -122,7 +124,11 @@ class Dev(commands.GroupCog):
             await interaction.followup.send(f"{type(e).__name__}", ephemeral=True)
 
     @load.autocomplete("extension_name")
-    async def load_autocomplete(self, _interaction: discord.Interaction, current: str):
+    async def load_autocomplete(
+        self,
+        _interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         loaded = [cog.__class__.__name__.lower() for cog in self.bot.cogs.values()]
         not_loaded = [cog for key, cog in self.bot.bot_config.items("Extensions") if key.lower() not in loaded]
         return [
@@ -136,8 +142,8 @@ class Dev(commands.GroupCog):
         self,
         interaction: discord.Interaction,
         extension_name: str,
-        dev_sync: bool | None = False,
-        global_sync: bool | None = False,
+        dev_sync: bool = False,
+        global_sync: bool = False,
     ):
         await interaction.response.defer(ephemeral=True)
         try:
@@ -154,8 +160,8 @@ class Dev(commands.GroupCog):
         self,
         interaction: discord.Interaction,
         extension_name: str,
-        dev_sync: bool | None = False,
-        global_sync: bool | None = False,
+        dev_sync: bool = False,
+        global_sync: bool = False,
     ):
         await interaction.response.defer(ephemeral=True)
         try:
@@ -169,7 +175,11 @@ class Dev(commands.GroupCog):
 
     @unload.autocomplete("extension_name")
     @reload.autocomplete("extension_name")
-    async def unreload_autocomplete(self, _interaction: discord.Interaction, current: str):
+    async def unreload_autocomplete(
+        self,
+        _interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[str]]:
         return [
             app_commands.Choice(
                 name=cog.qualified_name,
@@ -182,7 +192,7 @@ class Dev(commands.GroupCog):
         ]
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
-    async def updaterp(self, interaction: discord.Interaction, caption: str | None, reload_config: bool | None = False):
+    async def updaterp(self, interaction: discord.Interaction, caption: str = "", reload_config: bool = False):
         await interaction.response.defer(ephemeral=True)
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         if reload_config:
@@ -197,7 +207,7 @@ class Dev(commands.GroupCog):
             caption = f"Check /announcements (v. {dtbot_version})"
         self.bot.log.info("Updating Rich Presence")
         await self.bot.change_presence(activity=discord.Game(name=caption))
-        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")
+        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")  # type: ignore
         await interaction.followup.send(f"Successfully updated Rich Presence to: {caption}", ephemeral=True)
 
     @app_commands.command(description="Shutdown command for DTbot.")

@@ -12,7 +12,7 @@ class StaffRole(enum.Enum):
     CHAR_DESIGN = 5
 
 
-DISPLAYED_STAFF_ROLES = [
+DISPLAYED_STAFF_ROLES: list[tuple[str, StaffRole]] = [
     ("Original Creator", StaffRole.ORIGINAL_CREATOR),
     ("Director", StaffRole.DIRECTOR),
     ("Story & Art", StaffRole.STORY_AND_ART),
@@ -22,7 +22,7 @@ DISPLAYED_STAFF_ROLES = [
 ]
 
 # fmt: off
-UNDISPLAYED_STAFF_ROLES = [
+UNDISPLAYED_STAFF_ROLES: list[str] = [
     '(ep ', '(eps ', 'Action', 'ADR', 'Animation', 'Art Design', 'Art Director', 'Assistant',
     'CG', 'Chief', 'Episode', 'Photography', 'Sound', 'Sub', 'Touch-up',
 ]  # fmt: on

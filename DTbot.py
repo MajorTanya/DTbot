@@ -17,7 +17,7 @@ intents.members = True
 
 
 class DTbot(commands.Bot):
-    DEV_GUILD: discord.Object = None
+    DEV_GUILD: discord.Object = None  # type: ignore
     DTBOT_COLOUR: discord.Colour = discord.Colour(0x5E51A8)
 
     def __init__(self, bot_config: ConfigParser | None = None):
@@ -49,7 +49,7 @@ class DTbot(commands.Bot):
     def in_dev_mode(self) -> bool:
         return "--dev" in sys.argv
 
-    async def setup_hook(self) -> None:
+    async def setup_hook(self):
         db_config = dict(self.bot_config.items("Database"))
         self.db_cnx = mariadb.ConnectionPool(
             pool_size=10,
@@ -92,9 +92,12 @@ class DTbot(commands.Bot):
     async def on_ready(self):
         # online confimation
         print("Logged in as")
-        print(self.user.name)
-        print(self.user.id)
+        print(self.user.name)  # type: ignore
+        print(self.user.id)  # type: ignore
         print("------")
 
     def run(self, **kwargs):
-        super().run(os.environ.get("DTBOT_TOKEN"), log_handler=self._file_handler, **kwargs)
+        token = os.environ.get("DTBOT_TOKEN")
+        if token is None:
+            raise RuntimeError("Couldn't get DTBOT_TOKEN from environment")
+        super().run(token, log_handler=self._file_handler, **kwargs)
