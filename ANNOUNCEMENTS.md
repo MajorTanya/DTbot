@@ -8,6 +8,8 @@ on this document.
 * Announcements are dated in the `YYYY-MM-DD` format to avoid date confusions.
 * Where applicable, a "TL;DR" (Too Long; Didn't Read) section is placed before the main announcement text.
 
+---
+
 ## Announcement Re: DTbot v2 shutdown
 
 (Announcement made: 2022-12-31)
@@ -30,6 +32,8 @@ features.
 We thank you for your long-time use of text-based and mention-based DTbot versions, but it is time to look towards
 the future, and what better opportunity than the change of the year. With that, we wish you a Happy New Year 2023 and
 a lot of fun using DTbot v3!
+
+---
 
 ## Announcement Re: Discord restricting Message Content for Bots
 
