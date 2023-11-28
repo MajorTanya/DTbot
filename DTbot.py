@@ -50,13 +50,14 @@ class DTbot(commands.Bot):
         return "--dev" in sys.argv
 
     async def setup_hook(self):
-        db_config = dict(self.bot_config.items("Database"))
         self.db_cnx = mariadb.ConnectionPool(
             pool_size=10,
             reconnect=True,
+            host=os.environ.get("DTBOT_DB_HOST"),
             user=os.environ.get("DTBOT_DB_USER"),
             password=os.environ.get("DTBOT_DB_PASS"),
-            **db_config,
+            database=os.environ.get("DTBOT_DB_NAME"),
+            pool_name=os.environ.get("DTBOT_DB_POOL"),
         )
 
         for _, extension in self.bot_config.items("Extensions"):
