@@ -3,6 +3,7 @@ from configparser import ConfigParser
 
 import mariadb
 from dotenv import load_dotenv
+from mariadb.constants import CLIENT
 
 from DTbot import DTbot
 
@@ -12,49 +13,40 @@ if __name__ == "__main__":
     config.read("./config/config.ini")
     bot = DTbot(bot_config=config)
 
-    db_config = dict(bot.bot_config.items("Database"))
-    tables = bot.bot_config.items("Database defaults")
-    procedures = config.items("Database procedures")
-    migrations = config.items("Database migrations")
     cnx: mariadb.Connection
     cursor: mariadb.Cursor
-    with mariadb.connect(user=os.environ.get("DTBOT_DB_USER"), password=os.environ.get("DTBOT_DB_PASS")) as cnx:
-        with cnx.cursor() as cursor:
-            # to ensure we have a database, create it on launch with a non-pooled connection
-            try:
-                cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_config['database']} DEFAULT CHARACTER SET 'utf8'")
-                bot.log.debug(f"Successfully created database {db_config['database']}")
 
-                cursor.execute(f"USE {db_config['database']}")
-                bot.log.debug(f"Using database: {db_config['database']}")
+    # to ensure we have a database, create it on launch with a non-pooled connection
+    # for client_flag cf.: https://jira.mariadb.org/browse/CONPY-109 (comment by Georg Richter)
+    with mariadb.connect(
+        user=os.environ.get("DTBOT_DB_USER"),
+        password=os.environ.get("DTBOT_DB_PASS"),
+        client_flag=CLIENT.MULTI_STATEMENTS,
+    ) as cnx:
+        try:
+            with cnx.cursor() as cursor:
+                with open("./database_scripts/database_and_tables.sql", encoding="utf-8") as definitions_file:
+                    bot.log.debug(f"Running {definitions_file.name}")
+                    cursor.execute(definitions_file.read())
+                    bot.log.debug(f"Successfully ran {definitions_file.name}")
 
-                for table_name, table_description in tables:
-                    try:
-                        bot.log.debug(f"Creating table {table_name}")
-                        cursor.execute(table_description)
-                    except mariadb.Error as err:
-                        bot.log.error(err)
-                    else:
-                        bot.log.debug("OK")
+            with cnx.cursor() as cursor:
+                with open("./database_scripts/migrations.sql", encoding="utf-8") as migrations_file:
+                    bot.log.debug(f"Running {migrations_file.name}")
+                    cursor.execute(migrations_file.read())
+                    bot.log.debug(f"Successfully ran {migrations_file.name}")
 
-                for migration_name, migration_description in migrations:
-                    try:
-                        bot.log.debug(f"Performing migration {migration_name}")
-                        cursor.execute(migration_description)
-                    except mariadb.Error as err:
-                        bot.log.error(err)
-                    else:
-                        bot.log.debug("OK")
+            with cnx.cursor() as cursor:
+                with open("./database_scripts/procedures.sql", encoding="utf-8") as procedures_file:
+                    bot.log.debug(f"Running {procedures_file.name}")
+                    cursor.execute(procedures_file.read())
+                    bot.log.debug(f"Successfully ran {procedures_file.name}")
 
-                for procedure_name, procedure_description in procedures:
-                    try:
-                        bot.log.debug(f"Creating procedure {procedure_name}")
-                        cursor.execute(procedure_description)
-                    except mariadb.Error as err:
-                        bot.log.error(err)
-                    else:
-                        bot.log.debug("OK")
+        except mariadb.Error as err:
+            bot.log.error(f"Failed during database startup: {err}")
+            raise err
 
-            except mariadb.Error as err:
-                bot.log.error(f"Failed during database startup: {err}")
+        else:  # No Exceptions were thrown, log success
+            bot.log.debug("Successfully executed all SQL scripts.")
+
     bot.run()
