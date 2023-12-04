@@ -120,13 +120,13 @@ class Conversion(commands.Cog):
     @app_commands.command(description="Converts from US Gallons to Liters")
     @app_commands.describe(gallons="The value in US Gallons")
     async def gall(self, interaction: discord.Interaction, gallons: float):
-        liters = rint(gallons / L_IN_USGAL)
+        liters = rint(gallons * L_IN_USGAL)
         await interaction.response.send_message(f"{rint(gallons)} gal (US) = {liters} L")
 
     @app_commands.command(description="Converts from Liters to US Gallons")
     @app_commands.describe(liters="The value in Liters")
     async def lgal(self, interaction: discord.Interaction, liters: float):
-        gallons = rint(liters * L_IN_USGAL)
+        gallons = rint(liters / L_IN_USGAL)
         await interaction.response.send_message(f"{rint(liters)} L = {gallons} gal (US)")
 
 
