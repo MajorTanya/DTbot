@@ -129,7 +129,7 @@ class Dev(commands.GroupCog):
         _interaction: discord.Interaction,
         current: str,
     ) -> list[app_commands.Choice[str]]:
-        loaded = [cog.__class__.__name__.lower() for cog in self.bot.cogs.values()]
+        loaded = [cog.qualified_name.lower() for cog in self.bot.cogs.values()]
         not_loaded = [cog for key, cog in self.bot.bot_config.items("Extensions") if key.lower() not in loaded]
         return [
             app_commands.Choice(name=cog.title().replace("Rng", "RNG"), value=cog)
@@ -183,10 +183,10 @@ class Dev(commands.GroupCog):
         return [
             app_commands.Choice(
                 name=cog.qualified_name,
-                value=cog.__class__.__name__.lower().replace("errorhandler", "error_handler"),
+                value=cog.qualified_name.lower().replace("errorhandler", "error_handler"),
             )
             for cog in (self.bot.cogs.values())
-            if current.lower() in cog.__class__.__name__.lower()
+            if current.lower() in cog.qualified_name.lower()
         ]
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
