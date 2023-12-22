@@ -12,11 +12,6 @@ BEGIN
     SELECT IFNULL((SELECT TRUE FROM `appcommandstats` WHERE command_name = lookupCommandName LIMIT 1), FALSE);
 END;
 
-CREATE PROCEDURE IF NOT EXISTS `CheckUserExist`(IN `lookupUserId` bigint)
-BEGIN
-    SELECT IFNULL((SELECT TRUE FROM `users` WHERE user_id = lookupUserId LIMIT 1), FALSE);
-END;
-
 CREATE PROCEDURE IF NOT EXISTS `IncrementAppCommandUsage`(IN `targetCommandName` varchar(30))
 BEGIN
     UPDATE IGNORE `appcommandstats` SET times_used = times_used + 1 WHERE command_name = targetCommandName;
@@ -46,6 +41,11 @@ END;
 CREATE PROCEDURE IF NOT EXISTS `AddNewUser`(IN `newUserId` bigint)
 BEGIN
     INSERT IGNORE INTO `users` (user_id) VALUES (newUserId);
+END;
+
+CREATE PROCEDURE IF NOT EXISTS `CheckUserExist`(IN `lookupUserId` bigint)
+BEGIN
+    SELECT IFNULL((SELECT TRUE FROM `users` WHERE user_id = lookupUserId LIMIT 1), FALSE);
 END;
 
 CREATE PROCEDURE IF NOT EXISTS `CheckXPTime`(IN `lookupUserId` bigint)
