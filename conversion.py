@@ -78,7 +78,7 @@ class Conversion(commands.Cog):
     @app_commands.describe(meters="The value in Meters")
     async def mftin(self, interaction: discord.Interaction, meters: float):
         divmodres = divmod(meters, M_IN_FT)
-        inches = divmodres[1] / (CM_IN_INCH * 100)
+        inches = divmodres[1] / (CM_IN_INCH / 100)
         await interaction.response.send_message(f"{rint(meters)} m = {int(divmodres[0])} ft {rint(inches)} in")
 
     @app_commands.command(description="Converts from Kilometers to Miles")
