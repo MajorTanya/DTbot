@@ -183,9 +183,7 @@ class Dev(commands.GroupCog):
         return [
             app_commands.Choice(
                 name=cog.qualified_name,
-                value=cog.__class__.__name__.lower()
-                .replace("databasemanagement", "database_management")
-                .replace("errorhandler", "error_handler"),
+                value=cog.__class__.__name__.lower().replace("errorhandler", "error_handler"),
             )
             for cog in (self.bot.cogs.values())
             if current.lower() in cog.__class__.__name__.lower()
