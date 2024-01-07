@@ -241,7 +241,6 @@ class General(commands.Cog):
         embed.add_field(name="Display Name", value=f"{target.global_name}")
         embed.add_field(name="ID", value=f"{target.id}", inline=True)
         if isinstance(target, discord.Member):
-            embed.add_field(name="Status", value=f"{target.status}", inline=True)
             embed.add_field(name="Highest Role", value=f"<@&{target.top_role.id}>", inline=True)
             join_ts = int(target.joined_at.timestamp())
             embed.add_field(name="Joined at", value=f"<t:{join_ts}:D> - <t:{join_ts}:T>", inline=True)
