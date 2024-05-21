@@ -38,7 +38,7 @@ class Interaction(commands.Cog):
         embed = make_embed(interaction.user.id, blush_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="Boop em good")
+    @app_commands.command(description="Boop 'em good")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(user="The user whose nose to boop")
     async def boop(self, interaction: discord.Interaction, user: discord.Member):
