@@ -240,7 +240,7 @@ class Interaction(commands.Cog):
         embed = make_embed(interaction.user.id, pout_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(description="Salute someone - Can be given a reason")
+    @app_commands.command(description="Salute someone")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.describe(user="The user you're saluting")
     async def salute(self, interaction: discord.Interaction, user: discord.Member | discord.User | None):
