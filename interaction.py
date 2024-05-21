@@ -96,8 +96,8 @@ class Interaction(commands.Cog):
         user4: discord.Member | None,
         user5: discord.Member | None,
     ):
-        # Remove None and Invoker by set difference, type ignored because set difference isn't analysed
-        dancers: set[Member] = {user1, user2, user3, user4, user5}.difference({None, interaction.user})  # type: ignore
+        # Remove None and Invoker by set difference
+        dancers: set[discord.Member] = {user1, user2, user3, user4, user5}.difference({None, interaction.user})
         msg = f"{interaction.user.mention} started dancing by themselves! Everyone, come and join them! DANCE PARTY!"
         if len(dancers) > 0:
             res = ", and ".join(c.mention for c in dancers)
