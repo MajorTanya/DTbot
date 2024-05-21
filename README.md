@@ -40,6 +40,8 @@ With our array of command modules, DTbot provides:
 * Anime/Manga lookup via AniList (`/anime [title]` and `/manga [title]`)
 * and more!
 
+A full command overview with examples and explanations can be found in the [COMMANDS.md](COMMANDS.md) file.
+
 ### Suggestions?
 
 If you have an idea for a command for DTbot (or you want a removed command back), you can use the `/request` command to
