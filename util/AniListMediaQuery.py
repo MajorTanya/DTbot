@@ -86,6 +86,7 @@ class AniListMediaQuery:
 
         description = re.sub("<.*?>", "", dto.description) if dto.description is not None else None
         embed = discord.Embed(colour=colour, title=dto.title.romaji, description=description)
+        embed.set_footer(text="Provided by AniList.co", icon_url="https://anilist.co/img/icons/favicon-32x32.png")
 
         if dto.cover_image:
             embed.set_image(url=dto.cover_image.url)
