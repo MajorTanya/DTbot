@@ -90,7 +90,7 @@ Because DTbot uses Rich Embeds for these commands, mentioned user(s) in the mess
 
 ### Interactions with Users
 
-| Command               | Description                              | Example                | User optional? | Mood/Atmosphere of the images         |
+| Command               | Description                              | Example                | User optional? | Mood / Atmosphere of the images       |
 |-----------------------|------------------------------------------|------------------------|----------------|---------------------------------------|
 | `/baka [user]`        | Go full Tsundere and call someone a BAKA | `/baka @wumpus`        | No             | Friendly                              |
 | `/boop [user]`        | Boop em good                             | `/boop @wumpus`        | No             | Friendly                              |
