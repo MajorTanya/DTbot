@@ -178,16 +178,20 @@ Note: Parameter names are displayed by Discord, users only need to type the numb
 from the popup that is shown when they tap the relevant parameter in the list. To avoid confusion with the different
 optional parameters, their names will be listed in the examples below.
 
+Since DTbot v3.7.19 (`66686ce`), the output has changed as seen below. The "Kept" and "Dropped" labels will only be
+shown if some dice were dropped by choosing one of the [Dice Rolling Options](#dice-rolling-options). If the user did
+not use any of those, the list of rolled numbers will be shown without the "Kept"/"Dropped" labels.
+
 #### Dice Rolling Options
 
 Dice rolling supports a few options, listed here:
 
-| Option       | Effect                                | Example                                                  | Possible Example Output         | CritDice Syntax |
-|--------------|---------------------------------------|----------------------------------------------------------|---------------------------------|-----------------|
-| Drop lowest  | Drops the lowest roll from the total  | `/roll num_of_dice:3 dice_sides:20 options:Drop lowest`  | Result: __19__ [4, 15 ~~(1)~~]  | 3d20x           |
-| Drop highest | Drops the highest roll from the total | `/roll num_of_dice:3 dice_sides:20 options:Drop highest` | Result: __8__ [1, 7 ~~(20)~~]   | 3d20X           |
-| Keep lowest  | Keeps the lowest roll from the total  | `/roll num_of_dice:3 dice_sides:20 options:Keep lowest`  | Result: __2__ [2 ~~(5, 11)~~]   | 3d20k           |
-| Keep highest | Keeps the highest roll from the total | `/roll num_of_dice:3 dice_sides:20 options:Keep highest` | Result: __19__ [19 ~~(14, 2)~~] | 3d20K           |
+| Option       | Effect                                | Example                                                  | Possible Example Output                                    | CritDice Syntax |
+|--------------|---------------------------------------|----------------------------------------------------------|------------------------------------------------------------|-----------------|
+| Drop lowest  | Drops the lowest roll from the total  | `/roll num_of_dice:3 dice_sides:20 options:Drop lowest`  | Result: __19__<br>**Kept:** [4, 15]<br><br>*Dropped:* [1]  | 3d20x           |
+| Drop highest | Drops the highest roll from the total | `/roll num_of_dice:3 dice_sides:20 options:Drop highest` | Result: __8__<br>**Kept:** [1, 7]<br><br>*Dropped:* [20]   | 3d20X           |
+| Keep lowest  | Keeps the lowest roll from the total  | `/roll num_of_dice:3 dice_sides:20 options:Keep lowest`  | Result: __2__<br>**Kept:** [2]<br><br>*Dropped:* [5, 11]   | 3d20k           |
+| Keep highest | Keeps the highest roll from the total | `/roll num_of_dice:3 dice_sides:20 options:Keep highest` | Result: __19__<br>**Kept:** [19]<br><br>*Dropped:* [14, 2] | 3d20K           |
 
 #### Modifiers
 
@@ -198,11 +202,11 @@ supported modifier types are:
 from the popup. Since the `mod_type` and `modifier` parameters are optional, users may have to open the "+3 more"
 display. The parameter names will be listed here for clarity.)
 
-| `mod_type` | Description                       | Example                                                  | Possible Example Output     | CritDice Syntax |
-|------------|-----------------------------------|----------------------------------------------------------|-----------------------------|-----------------|
-| `+`        | Add a modifier to the roll        | `/roll num_of_dice:3 dice_sides:6 mod_type:+ modifier:2` | Result: __12__ [2, 4, 4] +2 | 3d6+2           |
-| `-`        | Subtract a modifier from the roll | `/roll num_of_dice:3 dice_sides:6 mod_type:- modifier:2` | Result: __9__ [6, 4, 1] -2  | 3d6-2           |
-| `*`        | Multiply the roll by a modifier   | `/roll num_of_dice:3 dice_sides:6 mod_type:* modifier:2` | Result: __28__ [5, 3, 6] *2 | 3d6*2           |
+| `mod_type` | Description                       | Example                                                  | Possible Example Output        | CritDice Syntax |
+|------------|-----------------------------------|----------------------------------------------------------|--------------------------------|-----------------|
+| `+`        | Add a modifier to the roll        | `/roll num_of_dice:3 dice_sides:6 mod_type:+ modifier:2` | Result: __12__<br>[2, 4, 4] +2 | 3d6+2           |
+| `-`        | Subtract a modifier from the roll | `/roll num_of_dice:3 dice_sides:6 mod_type:- modifier:2` | Result: __9__<br>[6, 4, 1] -2  | 3d6-2           |
+| `*`        | Multiply the roll by a modifier   | `/roll num_of_dice:3 dice_sides:6 mod_type:* modifier:2` | Result: __28__<br>[5, 3, 6] *2 | 3d6*2           |
 
 #### Combining Options and Modifiers
 
@@ -214,11 +218,11 @@ When specifying both an `options` selection and a `mod_type` with a `modifier`, 
 first. The `mod_type` with the `modifier` is applied to the total of all remaining dice after the `options` selection is
 applied.
 
-| Description                                                           | Example                                                                        | Possible Example Output          | CritDice Syntax |
-|-----------------------------------------------------------------------|--------------------------------------------------------------------------------|----------------------------------|-----------------|
-| Drop the lowest roll and add 2 to the total                           | `/roll num_of_dice:3 dice_sides:6 options:Drop lowest mod_type:+ modifier:2`   | Result: __13__ [5, 6 ~~(3)~~] +2 | 3d6x+2          |
-| Keep the lowest of two D20 rolls and multiply by 2 (D&D Disadvantage) | `/roll num_of_dice:2 dice_sides:20 options:Keep lowest mod_type:* modifier:2`  | Result: __2__ [1 ~~(20)~~] *2    | 2d20k*2         |
-| Keep the highest of two D20 rolls and subtract 4 (D&D Advantage)      | `/roll num_of_dice:2 dice_sides:20 options:Keep highest mod_type:- modifier:4` | Result: __15__ [19 ~~(15)~~] -4  | 2d20K-4         |
+| Description                                                           | Example                                                                        | Possible Example Output                                     | CritDice Syntax |
+|-----------------------------------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------|-----------------|
+| Drop the lowest roll and add 2 to the total                           | `/roll num_of_dice:3 dice_sides:6 options:Drop lowest mod_type:+ modifier:2`   | Result: __13__<br>**Kept:** [5, 6] +2<br><br>*Dropped:* [3] | 3d6x+2          |
+| Keep the lowest of two D20 rolls and multiply by 2 (D&D Disadvantage) | `/roll num_of_dice:2 dice_sides:20 options:Keep lowest mod_type:* modifier:2`  | Result: __2__<br>**Kept:** [1] *2<br><br>*Dropped:* [20]    | 2d20k*2         |
+| Keep the highest of two D20 rolls and subtract 4 (D&D Advantage)      | `/roll num_of_dice:2 dice_sides:20 options:Keep highest mod_type:- modifier:4` | Result: __15__<br>**Kept:** [19] -4<br><br>*Dropped:* [15]  | 2d20K-4         |
 
 ## Miscellaneous Commands
 
