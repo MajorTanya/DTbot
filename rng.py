@@ -1,18 +1,36 @@
+import enum
 import random
-import re
 import typing
 
 import discord
-import rolldice
 from discord import app_commands
 from discord.ext import commands
 
 from DTbot import DTbot
 
+TCritDice = typing.Literal["x", "X", "k", "K", ""]
 TRollModTypes = typing.Literal["+", "-", "*"]
 TRollOptions = typing.Literal["Drop lowest", "Drop highest", "Keep lowest", "Keep highest"]
 
-roll_options = {"Drop lowest": "x", "Drop highest": "X", "Keep lowest": "k", "Keep highest": "K", None: ""}
+
+class RollOptions(enum.StrEnum):
+    DROP_LOWEST = "Drop lowest"
+    DROP_HIGHEST = "Drop highest"
+    KEEP_LOWEST = "Keep lowest"
+    KEEP_HIGHEST = "Keep highest"
+
+    @classmethod
+    def from_roll_option_type(cls, typed_option: TRollOptions | None) -> typing.Self | None:
+        return None if typed_option is None else RollOptions(typed_option)
+
+
+option_to_critdice: dict[RollOptions | None, TCritDice] = {
+    RollOptions.DROP_LOWEST: "x",
+    RollOptions.DROP_HIGHEST: "X",
+    RollOptions.KEEP_LOWEST: "k",
+    RollOptions.KEEP_HIGHEST: "K",
+    None: "",
+}
 
 
 class Rng(commands.Cog, name="RNG"):
@@ -84,15 +102,25 @@ class Rng(commands.Cog, name="RNG"):
         await interaction.response.defer()
         selected_mod_type = mod_type if mod_type is not None else ""
         modifier_value = modifier if modifier is not None else ""
-        dice = f"{num_of_dice}d{dice_sides}{roll_options[options]} {selected_mod_type}{modifier_value}".strip()
-        _, explanation = rolldice.roll_dice(dice)
-        # py-rolldice miscalculates the result when using x/X flag, so we calculate our own result
-        explanation, _ = explanation.replace(",", ", ").split("]", 1)
-        explanation += "]"
-        explanation = re.sub(r" ~~ ([\d, ]+)", " ~~(\\1)~~", explanation).replace("]]", "]")
-        kept_dice = re.sub(r" ~~(\([\d, ]*\))~~", "", explanation).strip("[]").split(", ")
+        option = RollOptions.from_roll_option_type(options)
 
-        total_rolled = sum(int(die) for die in kept_dice if die.isdigit())
+        dice = f"{num_of_dice}d{dice_sides}{option_to_critdice[option]} {selected_mod_type}{modifier_value}".strip()
+
+        # dice rolling & modification based on https://pypi.org/project/py-rolldice/, which was used here before
+        rolls = [random.randint(1, dice_sides) for _ in range(num_of_dice)]
+        rolls.sort(reverse=option in (RollOptions.DROP_HIGHEST, RollOptions.KEEP_HIGHEST))
+
+        dropped = []
+        kept = rolls
+
+        if option in (RollOptions.DROP_LOWEST, RollOptions.DROP_HIGHEST):
+            dropped = rolls[:1]
+            kept = rolls[1:]
+        elif option in (RollOptions.KEEP_LOWEST, RollOptions.KEEP_HIGHEST):
+            dropped = rolls[1:]
+            kept = rolls[:1]
+
+        total_rolled = sum(kept)
 
         match selected_mod_type:
             case "+":
@@ -103,10 +131,14 @@ class Rng(commands.Cog, name="RNG"):
                 result = total_rolled * modifier_value if modifier_value != "" else 1
             case _:
                 result = total_rolled
+
+        kept_explanation = f"{"**Kept**: " if dropped else ""}{f'{kept}'}"
+        dropped_explanation = f"\n\n*Dropped*: {f'{dropped}'}" if dropped else ""
+
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
-            title=f"Result: __{result}__",
-            description=f"{explanation} {selected_mod_type}{modifier_value}",
+            title=f"Result: __{result:,}__",
+            description=f"{kept_explanation} {selected_mod_type}{modifier_value}{dropped_explanation}",
         )
         embed.set_footer(text=f"Rolled {dice}")
         await interaction.followup.send(embed=embed)
