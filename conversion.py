@@ -72,7 +72,7 @@ class Conversion(commands.Cog):
     @app_commands.describe(inches="The Inches part of the value")
     async def ftinm(self, interaction: discord.Interaction, feet: float, inches: float):
         meters = rint(feet * M_IN_FT) + rint(inches * (CM_IN_INCH / 100))
-        await interaction.response.send_message(f"{rint(feet)} ft {rint(inches)} in = {meters} m")
+        await interaction.response.send_message(f"{rint(feet)} ft {rint(inches)} in = {rint(meters)} m")
 
     @app_commands.command(description="Converts from Meters to mixed Feet and Inches")
     @app_commands.describe(meters="The value in Meters")
