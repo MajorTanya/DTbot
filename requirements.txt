@@ -1,5 +1,5 @@
 git+https://github.com/Rapptz/discord.py@master
 mariadb==1.1.10
-aiohttp==3.10.5
+aiohttp==3.10.11
 black==24.8.0
 python-dotenv==1.0.1
