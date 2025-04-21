@@ -54,6 +54,12 @@ class AniListMediaCover:
 
 
 @dataclasses.dataclass(frozen=True)
+class AniListMediaRelation:
+    site_url: str
+    relation_type: str
+
+
+@dataclasses.dataclass(frozen=True)
 class AniListResponseDTO:
     id_al: int
     id_mal: int | None
@@ -78,6 +84,7 @@ class AniListResponseDTO:
     start_date: str | None
     end_date: str | None
     is_manga: bool
+    relations: list[AniListMediaRelation]
 
     @classmethod
     def from_media_response(cls, media_response: dict[str, Any]) -> Self:
@@ -109,7 +116,15 @@ class AniListResponseDTO:
             start_date=_make_date(media_response["startDate"]),
             end_date=_make_date(media_response["endDate"]),
             is_manga=media_response["type"] == "MANGA",
+            relations=_relations_from_list(media_response["relations"]["edges"]),
         )
+
+
+def _relations_from_list(rels: list[dict[str, Any]]) -> list[AniListMediaRelation]:
+    out: list[AniListMediaRelation] = []
+    for r in rels:
+        out.append(AniListMediaRelation(site_url=r["node"]["siteUrl"], relation_type=r["relationType"]))
+    return out
 
 
 def _colour_string_to_rgb_tuple(color_str: str | None) -> tuple[int, int, int] | None:

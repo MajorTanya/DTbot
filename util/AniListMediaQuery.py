@@ -95,7 +95,13 @@ class AniListMediaQuery:
             embed.add_field(name="English Title", value=dto.title.english)
 
         if dto.source_type:
-            embed.add_field(name="Source", value=dto.source_type)
+            source_value = dto.source_type
+            if len(dto.relations) != 0:
+                for rel in dto.relations:
+                    if rel.relation_type == "SOURCE":
+                        source_value = f"[{source_value}]({rel.site_url})"
+                        break
+            embed.add_field(name="Source", value=source_value)
 
         if dto.genres:
             embed.add_field(name="Genres", value=", ".join(dto.genres))
