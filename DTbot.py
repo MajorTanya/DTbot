@@ -66,8 +66,8 @@ class DTbot(commands.Bot):
                 self.log.debug(f"Successfully loaded extension {extension}.")
             except Exception as e:
                 self.log.error(f"Failed to load extension {extension}\n{type(e).__name__}: {e}.")
-        await self.tree.sync(guild=DTbot.DEV_GUILD)
         if not self.in_dev_mode:
+            await self.tree.sync(guild=DTbot.DEV_GUILD)
             await self.tree.sync()
 
     async def on_guild_join(self, guild: discord.Guild):
