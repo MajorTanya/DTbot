@@ -2,17 +2,17 @@ USE `dtbot`;
 
 -- App Command Stats
 
-CREATE PROCEDURE IF NOT EXISTS `AddNewAppCommand`(IN `newCommandName` varchar(30))
+CREATE PROCEDURE IF NOT EXISTS `AddNewAppCommand`(IN `newCommandName` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin)
 BEGIN
     INSERT IGNORE INTO `appcommandstats` (command_name) VALUES (newCommandName);
 END;
 
-CREATE PROCEDURE IF NOT EXISTS `CheckAppCommandExist`(IN `lookupCommandName` varchar(30))
+CREATE PROCEDURE IF NOT EXISTS `CheckAppCommandExist`(IN `lookupCommandName` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin)
 BEGIN
     SELECT IFNULL((SELECT TRUE FROM `appcommandstats` WHERE command_name = lookupCommandName LIMIT 1), FALSE);
 END;
 
-CREATE PROCEDURE IF NOT EXISTS `IncrementAppCommandUsage`(IN `targetCommandName` varchar(30))
+CREATE PROCEDURE IF NOT EXISTS `IncrementAppCommandUsage`(IN `targetCommandName` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin)
 BEGIN
     UPDATE IGNORE `appcommandstats` SET times_used = times_used + 1 WHERE command_name = targetCommandName;
 END;
