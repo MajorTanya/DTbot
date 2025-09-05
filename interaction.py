@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from DTbot import DTbot
-from linklist import *
+from linklist import InteractionLinks
 
 
 class Interaction(commands.Cog):
@@ -22,7 +22,7 @@ class Interaction(commands.Cog):
         other_msg = f"{interaction.user.mention} called {user.mention} a baka. Are they a Tsundere?"
         embed = make_embed(
             interaction.user.id,
-            baka_links,
+            InteractionLinks.baka_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -35,7 +35,7 @@ class Interaction(commands.Cog):
     @app_commands.describe(reason="The reason you blushed")
     async def blush(self, interaction: discord.Interaction, reason: str | None):
         msg = f"{interaction.user.mention} blushed{f' because of {reason}' if reason else ''}! How cute!"
-        embed = make_embed(interaction.user.id, blush_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.blush_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Boop 'em good")
@@ -46,7 +46,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got booped."
         embed = make_embed(
             interaction.user.id,
-            boop_links,
+            InteractionLinks.boop_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -60,7 +60,7 @@ class Interaction(commands.Cog):
     async def cry(self, interaction: discord.Interaction, reason: str | None):
         added = f" because of {reason}" if reason else ""
         msg = f"{interaction.user.mention} is crying{added}. Someone, comfort them. <:kannahug:461996510637326386>"
-        embed = make_embed(interaction.user.id, cry_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.cry_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Cuddle someone")
@@ -71,7 +71,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got cuddled."
         embed = make_embed(
             interaction.user.id,
-            cuddle_links,
+            InteractionLinks.cuddle_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -104,7 +104,7 @@ class Interaction(commands.Cog):
             # "user1 and user2" with only two dancers, else "user1, user2[, ...], and userN"
             res = res.replace(", and ", " and ") if len(dancers) == 2 else res.replace(", and ", ", ", len(dancers) - 2)
             msg = f"{interaction.user.mention} started dancing with {res}!"
-        embed = make_embed(interaction.user.id, dance_links, target=None, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.dance_links, target=None, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Hold someone's hand")
@@ -115,7 +115,7 @@ class Interaction(commands.Cog):
         other_msg = f"{interaction.user.mention} is holding {user.mention}'s hand! How lewd!"
         embed = make_embed(
             interaction.user.id,
-            handholding_links,
+            InteractionLinks.handholding_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -128,7 +128,7 @@ class Interaction(commands.Cog):
     async def hide(self, interaction: discord.Interaction, reason: str | None):
         added = ". Are they embarrassed?" if not reason else f" from {reason}."
         msg = f"{interaction.user.mention} is hiding{added}"
-        embed = make_embed(interaction.user.id, hide_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.hide_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="High five someone")
@@ -139,7 +139,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got a high five from {interaction.user.mention}."
         embed = make_embed(
             interaction.user.id,
-            highfive_links,
+            InteractionLinks.highfive_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -152,7 +152,13 @@ class Interaction(commands.Cog):
     async def hug(self, interaction: discord.Interaction, user: discord.Member):
         self_msg = f"{user.mention} hugged themselves! Hooray for self-appreciation!"
         other_msg = f"{user.mention} got hugged."
-        embed = make_embed(interaction.user.id, hug_links, target=user, self_tag_msg=self_msg, other_tag_msg=other_msg)
+        embed = make_embed(
+            interaction.user.id,
+            InteractionLinks.hug_links,
+            target=user,
+            self_tag_msg=self_msg,
+            other_tag_msg=other_msg,
+        )
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Kiss someone")
@@ -161,7 +167,13 @@ class Interaction(commands.Cog):
     async def kiss(self, interaction: discord.Interaction, user: discord.Member):
         self_msg = f"{user.mention} gave themselves a kiss! Self-love is very important after all."
         other_msg = f"{user.mention} got kissed."
-        embed = make_embed(interaction.user.id, kiss_links, target=user, self_tag_msg=self_msg, other_tag_msg=other_msg)
+        embed = make_embed(
+            interaction.user.id,
+            InteractionLinks.kiss_links,
+            target=user,
+            self_tag_msg=self_msg,
+            other_tag_msg=other_msg,
+        )
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Lick someone")
@@ -172,7 +184,7 @@ class Interaction(commands.Cog):
         other_msg = f"{interaction.user.mention} licked {user.mention}."
         embed = make_embed(
             interaction.user.id,
-            lick_links,
+            InteractionLinks.lick_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -186,7 +198,13 @@ class Interaction(commands.Cog):
     async def pat(self, interaction: discord.Interaction, user: discord.Member):
         self_msg = f"{user.mention} patted themselves. They deserve all the pats!"
         other_msg = f"{user.mention} got a pat."
-        embed = make_embed(interaction.user.id, pat_links, target=user, self_tag_msg=self_msg, other_tag_msg=other_msg)
+        embed = make_embed(
+            interaction.user.id,
+            InteractionLinks.pat_links,
+            target=user,
+            self_tag_msg=self_msg,
+            other_tag_msg=other_msg,
+        )
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Pat them on the back")
@@ -200,7 +218,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got a pat on the back."
         embed = make_embed(
             interaction.user.id,
-            patback_links,
+            InteractionLinks.patback_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -215,7 +233,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got their cheeks pinched."
         embed = make_embed(
             interaction.user.id,
-            pinch_links,
+            InteractionLinks.pinch_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -228,7 +246,13 @@ class Interaction(commands.Cog):
     async def poke(self, interaction: discord.Interaction, user: discord.Member):
         self_msg = f"{user.mention} poked themselves. It wasn't hard at all, just a soft boop. And they deserve a boop."
         other_msg = f"{user.mention} got poked."
-        embed = make_embed(interaction.user.id, poke_links, target=user, self_tag_msg=self_msg, other_tag_msg=other_msg)
+        embed = make_embed(
+            interaction.user.id,
+            InteractionLinks.poke_links,
+            target=user,
+            self_tag_msg=self_msg,
+            other_tag_msg=other_msg,
+        )
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Pout - Can be given a reason")
@@ -237,7 +261,7 @@ class Interaction(commands.Cog):
     async def pout(self, interaction: discord.Interaction, reason: str | None):
         added = f"They said it's because of {reason}." if reason else "Ask them why."
         msg = f"{interaction.user.mention} pouted! {added}"
-        embed = make_embed(interaction.user.id, pout_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.pout_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Salute someone")
@@ -253,7 +277,7 @@ class Interaction(commands.Cog):
             )
         else:
             msg = f"{interaction.user.mention} saluted {user.mention}."
-        embed = make_embed(interaction.user.id, salute_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.salute_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Slap 'em hard")
@@ -264,7 +288,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got slapped."
         embed = make_embed(
             interaction.user.id,
-            slap_links,
+            InteractionLinks.slap_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -277,7 +301,7 @@ class Interaction(commands.Cog):
     @app_commands.describe(reason="The reason why you're being smug")
     async def smug(self, interaction: discord.Interaction, reason: str | None):
         msg = f"{interaction.user.mention} is being smug{f' because of {reason}' if reason else ''}."
-        embed = make_embed(interaction.user.id, smug_links, no_tag_msg=msg)
+        embed = make_embed(interaction.user.id, InteractionLinks.smug_links, no_tag_msg=msg)
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Tickle someone")
@@ -288,7 +312,7 @@ class Interaction(commands.Cog):
         other_msg = f"{user.mention} got tickled."
         embed = make_embed(
             interaction.user.id,
-            tickle_links,
+            InteractionLinks.tickle_links,
             target=user,
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
@@ -301,19 +325,25 @@ class Interaction(commands.Cog):
     async def wave(self, interaction: discord.Interaction, user: discord.Member):
         self_msg = f"{user.mention} waved at themselves. They seem incredibly happy and energetic today. How cute!"
         other_msg = f"{interaction.user.mention} waved at {user.mention}."
-        embed = make_embed(interaction.user.id, wave_links, target=user, self_tag_msg=self_msg, other_tag_msg=other_msg)
+        embed = make_embed(
+            interaction.user.id,
+            InteractionLinks.wave_links,
+            target=user,
+            self_tag_msg=self_msg,
+            other_tag_msg=other_msg,
+        )
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Woop woop!")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def woop(self, interaction: discord.Interaction):
-        embed = make_embed(interaction.user.id, woop_links)
+        embed = make_embed(interaction.user.id, InteractionLinks.woop_links)
         await interaction.response.send_message(embed=embed)
 
 
 def make_embed(
     invoker_id: int,
-    links: list[str] | None = None,
+    links: tuple[str, ...] | None = None,
     /,
     target: discord.User | discord.Member | None = None,
     self_tag_msg: str = "",
