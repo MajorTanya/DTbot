@@ -130,7 +130,9 @@ def _relations_from_list(rels: list[dict[str, Any]]) -> list[AniListMediaRelatio
 def _colour_string_to_rgb_tuple(color_str: str | None) -> tuple[int, int, int] | None:
     """Transforms the hex colour string to a tuple of RGB values - Returns a tri-tuple of ints, or None if the colour
     string was None"""
-    return None if color_str is None else tuple(int(color_str.lstrip("#")[i: i + 2], 16) for i in (0, 2, 4))
+    return (
+        None if color_str is None else tuple(int(color_str.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))  # noqa E203
+    )
 
 
 def _extract_cover_image(cover_element: dict[str, str | None]) -> AniListMediaCover | None:
