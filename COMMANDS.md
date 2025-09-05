@@ -276,5 +276,3 @@ feature requests.
 | `/ping`          | Measures the latency between DTbot's server and Discord. (This is not exactly the delay between You and DTbot.)                                                               |
 | `/request`       | Opens the Request Functionality modal. Limited to 2 requests per 24 hours, counted from the first request. Please provide useful explanations of your proposed functionality. |
 | `/uptime`        | DTbot's current uptime                                                                                                                                                        |
-
-
