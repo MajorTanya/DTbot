@@ -11,8 +11,7 @@ DEFAULT_LOG_FORMATTER = logging.Formatter(
 )
 
 
-def add_file_logging(
-    logger: logging.Logger,
+def get_file_handler(
     formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
     level: int = logging.INFO,
     logs_folder: str = "./logs",
@@ -32,22 +31,20 @@ def add_file_logging(
     file_handler = logging.FileHandler(filename=f"{logs_folder.rstrip('/')}/{date_str}.log", encoding="utf-8", mode="w")
     file_handler.setLevel(level)
     file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
     return file_handler
 
 
-def add_stream_logging(
-    logger: logging.Logger,
+def get_stream_handler(
     formatter: logging.Formatter = DEFAULT_LOG_FORMATTER,
     level: int = logging.WARNING,
     stream: TextIO | None = None,
-) -> None:
+) -> logging.StreamHandler[TextIO]:
     """Adds a StreamHandler with the given stream (default: stderr) to the provided Logger with the given formatter and
     level (default: WARNING)"""
     stream_handler = logging.StreamHandler(stream)
     stream_handler.setLevel(level)  # will log to stderr, more immediately visible than file
     stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
+    return stream_handler
 
 
 def even_out_embed_fields(embed: discord.Embed):

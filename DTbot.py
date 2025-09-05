@@ -1,8 +1,6 @@
-import datetime
-import logging
-import os
-import sys
 from configparser import ConfigParser
+from datetime import datetime
+from logging import Logger
 from typing import Any
 
 import discord
@@ -11,7 +9,6 @@ from discord import app_commands
 from discord.ext import commands
 
 from util.database_utils import DBProcedure, checkdbforuser, dbcallprocedure
-from util.utils import add_file_logging, add_stream_logging
 
 intents = discord.Intents.default()
 intents.members = True
@@ -21,53 +18,36 @@ class DTbot(commands.Bot):
     DEV_GUILD: discord.Object = None  # type: ignore
     DTBOT_COLOUR: discord.Colour = discord.Colour(0x5E51A8)
 
-    def __init__(self, bot_config: ConfigParser | None = None):
+    def __init__(
+        self,
+        *,
+        bot_config: ConfigParser,
+        db_connection_pool: mariadb.ConnectionPool,
+        in_dev_mode: bool,
+        logger: Logger,
+        startup_time: datetime,
+    ):
         super().__init__(
             case_insensitive=True,
             command_prefix=commands.when_mentioned,
             intents=intents,
             help_command=None,
         )
-        self.bot_startup = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
-        self.db_cnx: mariadb.ConnectionPool = None  # type: ignore # this is set properly during setup_hook
-        if bot_config:
-            self.bot_config = bot_config
-        else:
-            self.bot_config = ConfigParser()
-            self.bot_config.read("./config/config.ini")
+        self._in_dev_mode = in_dev_mode
+        self.bot_config = bot_config
         DTbot.DEV_GUILD = discord.Object(id=(self.bot_config.getint("General", "DEV_GUILD")))
-        # set up logging and bind to instance
-        self.log = logging.getLogger("dtbot")
-        self.log.setLevel(logging.DEBUG)
-        self._file_handler: logging.FileHandler = discord.utils.MISSING
-        if not self.in_dev_mode:
-            self._file_handler = add_file_logging(self.log, logs_folder="./logs", startup_time=self.bot_startup)
-            add_stream_logging(self.log)
-        else:
-            add_stream_logging(self.log, level=logging.DEBUG, stream=sys.stdout)
-
-    @property
-    def in_dev_mode(self) -> bool:
-        return "--dev" in sys.argv
+        self.bot_startup = startup_time
+        self.db_cnx = db_connection_pool
+        self.log = logger
 
     async def setup_hook(self):
-        self.db_cnx = mariadb.ConnectionPool(
-            pool_size=10,
-            reconnect=True,
-            host=os.environ.get("DTBOT_DB_HOST"),
-            user=os.environ.get("DTBOT_DB_USER"),
-            password=os.environ.get("DTBOT_DB_PASS"),
-            database=os.environ.get("DTBOT_DB_NAME"),
-            pool_name=os.environ.get("DTBOT_DB_POOL"),
-        )
-
         for _, extension in self.bot_config.items("Extensions"):
             try:
                 await self.load_extension(extension)
                 self.log.debug(f"Successfully loaded extension {extension}.")
             except Exception as e:
                 self.log.error(f"Failed to load extension {extension}\n{type(e).__name__}: {e}.")
-        if not self.in_dev_mode:
+        if not self._in_dev_mode:
             await self.tree.sync(guild=DTbot.DEV_GUILD)
             await self.tree.sync()
 
@@ -77,10 +57,8 @@ class DTbot(commands.Bot):
     async def on_message(self, message: discord.Message):
         if (message.author == self.user) or message.author.bot:
             return
-        try:
-            checkdbforuser(self.db_cnx, message)
-        finally:
-            pass
+
+        checkdbforuser(self.db_cnx, message)
 
     async def on_app_command_completion(
         self,
@@ -101,9 +79,3 @@ class DTbot(commands.Bot):
         print(self.user.name)  # type: ignore
         print(self.user.id)  # type: ignore
         print("------")
-
-    def run(self, **kwargs: Any):
-        token = os.environ.get("DTBOT_TOKEN")
-        if token is None:
-            raise RuntimeError("Couldn't get DTBOT_TOKEN from environment")
-        super().run(token, log_handler=self._file_handler, **kwargs)
