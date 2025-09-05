@@ -23,6 +23,7 @@ class DTbot(commands.Bot):
         *,
         bot_config: ConfigParser,
         db_connection_pool: mariadb.ConnectionPool,
+        dtbot_version: str,
         in_dev_mode: bool,
         logger: Logger,
         startup_time: datetime,
@@ -38,6 +39,7 @@ class DTbot(commands.Bot):
         DTbot.DEV_GUILD = discord.Object(id=(self.bot_config.getint("General", "DEV_GUILD")))
         self.bot_startup = startup_time
         self.db_cnx = db_connection_pool
+        self.dtbot_version = dtbot_version
         self.log = logger
 
     @override

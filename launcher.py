@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import tomllib
 from configparser import ConfigParser
 from datetime import UTC, datetime
 
@@ -93,9 +94,14 @@ def main():
     bot_config = ConfigParser()
     bot_config.read("./config/config.ini")
 
+    with open("./pyproject.toml", mode="r", encoding="utf8") as f:
+        parsed_pyproject = tomllib.loads(f.read())
+        dtbot_version = parsed_pyproject["project"]["version"]
+
     bot = DTbot(
         bot_config=bot_config,
         db_connection_pool=db_connection_pool,
+        dtbot_version=dtbot_version,
         in_dev_mode=dev_mode,
         logger=logger,
         startup_time=startup_time,

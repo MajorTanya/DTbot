@@ -124,7 +124,6 @@ class General(commands.Cog):
     async def changelog(self, interaction: discord.Interaction[DTbot]):
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
-        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         last_updated = self.bot.bot_config.get("Info", "last_updated")
         async with aiohttp.ClientSession() as session:
             async with session.get(self.COMMITS_URL) as r:
@@ -132,7 +131,9 @@ class General(commands.Cog):
                 latest_commit = response[0]
                 embed = discord.Embed(
                     colour=DTbot.DTBOT_COLOUR,
-                    description=f"__Recent changes to DTbot:__\nNewest version: {dtbot_version} ({last_updated})",
+                    description=(
+                        f"__Recent changes to DTbot:__\nNewest version: {self.bot.dtbot_version} ({last_updated})"
+                    ),
                 )
                 embed.set_image(url=changelog_link)
                 embed.add_field(
@@ -149,7 +150,6 @@ class General(commands.Cog):
     async def info(self, interaction: discord.Interaction[DTbot]):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
-        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             title=f"{self.bot.user.name}'s info",  # type: ignore
@@ -173,7 +173,7 @@ class General(commands.Cog):
         )
         embed.add_field(name="Avatar by", value=self.AVATAR_ARTIST, inline=False)
         embed.add_field(name="Made with", value=f"discord.py {discord.__version__} on Python {python_version()}")
-        embed.set_footer(text=f"DTbot v. {dtbot_version}")
+        embed.set_footer(text=f"DTbot v. {self.bot.dtbot_version}")
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 

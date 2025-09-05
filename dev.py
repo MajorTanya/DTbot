@@ -1,6 +1,7 @@
 import datetime
 import os
 import sys
+import tomllib
 from asyncio import sleep
 from configparser import ConfigParser
 from typing import override
@@ -54,7 +55,6 @@ class Dev(commands.GroupCog):
             now_ts = int(now_dt.timestamp())
             startup_ts = int(self.bot.bot_startup.timestamp())
             uptime = now_dt - self.bot.bot_startup
-            dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
             beat_embed = discord.Embed(
                 colour=DTbot.DTBOT_COLOUR,
                 title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore
@@ -63,7 +63,7 @@ class Dev(commands.GroupCog):
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
             beat_embed.add_field(name="Uptime:", value=uptime)
-            beat_embed.set_footer(text=f"DTbot v. {dtbot_version}")
+            beat_embed.set_footer(text=f"DTbot v. {self.bot.dtbot_version}")
             if self.hb_chamber:
                 msg: discord.Message = await self.hb_chamber.send(embed=beat_embed)
                 await msg.delete(delay=Dev.HB_FREQ)
@@ -73,7 +73,6 @@ class Dev(commands.GroupCog):
         await self.bot.wait_until_ready()
         self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
-        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))  # type: ignore
         startup_embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
@@ -81,14 +80,15 @@ class Dev(commands.GroupCog):
             description=f"{self.bot.user.name} is starting up!",  # type: ignore
         )
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
-        startup_embed.set_footer(text=f"DTbot v. {dtbot_version}")
+        startup_embed.set_footer(text=f"DTbot v. {self.bot.dtbot_version}")
         if self.hb_chamber:
             await self.hb_chamber.send(embed=startup_embed)  # type: ignore
 
     @commands.Cog.listener()
     async def on_ready(self):
-        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
-        await self.bot.change_presence(activity=discord.Game(name=f"Check /announcements (v. {dtbot_version})"))
+        await self.bot.change_presence(
+            activity=discord.Game(name=f"Check /announcements (v. {self.bot.dtbot_version})"),
+        )
 
     heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.")
 
@@ -205,17 +205,23 @@ class Dev(commands.GroupCog):
     async def updaterp(self, interaction: discord.Interaction[DTbot], caption: str = "", reload_config: bool = False):
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
-        dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
+
         if reload_config:
             load_dotenv(dotenv_path="./config/.env", override=True)
             self.bot.bot_config = ConfigParser()
             self.bot.bot_config.read("./config/config.ini")
-            dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
+
+            with open("./pyproject.toml", mode="r", encoding="utf8") as f:
+                parsed_pyproject = tomllib.loads(f.read())
+                self.bot.dtbot_version = parsed_pyproject["project"]["version"]
+
             self.bot.log.info(f"{interaction.user} reloaded DTbot config successfully.")
+
         if caption:
-            caption = caption.replace("DTbot", "@\u200bDTbot").replace("dtbot_version", dtbot_version)
+            caption = caption.replace("DTbot", "@\u200bDTbot").replace("dtbot_version", self.bot.dtbot_version)
         else:
-            caption = f"Check /announcements (v. {dtbot_version})"
+            caption = f"Check /announcements (v. {self.bot.dtbot_version})"
+
         self.bot.log.info("Updating Rich Presence")
         await self.bot.change_presence(activity=discord.Game(name=caption))
 
