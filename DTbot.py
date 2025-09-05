@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 from datetime import datetime
 from logging import Logger
-from typing import Any
+from typing import Any, override
 
 import discord
 import mariadb
@@ -40,6 +40,7 @@ class DTbot(commands.Bot):
         self.db_cnx = db_connection_pool
         self.log = logger
 
+    @override
     async def setup_hook(self):
         for _, extension in self.bot_config.items("Extensions"):
             try:
@@ -54,6 +55,7 @@ class DTbot(commands.Bot):
     async def on_guild_join(self, guild: discord.Guild):
         dbcallprocedure(self.db_cnx, DBProcedure.AddNewServer, params=(guild.id, guild.member_count))
 
+    @override
     async def on_message(self, message: discord.Message):
         if (message.author == self.user) or message.author.bot:
             return

@@ -3,6 +3,7 @@ import os
 import sys
 from asyncio import sleep
 from configparser import ConfigParser
+from typing import override
 
 import discord
 from discord import app_commands
@@ -31,12 +32,14 @@ class Dev(commands.GroupCog):
             self.heartbeat.start()
 
     # pyright doesn't know that this is allowed to be async as well as sync and complains
+    @override
     async def interaction_check(  # pyright: ignore [reportIncompatibleMethodOverride]
         self,
         interaction: discord.Interaction[DTbot],  # will always be DTbot at runtime
     ) -> bool:
         return await interaction.client.is_owner(interaction.user)
 
+    @override
     async def cog_unload(self):
         # noinspection PyBroadException
         try:

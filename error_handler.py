@@ -1,3 +1,5 @@
+from typing import override
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -21,6 +23,7 @@ class ErrorHandler(commands.Cog):
         self._std_on_error = self.bot.tree.on_error
         self.bot.tree.on_error = self.on_app_command_error
 
+    @override
     async def cog_unload(self):
         self.bot.tree.on_error = self._std_on_error
 

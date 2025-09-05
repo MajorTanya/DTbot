@@ -2,6 +2,7 @@ import datetime
 import itertools
 import math
 from platform import python_version
+from typing import override
 
 import aiohttp
 import discord
@@ -37,6 +38,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         )
         self.add_item(self.functionality).add_item(self.description)
 
+    @override
     async def on_submit(self, interaction: discord.Interaction[discord.Client]):
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
@@ -46,13 +48,16 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         if not isinstance(req_hall, discord.TextChannel):
             self.bot.log.error(f"REQHALL was {req_hall.__class__}, needed discord.TextChannel!")
             self.bot.log.info(
-                f"REQHALL failure!! Logging request as a fallback: User {interaction.user} requested "
-                f"'{self.functionality.value}' with the following description: '{self.description.value}'",
+                (
+                    f"REQHALL failure!! Logging request as a fallback: User {interaction.user} requested "
+                    f"'{self.functionality.value}' with the following description: '{self.description.value}'"
+                ),
             )
             return
 
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
+    @override
     async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception):
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message("Something went wrong, please try again later.", ephemeral=True)
@@ -132,8 +137,10 @@ class General(commands.Cog):
                 embed.set_image(url=changelog_link)
                 embed.add_field(
                     name="Latest Commit",
-                    value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
-                    f"{latest_commit['commit']['message']}",
+                    value=(
+                        f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
+                        f"{latest_commit['commit']['message']}"
+                    ),
                 )
                 await interaction.followup.send(embed=embed)
 
@@ -159,8 +166,10 @@ class General(commands.Cog):
         embed.add_field(name="Uptime", value=uptime)
         embed.add_field(
             name="Invite me",
-            value=f"[Invite me]({self.INVITE}) to your server too.\n[Explanation]({self.PERMSEXPL}) for DTbot's "
-            f"permissions",
+            value=(
+                f"[Invite me]({self.INVITE}) to your server too.\n"
+                f"[Explanation]({self.PERMSEXPL}) for DTbot's permissions"
+            ),
         )
         embed.add_field(name="Avatar by", value=self.AVATAR_ARTIST, inline=False)
         embed.add_field(name="Made with", value=f"discord.py {discord.__version__} on Python {python_version()}")
