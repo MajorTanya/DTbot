@@ -30,9 +30,12 @@ class Dev(commands.GroupCog):
             # If not provided, run with a heartbeat
             self.heartbeat.start()
 
-    async def interaction_check(self, interaction: discord.Interaction[discord.Client], /) -> bool:
-        bot: DTbot = interaction.client  # type: ignore
-        return await bot.is_owner(interaction.user)
+    # pyright doesn't know that this is allowed to be async as well as sync and complains
+    async def interaction_check(  # pyright: ignore [reportIncompatibleMethodOverride]
+        self,
+        interaction: discord.Interaction[DTbot],  # will always be DTbot at runtime
+    ) -> bool:
+        return await interaction.client.is_owner(interaction.user)
 
     async def cog_unload(self):
         # noinspection PyBroadException

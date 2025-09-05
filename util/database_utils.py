@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import enum
 import random
 import time
-import typing
+from typing import Any, Literal, overload
 
 import discord
 import mariadb
@@ -21,27 +23,27 @@ class DBProcedure(enum.StrEnum):
     InvalidateMissingServer = "InvalidateMissingServer"
 
     @classmethod
-    def bool_procedures(cls) -> list[typing.Self]:
+    def bool_procedures(cls) -> list[DBProcedure]:
         return [
             DBProcedure.CheckAppCommandExist,
             DBProcedure.CheckUserExist,
         ]
 
     @classmethod
-    def int_procedures(cls) -> list[typing.Self]:
+    def int_procedures(cls) -> list[DBProcedure]:
         return [
             DBProcedure.CheckXPTime,
             DBProcedure.GetUserXp,
         ]
 
     @classmethod
-    def list_procedures(cls) -> list[typing.Self]:
+    def list_procedures(cls) -> list[DBProcedure]:
         return [
             DBProcedure.GetServers,
         ]
 
     @classmethod
-    def returning_procedures(cls) -> list[typing.Self]:
+    def returning_procedures(cls) -> list[DBProcedure]:
         return [
             *DBProcedure.bool_procedures(),
             *DBProcedure.int_procedures(),
@@ -49,11 +51,11 @@ class DBProcedure(enum.StrEnum):
         ]
 
     @classmethod
-    def returning_many_procedures(cls) -> list[typing.Self]:
+    def returning_many_procedures(cls) -> list[DBProcedure]:
         return [*DBProcedure.list_procedures()]
 
     @classmethod
-    def non_returning_procedures(cls) -> list[typing.Self]:
+    def non_returning_procedures(cls) -> list[DBProcedure]:
         return [
             DBProcedure.AddNewAppCommand,
             DBProcedure.AddNewServer,
@@ -64,16 +66,16 @@ class DBProcedure(enum.StrEnum):
         ]
 
 
-_BoolProcedures = typing.Literal[
+_BoolProcedures = Literal[
     DBProcedure.CheckAppCommandExist,
     DBProcedure.CheckUserExist,
 ]
-_IntProcedures = typing.Literal[
+_IntProcedures = Literal[
     DBProcedure.CheckXPTime,
     DBProcedure.GetUserXp,
 ]
-_ListProcedures = typing.Literal[DBProcedure.GetServers,]
-_NoReturnProcedures = typing.Literal[
+_ListProcedures = Literal[DBProcedure.GetServers,]
+_NoReturnProcedures = Literal[
     DBProcedure.AddNewAppCommand,
     DBProcedure.AddNewServer,
     DBProcedure.AddNewUser,
@@ -83,39 +85,39 @@ _NoReturnProcedures = typing.Literal[
 ]
 
 
-@typing.overload
+@overload
 def dbcallprocedure(
     pool: mariadb.ConnectionPool,
     procedure: _BoolProcedures,
     *,
-    params: tuple[typing.Any, ...] = (),
+    params: tuple[Any, ...] = (),
 ) -> bool: ...
 
 
-@typing.overload
+@overload
 def dbcallprocedure(
     pool: mariadb.ConnectionPool,
     procedure: _IntProcedures,
     *,
-    params: tuple[typing.Any, ...] = (),
+    params: tuple[Any, ...] = (),
 ) -> int: ...
 
 
-@typing.overload
+@overload
 def dbcallprocedure(
     pool: mariadb.ConnectionPool,
     procedure: _ListProcedures,
     *,
-    params: tuple[typing.Any, ...] = (),
-) -> list[dict[str, typing.Any]]: ...
+    params: tuple[Any, ...] = (),
+) -> list[dict[str, Any]]: ...
 
 
-@typing.overload
+@overload
 def dbcallprocedure(
     pool: mariadb.ConnectionPool,
     procedure: _NoReturnProcedures,
     *,
-    params: tuple[typing.Any, ...] = (),
+    params: tuple[Any, ...] = (),
 ) -> None: ...
 
 
@@ -123,8 +125,8 @@ def dbcallprocedure(
     pool: mariadb.ConnectionPool,
     procedure: DBProcedure,
     *,
-    params: tuple[typing.Any, ...] = (),
-) -> bool | int | list[dict[str, typing.Any]] | None:
+    params: tuple[Any, ...] = (),
+) -> bool | int | list[dict[str, Any]] | None:
     """Calls a stored procedure with the given parameters.
 
     If the procedure returns several results, the returned list will contain dicts representing each row, where the

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import dataclasses
 import enum
-from typing import Any, Self
+from typing import Any
 
 
 class StaffRole(enum.Enum):
@@ -87,7 +89,7 @@ class AniListResponseDTO:
     relations: list[AniListMediaRelation]
 
     @classmethod
-    def from_media_response(cls, media_response: dict[str, Any]) -> Self:
+    def from_media_response(cls, media_response: dict[str, Any]) -> AniListResponseDTO:
         """Build an AniListResponseDTO from the JSON response from AniList (for a single search result list entry)"""
         return AniListResponseDTO(
             id_al=media_response["id"],
@@ -130,9 +132,15 @@ def _relations_from_list(rels: list[dict[str, Any]]) -> list[AniListMediaRelatio
 def _colour_string_to_rgb_tuple(color_str: str | None) -> tuple[int, int, int] | None:
     """Transforms the hex colour string to a tuple of RGB values - Returns a tri-tuple of ints, or None if the colour
     string was None"""
-    return (
-        None if color_str is None else tuple(int(color_str.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))  # noqa E203
-    )
+    if color_str is None:
+        return None
+
+    color_hex_str = color_str.lstrip("#")
+    r = int(color_hex_str[0:2], 16)
+    g = int(color_hex_str[2:4], 16)
+    b = int(color_hex_str[4:6], 16)
+    tup = (r, g, b)
+    return tup
 
 
 def _extract_cover_image(cover_element: dict[str, str | None]) -> AniListMediaCover | None:

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import enum
 import random
-import typing
+from typing import Literal
 
 import discord
 from discord import app_commands
@@ -8,9 +10,9 @@ from discord.ext import commands
 
 from DTbot import DTbot
 
-TCritDice = typing.Literal["x", "X", "k", "K", ""]
-TRollModTypes = typing.Literal["+", "-", "*"]
-TRollOptions = typing.Literal["Drop lowest", "Drop highest", "Keep lowest", "Keep highest"]
+TCritDice = Literal["x", "X", "k", "K", ""]
+TRollModTypes = Literal["+", "-", "*"]
+TRollOptions = Literal["Drop lowest", "Drop highest", "Keep lowest", "Keep highest"]
 
 
 class RollOptions(enum.StrEnum):
@@ -20,7 +22,7 @@ class RollOptions(enum.StrEnum):
     KEEP_HIGHEST = "Keep highest"
 
     @classmethod
-    def from_roll_option_type(cls, typed_option: TRollOptions | None) -> typing.Self | None:
+    def from_roll_option_type(cls, typed_option: TRollOptions | None) -> RollOptions | None:
         return None if typed_option is None else RollOptions(typed_option)
 
 
