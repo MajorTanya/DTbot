@@ -1,0 +1,69 @@
+[project]
+name = "DTbot"
+version = "3.7.22"
+description = "A versatile Discord bot for your server, written with discord.py"
+requires-python = ">= 3.13"
+license = "MIT"
+readme = "README.md"
+authors = [
+    { name = "MajorTanya", email = "github@majortanya.eu" }
+]
+
+dependencies = [
+    "discord.py==2.6.3",
+    "mariadb==1.1.13",
+    "aiohttp>=3.12.15",
+    "python-dotenv==1.1.1"
+]
+
+[project.urls]
+Repository = "https://github.com/MajorTanya/DTbot"
+Issues = "https://github.com/MajorTanya/DTbot/issues"
+"Bot Privacy Policy" = "https://majortanya.eu/dtbot_privacy_policy.html"
+"Bot Terms and Conditions" = "https://majortanya.eu/dtbot_terms_and_conditions.html"
+
+[dependency-groups]
+dev = [
+    "black==25.1.0",
+    "flake8==7.3.0",
+    "isort==6.0.1",
+    "pre-commit==4.3.0",
+    "pyright==1.1.405"
+]
+
+## ------ BLACK -------
+
+[tool.black]
+target-version = ['py313']
+line-length = 120
+
+## ------ ISORT -------
+
+[tool.isort]
+profile = "black"
+py_version = 313
+
+## ----- PYRIGHT ------
+
+[tool.pyright]
+pythonVersion = "3.13"
+ignore = [".venv"]
+venvPath = "."
+venv = ".venv"
+
+typeCheckingMode = "strict"
+# enable some non-default rules
+deprecateTypingAliases = true
+reportCallInDefaultInitializer = "error"
+reportImplicitOverride = "error"
+reportImplicitStringConcatenation = "error"
+reportImportCycles = "error"
+reportPropertyTypeMismatch = "error"
+reportShadowedImports = "error"
+reportUninitializedInstanceVariable = "error"
+# disable some defaults
+reportMissingTypeStubs = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
