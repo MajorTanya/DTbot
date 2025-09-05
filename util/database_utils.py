@@ -72,9 +72,7 @@ _IntProcedures = typing.Literal[
     DBProcedure.CheckXPTime,
     DBProcedure.GetUserXp,
 ]
-_ListProcedures = typing.Literal[
-    DBProcedure.GetServers,
-]
+_ListProcedures = typing.Literal[DBProcedure.GetServers,]
 _NoReturnProcedures = typing.Literal[
     DBProcedure.AddNewAppCommand,
     DBProcedure.AddNewServer,
@@ -91,8 +89,7 @@ def dbcallprocedure(
     procedure: _BoolProcedures,
     *,
     params: tuple[typing.Any, ...] = (),
-) -> bool:
-    ...
+) -> bool: ...
 
 
 @typing.overload
@@ -101,8 +98,7 @@ def dbcallprocedure(
     procedure: _IntProcedures,
     *,
     params: tuple[typing.Any, ...] = (),
-) -> int:
-    ...
+) -> int: ...
 
 
 @typing.overload
@@ -111,8 +107,7 @@ def dbcallprocedure(
     procedure: _ListProcedures,
     *,
     params: tuple[typing.Any, ...] = (),
-) -> list[dict[str, typing.Any]]:
-    ...
+) -> list[dict[str, typing.Any]]: ...
 
 
 @typing.overload
@@ -121,8 +116,7 @@ def dbcallprocedure(
     procedure: _NoReturnProcedures,
     *,
     params: tuple[typing.Any, ...] = (),
-) -> None:
-    ...
+) -> None: ...
 
 
 def dbcallprocedure(
