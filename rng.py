@@ -42,7 +42,7 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.command(name="8ball", description="Ask any questions and receive an answer from the Great Beyond")
     @app_commands.describe(_question="The question you wish to get answered")
     @app_commands.rename(_question="question")
-    async def _eightball(self, interaction: discord.Interaction, _question: str | None):
+    async def _eightball(self, interaction: discord.Interaction[DTbot], _question: str | None):
         # fmt: off
         possible_responses = [
             'Yes', 'Maybe', 'No', 'Probably', 'Nah', 'No way',
@@ -57,7 +57,7 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.command(description="Let the bot pick one of up to 5 options for you")
     async def choose(
         self,
-        interaction: discord.Interaction,
+        interaction: discord.Interaction[DTbot],
         option1: str,
         option2: str,
         option3: str | None,
@@ -68,7 +68,7 @@ class Rng(commands.Cog, name="RNG"):
         await interaction.response.send_message(f"I choose: __{random.choice(choices)}__")
 
     @app_commands.command(description="Flips a coin")
-    async def coinflip(self, interaction: discord.Interaction):
+    async def coinflip(self, interaction: discord.Interaction[DTbot]):
         await interaction.response.send_message(random.choice(["Heads", "Tails"]))
 
     @app_commands.command(description="Roll dice")
@@ -84,7 +84,7 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def roll(
         self,
-        interaction: discord.Interaction,
+        interaction: discord.Interaction[DTbot],
         num_of_dice: app_commands.Range[int, 1, 150],
         dice_sides: app_commands.Range[int, 1],
         options: TRollOptions | None,
@@ -147,7 +147,7 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.describe(first="The first half of your ship")
     @app_commands.describe(second="The second half of your ship")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def ship(self, interaction: discord.Interaction, first: str, second: str):
+    async def ship(self, interaction: discord.Interaction[DTbot], first: str, second: str):
         shipping = random.random() * 100
         emote_choice = ":broken_heart:" if shipping < 50 else ":heart:"
         embed = discord.Embed(

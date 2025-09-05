@@ -35,13 +35,13 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         )
         self.add_item(self.functionality).add_item(self.description)
 
-    async def on_submit(self, interaction: discord.Interaction):
+    async def on_submit(self, interaction: discord.Interaction[discord.Client]):
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
         embed = discord.Embed(title=f"Requested: {self.functionality.value}", description=self.description.value)
         req_hall: discord.TextChannel = self.bot.get_channel(self.bot.bot_config.getint("General", "REQHALL"))  # type: ignore
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
-    async def on_error(self, interaction: discord.Interaction, error: Exception):
+    async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception):
         await interaction.response.send_message("Something went wrong, please try again later.", ephemeral=True)
         raise
 
@@ -69,7 +69,7 @@ class General(commands.Cog):
     @app_commands.describe(title="The title to look up")
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
-    async def anime(self, interaction: discord.Interaction, title: str):
+    async def anime(self, interaction: discord.Interaction[DTbot], title: str):
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
         embed, view = await media_query.lookup(title=title, is_manga=False)
@@ -77,7 +77,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Current DTbot announcements")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def announcements(self, interaction: discord.Interaction):
+    async def announcements(self, interaction: discord.Interaction[DTbot]):
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             title="Announcement",
@@ -89,7 +89,7 @@ class General(commands.Cog):
     @app_commands.command(description="Shows the mentioned user's (server) avatar.")
     @app_commands.describe(user="The user whose avatar to show")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def avatar(self, interaction: discord.Interaction, user: discord.Member | discord.User | None):
+    async def avatar(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None):
         user = user if user else interaction.user
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
@@ -100,7 +100,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Shows an overview over the recentmost update of DTbot")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def changelog(self, interaction: discord.Interaction):
+    async def changelog(self, interaction: discord.Interaction[DTbot]):
         await interaction.response.defer()
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         last_updated = self.bot.bot_config.get("Info", "last_updated")
@@ -122,7 +122,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def info(self, interaction: discord.Interaction):
+    async def info(self, interaction: discord.Interaction[DTbot]):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
@@ -154,7 +154,7 @@ class General(commands.Cog):
     @app_commands.describe(title="The title to look up")
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
-    async def manga(self, interaction: discord.Interaction, title: str):
+    async def manga(self, interaction: discord.Interaction[DTbot], title: str):
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
         embed, view = await media_query.lookup(title=title, is_manga=True)
@@ -163,7 +163,7 @@ class General(commands.Cog):
     @app_commands.command(description="Show the latency between DTbot and the Discord web servers")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.checks.cooldown(3, 30.0, key=lambda i: i.guild_id)
-    async def ping(self, interaction: discord.Interaction):
+    async def ping(self, interaction: discord.Interaction[DTbot]):
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             description=f":ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__",
@@ -172,12 +172,12 @@ class General(commands.Cog):
 
     @app_commands.command(description="Request some new functionality for DTbot. Limited to twice per day, per user.")
     @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user.id)  # 86400 seconds = 60 * 60 * 24
-    async def request(self, interaction: discord.Interaction):
+    async def request(self, interaction: discord.Interaction[DTbot]):
         await interaction.response.send_modal(RequestModal(self.bot))
 
     @app_commands.command(description="Shows details on this server, such as Name, Member amounts, Role count, etc.")
     @app_commands.guild_only()
-    async def serverinfo(self, interaction: discord.Interaction):
+    async def serverinfo(self, interaction: discord.Interaction[DTbot]):
         await interaction.response.defer()
         guild: discord.Guild = interaction.guild  # type: ignore # the command is set as guild_only, guild will exist
         embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f"About {guild.name}")
@@ -224,7 +224,7 @@ class General(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Gives the bot's uptime since the last restart.")
-    async def uptime(self, interaction: discord.Interaction):
+    async def uptime(self, interaction: discord.Interaction[DTbot]):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")  # type: ignore
@@ -232,7 +232,7 @@ class General(commands.Cog):
     @app_commands.command(description="Shows details on a user, such as Name, Join Date, or Highest Role")
     @app_commands.describe(user="The user to get some info on")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def userinfo(self, interaction: discord.Interaction, user: discord.Member | None):
+    async def userinfo(self, interaction: discord.Interaction[DTbot], user: discord.Member | None):
         target: discord.Member | discord.User = user if user else interaction.user
         created_ts = int(target.created_at.timestamp())
         embed = discord.Embed(title=f"{target}'s info", description="Here is what I could find:")
@@ -242,8 +242,12 @@ class General(commands.Cog):
         embed.add_field(name="ID", value=f"{target.id}", inline=True)
         if isinstance(target, discord.Member):
             embed.add_field(name="Highest Role", value=f"<@&{target.top_role.id}>", inline=True)
-            join_ts = int(target.joined_at.timestamp())
-            embed.add_field(name="Joined at", value=f"<t:{join_ts}:D> - <t:{join_ts}:T>", inline=True)
+            if target.joined_at is None:
+                joined_str = "(unknown)"
+            else:
+                join_ts = int(target.joined_at.timestamp())
+                joined_str = f"<t:{join_ts}:D> - <t:{join_ts}:T>"
+            embed.add_field(name="Joined at", value=joined_str, inline=True)
         embed.add_field(name="Created at", value=f"<t:{created_ts}:D> - <t:{created_ts}:T>", inline=True)
         embed.set_footer(text=f"{target.name}'s Info", icon_url=f"{target.display_avatar.url}")
         embed.set_thumbnail(url=target.display_avatar.url)
@@ -252,7 +256,7 @@ class General(commands.Cog):
     @app_commands.command(description="Shows how many users have a particular role (max. 15 pages)")
     @app_commands.describe(role="The role to check out")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def whohas(self, interaction: discord.Interaction, role: discord.Role):
+    async def whohas(self, interaction: discord.Interaction[DTbot], role: discord.Role):
         if len(role.members) == 0:
             embed = discord.Embed(
                 colour=role.colour,
@@ -297,7 +301,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Shows a user's XP points. Defaults to command user.")
     @app_commands.describe(user="The user whose XP to check")
-    async def xp(self, interaction: discord.Interaction, user: discord.Member | discord.User | None):
+    async def xp(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None):
         user = user if user else interaction.user
         if user.bot:
             return await interaction.response.send_message("Bots don't get XP. :robot:")

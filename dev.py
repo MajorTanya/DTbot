@@ -30,7 +30,7 @@ class Dev(commands.GroupCog):
             # If not provided, run with a heartbeat
             self.heartbeat.start()
 
-    async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction[DTbot], /) -> bool:
         bot: DTbot = interaction.client  # type: ignore
         return await bot.is_owner(interaction.user)
 
@@ -86,7 +86,7 @@ class Dev(commands.GroupCog):
     heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.")
 
     @heart.command(description="Stops the heartbeat of DTbot.")
-    async def stop(self, interaction: discord.Interaction, code: str):
+    async def stop(self, interaction: discord.Interaction[DTbot], code: str):
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
             self.heartbeat.stop()
@@ -96,7 +96,7 @@ class Dev(commands.GroupCog):
             await interaction.followup.send(f"Invalid code.", ephemeral=True)
 
     @heart.command(description="Starts the heartbeat of DTbot.")
-    async def start(self, interaction: discord.Interaction, code: str):
+    async def start(self, interaction: discord.Interaction[DTbot], code: str):
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
             self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
@@ -108,7 +108,7 @@ class Dev(commands.GroupCog):
     @app_commands.command(description="Load an extension. Optionally syncs Slash Commands.")
     async def load(
         self,
-        interaction: discord.Interaction,
+        interaction: discord.Interaction[DTbot],
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
@@ -126,7 +126,7 @@ class Dev(commands.GroupCog):
     @load.autocomplete("extension_name")
     async def load_autocomplete(
         self,
-        _interaction: discord.Interaction,
+        _interaction: discord.Interaction[DTbot],
         current: str,
     ) -> list[app_commands.Choice[str]]:
         loaded = [cog.qualified_name.lower() for cog in self.bot.cogs.values()]
@@ -140,7 +140,7 @@ class Dev(commands.GroupCog):
     @app_commands.command(description="Unload an extension. Optionally syncs Slash Commands.")
     async def unload(
         self,
-        interaction: discord.Interaction,
+        interaction: discord.Interaction[DTbot],
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
@@ -158,7 +158,7 @@ class Dev(commands.GroupCog):
     @app_commands.command(description="Atomically reload an extension. Optionally syncs Slash Commands.")
     async def reload(
         self,
-        interaction: discord.Interaction,
+        interaction: discord.Interaction[DTbot],
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
@@ -177,7 +177,7 @@ class Dev(commands.GroupCog):
     @reload.autocomplete("extension_name")
     async def unreload_autocomplete(
         self,
-        _interaction: discord.Interaction,
+        _interaction: discord.Interaction[DTbot],
         current: str,
     ) -> list[app_commands.Choice[str]]:
         return [
@@ -190,7 +190,7 @@ class Dev(commands.GroupCog):
         ]
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
-    async def updaterp(self, interaction: discord.Interaction, caption: str = "", reload_config: bool = False):
+    async def updaterp(self, interaction: discord.Interaction[DTbot], caption: str = "", reload_config: bool = False):
         await interaction.response.defer(ephemeral=True)
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         if reload_config:
@@ -209,7 +209,7 @@ class Dev(commands.GroupCog):
         await interaction.followup.send(f"Successfully updated Rich Presence to: {caption}", ephemeral=True)
 
     @app_commands.command(description="Shutdown command for DTbot.")
-    async def shutdownbot(self, interaction: discord.Interaction, passcode: str):
+    async def shutdownbot(self, interaction: discord.Interaction[DTbot], passcode: str):
         await interaction.response.defer(ephemeral=True)
         if passcode == self.SDB_CODE:
             try:
@@ -223,7 +223,7 @@ class Dev(commands.GroupCog):
             await interaction.followup.send("No.", ephemeral=True)
 
     @app_commands.command(description="Manually cycles through all servers to refresh the database.")
-    async def refreshservers(self, interaction: discord.Interaction):
+    async def refreshservers(self, interaction: discord.Interaction[DTbot]):
         await interaction.response.defer(ephemeral=True)
         stored_guild_ids: list[int] = [g["server_id"] for g in dbcallprocedure(self.bot.db_cnx, DBProcedure.GetServers)]
         bot_guild_ids = [g.id for g in self.bot.guilds]

@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 from configparser import ConfigParser
+from typing import Any
 
 import discord
 import mariadb
@@ -81,7 +82,11 @@ class DTbot(commands.Bot):
         finally:
             pass
 
-    async def on_app_command_completion(self, _: discord.Interaction, command: app_commands.Command):
+    async def on_app_command_completion(
+        self,
+        _: discord.Interaction[discord.Client],
+        command: app_commands.Command[Any, ..., Any],
+    ):
         result = dbcallprocedure(self.db_cnx, DBProcedure.CheckAppCommandExist, params=(command.qualified_name,))
         if result:
             dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
@@ -97,7 +102,7 @@ class DTbot(commands.Bot):
         print(self.user.id)  # type: ignore
         print("------")
 
-    def run(self, **kwargs):
+    def run(self, **kwargs: Any):
         token = os.environ.get("DTBOT_TOKEN")
         if token is None:
             raise RuntimeError("Couldn't get DTBOT_TOKEN from environment")

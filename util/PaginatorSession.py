@@ -1,4 +1,5 @@
-from typing import Any, Callable, Coroutine
+from collections.abc import Callable, Coroutine
+from typing import Any
 
 import discord.ui
 
@@ -16,7 +17,7 @@ CUTOFFS: dict[str, int] = {
 }
 
 
-class NavButton(discord.ui.Button):
+class NavButton(discord.ui.Button["NavButtonView"]):
     """Custom subclass that takes a Coroutine callback for the button in its constructor"""
 
     def __init__(
@@ -77,7 +78,7 @@ class PaginatorSession(object):
         self.current = 0
         self.view: NavButtonView | None = None
 
-    async def start(self, interaction: discord.Interaction):
+    async def start(self, interaction: discord.Interaction[discord.Client]):
         # add buttons manually, so we have first/last page skippers and normal next/prev/stop buttons only when needed
         self.view = NavButtonView(interaction=interaction)  # default timeout of 180 seconds (3 minutes)
         skippers_needed = len(self.pages) > CUTOFFS[FIRST_PAGE]
@@ -92,32 +93,32 @@ class PaginatorSession(object):
             self.view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], emoji=LAST_PAGE))
         await interaction.edit_original_response(content=None, embed=self.pages[0], view=self.view)
 
-    async def first_page(self, interaction: discord.Interaction):
+    async def first_page(self, interaction: discord.Interaction[discord.Client]):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = 0
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def prev_page(self, interaction: discord.Interaction):
+    async def prev_page(self, interaction: discord.Interaction[discord.Client]):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = (self.current - 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def stop_session(self, interaction: discord.Interaction):
+    async def stop_session(self, interaction: discord.Interaction[discord.Client]):
         if not interaction.response.is_done():
             await interaction.response.defer()
         await interaction.edit_original_response(view=None)
         if self.view:
             self.view.stop()
 
-    async def next_page(self, interaction: discord.Interaction):
+    async def next_page(self, interaction: discord.Interaction[discord.Client]):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = (self.current + 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def last_page(self, interaction: discord.Interaction):
+    async def last_page(self, interaction: discord.Interaction[discord.Client]):
         if not interaction.response.is_done():
             await interaction.response.defer()
         self.current = len(self.pages) - 1
