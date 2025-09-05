@@ -1,5 +1,5 @@
 from collections.abc import Callable, Coroutine
-from typing import Any
+from typing import Any, override
 
 import discord.ui
 
@@ -43,6 +43,7 @@ class NavButton(discord.ui.Button["NavButtonView"]):
         )
         self._button_callback = callback
 
+    @override
     async def callback(self, interaction: discord.Interaction[discord.Client]) -> Any:
         await self._button_callback(interaction)
 
@@ -54,9 +55,12 @@ class NavButtonView(discord.ui.View):
         super().__init__(timeout=timeout)
         self.interaction = interaction
 
+    @override
     async def on_timeout(self):
         if self.interaction:
+            # noinspection PyUnresolvedReferences
             if not self.interaction.response.is_done():
+                # noinspection PyUnresolvedReferences
                 await self.interaction.response.defer()
             await self.interaction.edit_original_response(view=None)
         self.stop()
@@ -94,32 +98,42 @@ class PaginatorSession(object):
         await interaction.edit_original_response(content=None, embed=self.pages[0], view=self.view)
 
     async def first_page(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
+            # noinspection PyUnresolvedReferences
             await interaction.response.defer()
         self.current = 0
         await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def prev_page(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
+            # noinspection PyUnresolvedReferences
             await interaction.response.defer()
         self.current = (self.current - 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def stop_session(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
+            # noinspection PyUnresolvedReferences
             await interaction.response.defer()
         await interaction.edit_original_response(view=None)
         if self.view:
             self.view.stop()
 
     async def next_page(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
+            # noinspection PyUnresolvedReferences
             await interaction.response.defer()
         self.current = (self.current + 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
     async def last_page(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
+            # noinspection PyUnresolvedReferences
             await interaction.response.defer()
         self.current = len(self.pages) - 1
         await interaction.edit_original_response(embed=self.pages[self.current])
