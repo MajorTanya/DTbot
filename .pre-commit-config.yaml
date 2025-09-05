@@ -11,6 +11,18 @@ repos:
     hooks:
       - id: pyright
 
+  - repo: https://github.com/jazzband/pip-tools
+    rev: v7.5.0
+    hooks:
+      - id: pip-compile
+        name: pip-compile requirements-dev.txt
+        args: [ --quiet, --extra=dev, --output-file=requirements-dev.txt, --strip-extras, pyproject.toml ]
+        files: ^pyproject\.toml$
+      - id: pip-compile
+        name: pip-compile requirements.txt
+        args: [ --quiet, --output-file=requirements.txt, --strip-extras, pyproject.toml ]
+        files: ^pyproject\.toml$
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
