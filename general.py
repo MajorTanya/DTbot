@@ -27,6 +27,8 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
             placeholder="Short description here",
             max_length=100,
         )
+        # PyCharm having skill issues with the discord.TextStyle enum
+        # noinspection PyTypeChecker
         self.description = discord.ui.TextInput(
             label="Description",
             style=discord.TextStyle.long,
@@ -36,6 +38,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         self.add_item(self.functionality).add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction[discord.Client]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
         embed = discord.Embed(title=f"Requested: {self.functionality.value}", description=self.description.value)
 
@@ -51,6 +54,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
     async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception):
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message("Something went wrong, please try again later.", ephemeral=True)
         raise
 
@@ -79,6 +83,7 @@ class General(commands.Cog):
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def anime(self, interaction: discord.Interaction[DTbot], title: str):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
         embed, view = await media_query.lookup(title=title, is_manga=False)
@@ -93,6 +98,7 @@ class General(commands.Cog):
             url=self.ANNOUNCEMENT_LINK,
             description=self.ANNOUNCEMENT_MSG,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Shows the mentioned user's (server) avatar.")
@@ -105,11 +111,13 @@ class General(commands.Cog):
             description=f"{user.mention}'s avatar\n\n[Avatar Link]({user.display_avatar.url})",
         )
         embed.set_image(url=user.display_avatar.url)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Shows an overview over the recentmost update of DTbot")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def changelog(self, interaction: discord.Interaction[DTbot]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         last_updated = self.bot.bot_config.get("Info", "last_updated")
@@ -157,6 +165,7 @@ class General(commands.Cog):
         embed.add_field(name="Avatar by", value=self.AVATAR_ARTIST, inline=False)
         embed.add_field(name="Made with", value=f"discord.py {discord.__version__} on Python {python_version()}")
         embed.set_footer(text=f"DTbot v. {dtbot_version}")
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Look up a Manga on AniList (SFW results only)")
@@ -164,6 +173,7 @@ class General(commands.Cog):
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
     async def manga(self, interaction: discord.Interaction[DTbot], title: str):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
         embed, view = await media_query.lookup(title=title, is_manga=True)
@@ -177,16 +187,19 @@ class General(commands.Cog):
             colour=DTbot.DTBOT_COLOUR,
             description=f":ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__",
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Request some new functionality for DTbot. Limited to twice per day, per user.")
     @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user.id)  # 86400 seconds = 60 * 60 * 24
     async def request(self, interaction: discord.Interaction[DTbot]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_modal(RequestModal(self.bot))
 
     @app_commands.command(description="Shows details on this server, such as Name, Member amounts, Role count, etc.")
     @app_commands.guild_only()
     async def serverinfo(self, interaction: discord.Interaction[DTbot]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         guild: discord.Guild = interaction.guild  # type: ignore # the command is set as guild_only, guild will exist
         embed = discord.Embed(colour=DTbot.DTBOT_COLOUR, title=f"About {guild.name}")
@@ -236,6 +249,7 @@ class General(commands.Cog):
     async def uptime(self, interaction: discord.Interaction[DTbot]):
         now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")  # type: ignore
 
     @app_commands.command(description="Shows details on a user, such as Name, Join Date, or Highest Role")
@@ -260,6 +274,7 @@ class General(commands.Cog):
         embed.add_field(name="Created at", value=f"<t:{created_ts}:D> - <t:{created_ts}:T>", inline=True)
         embed.set_footer(text=f"{target.name}'s Info", icon_url=f"{target.display_avatar.url}")
         embed.set_thumbnail(url=target.display_avatar.url)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Shows how many users have a particular role (max. 15 pages)")
@@ -272,8 +287,10 @@ class General(commands.Cog):
                 title=f"0 users with {role.name}",
                 description=f"No members with the role {role.mention} exist.",
             )
+            # noinspection PyUnresolvedReferences
             return await interaction.response.send_message(embed=embed)
 
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         pages: list[discord.Embed] = []
         # unchanging values between calls
@@ -313,7 +330,9 @@ class General(commands.Cog):
     async def xp(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None):
         user = user if user else interaction.user
         if user.bot:
+            # noinspection PyUnresolvedReferences
             return await interaction.response.send_message("Bots don't get XP. :robot:")
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         xp = dbcallprocedure(self.bot.db_cnx, DBProcedure.GetUserXp, params=(user.id,))
         if xp > 0:

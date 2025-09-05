@@ -25,6 +25,7 @@ class ErrorHandler(commands.Cog):
         self.bot.tree.on_error = self._std_on_error
 
     async def on_app_command_error(self, interaction: discord.Interaction[DTbot], error: app_commands.AppCommandError):
+        # noinspection PyUnresolvedReferences
         send = interaction.response.send_message if not interaction.response.is_done() else interaction.followup.send
         command = interaction.command.qualified_name if interaction.command else "This command"
         if isinstance(error, app_commands.BotMissingPermissions):

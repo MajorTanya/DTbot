@@ -91,6 +91,7 @@ class Dev(commands.GroupCog):
 
     @heart.command(description="Stops the heartbeat of DTbot.")
     async def stop(self, interaction: discord.Interaction[DTbot], code: str):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
             self.heartbeat.stop()
@@ -101,6 +102,7 @@ class Dev(commands.GroupCog):
 
     @heart.command(description="Starts the heartbeat of DTbot.")
     async def start(self, interaction: discord.Interaction[DTbot], code: str):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
             self.heartbeat.restart() if self.heartbeat.is_running() else self.heartbeat.start()
@@ -117,6 +119,7 @@ class Dev(commands.GroupCog):
         dev_sync: bool = False,
         global_sync: bool = False,
     ):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.load_extension(extension_name)
@@ -149,6 +152,7 @@ class Dev(commands.GroupCog):
         dev_sync: bool = False,
         global_sync: bool = False,
     ):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.unload_extension(extension_name)
@@ -167,6 +171,7 @@ class Dev(commands.GroupCog):
         dev_sync: bool = False,
         global_sync: bool = False,
     ):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         try:
             await self.bot.reload_extension(extension_name)
@@ -195,6 +200,7 @@ class Dev(commands.GroupCog):
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
     async def updaterp(self, interaction: discord.Interaction[DTbot], caption: str = "", reload_config: bool = False):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         dtbot_version = self.bot.bot_config.get("Info", "dtbot_version")
         if reload_config:
@@ -216,6 +222,7 @@ class Dev(commands.GroupCog):
 
     @app_commands.command(description="Shutdown command for DTbot.")
     async def shutdownbot(self, interaction: discord.Interaction[DTbot], passcode: str):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if passcode == self.SDB_CODE:
             # noinspection PyBroadException
@@ -231,6 +238,7 @@ class Dev(commands.GroupCog):
 
     @app_commands.command(description="Manually cycles through all servers to refresh the database.")
     async def refreshservers(self, interaction: discord.Interaction[DTbot]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         stored_guild_ids: list[int] = [g["server_id"] for g in dbcallprocedure(self.bot.db_cnx, DBProcedure.GetServers)]
         bot_guild_ids = [g.id for g in self.bot.guilds]

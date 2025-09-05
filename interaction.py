@@ -28,6 +28,7 @@ class Interaction(commands.Cog):
             other_tag_msg=other_msg,
             img_on_self_tag=False,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Blush - Can be given a reason")
@@ -36,6 +37,7 @@ class Interaction(commands.Cog):
     async def blush(self, interaction: discord.Interaction[DTbot], reason: str | None):
         msg = f"{interaction.user.mention} blushed{f' because of {reason}' if reason else ''}! How cute!"
         embed = make_embed(interaction.user.id, InteractionLinks.blush_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Boop 'em good")
@@ -52,6 +54,7 @@ class Interaction(commands.Cog):
             other_tag_msg=other_msg,
             img_on_self_tag=False,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Cry - Can be given a reason")
@@ -61,6 +64,7 @@ class Interaction(commands.Cog):
         added = f" because of {reason}" if reason else ""
         msg = f"{interaction.user.mention} is crying{added}. Someone, comfort them. <:kannahug:461996510637326386>"
         embed = make_embed(interaction.user.id, InteractionLinks.cry_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Cuddle someone")
@@ -76,6 +80,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Dance alone or with up to five other people.")
@@ -109,6 +114,7 @@ class Interaction(commands.Cog):
             res = res.replace(", and ", " and ") if len(dancers) == 2 else res.replace(", and ", ", ", len(dancers) - 2)
             msg = f"{interaction.user.mention} started dancing with {res}!"
         embed = make_embed(interaction.user.id, InteractionLinks.dance_links, target=None, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Hold someone's hand")
@@ -124,6 +130,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Hide yourself")
@@ -133,6 +140,7 @@ class Interaction(commands.Cog):
         added = ". Are they embarrassed?" if not reason else f" from {reason}."
         msg = f"{interaction.user.mention} is hiding{added}"
         embed = make_embed(interaction.user.id, InteractionLinks.hide_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="High five someone")
@@ -148,6 +156,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Hug someone")
@@ -163,6 +172,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Kiss someone")
@@ -178,6 +188,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Lick someone")
@@ -194,6 +205,7 @@ class Interaction(commands.Cog):
             other_tag_msg=other_msg,
             img_on_self_tag=False,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Give someone a headpat")
@@ -209,6 +221,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Pat them on the back")
@@ -227,6 +240,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Pinch someone's cheeks")
@@ -242,6 +256,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Poke someone")
@@ -257,6 +272,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Pout - Can be given a reason")
@@ -266,6 +282,7 @@ class Interaction(commands.Cog):
         added = f"They said it's because of {reason}." if reason else "Ask them why."
         msg = f"{interaction.user.mention} pouted! {added}"
         embed = make_embed(interaction.user.id, InteractionLinks.pout_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Salute someone")
@@ -282,6 +299,7 @@ class Interaction(commands.Cog):
         else:
             msg = f"{interaction.user.mention} saluted {user.mention}."
         embed = make_embed(interaction.user.id, InteractionLinks.salute_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Slap 'em hard")
@@ -298,6 +316,7 @@ class Interaction(commands.Cog):
             other_tag_msg=other_msg,
             img_on_self_tag=False,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Be the smuggest of them all")
@@ -306,6 +325,7 @@ class Interaction(commands.Cog):
     async def smug(self, interaction: discord.Interaction[DTbot], reason: str | None):
         msg = f"{interaction.user.mention} is being smug{f' because of {reason}' if reason else ''}."
         embed = make_embed(interaction.user.id, InteractionLinks.smug_links, no_tag_msg=msg)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Tickle someone")
@@ -321,6 +341,7 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Wave at someone")
@@ -336,12 +357,14 @@ class Interaction(commands.Cog):
             self_tag_msg=self_msg,
             other_tag_msg=other_msg,
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(description="Woop woop!")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def woop(self, interaction: discord.Interaction[DTbot]):
         embed = make_embed(interaction.user.id, InteractionLinks.woop_links)
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
 

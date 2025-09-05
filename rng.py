@@ -54,6 +54,7 @@ class Rng(commands.Cog, name="RNG"):
             'Reply hazy, try again later',
         ]
         # fmt: on
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(random.choice(possible_responses))
 
     @app_commands.command(description="Let the bot pick one of up to 5 options for you")
@@ -67,10 +68,12 @@ class Rng(commands.Cog, name="RNG"):
         option5: str | None,
     ):
         choices = [choice for choice in [option1, option2, option3, option4, option5] if choice is not None]
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"I choose: __{random.choice(choices)}__")
 
     @app_commands.command(description="Flips a coin")
     async def coinflip(self, interaction: discord.Interaction[DTbot]):
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(random.choice(["Heads", "Tails"]))
 
     @app_commands.command(description="Roll dice")
@@ -94,15 +97,18 @@ class Rng(commands.Cog, name="RNG"):
         modifier: int | None,
     ):
         if mod_type is not None and modifier is None:
+            # noinspection PyUnresolvedReferences
             return await interaction.response.send_message(
                 "When selecting a modifier type, please also provide the value for said modifier.",
                 ephemeral=True,
             )
         elif mod_type is None and modifier is not None:
+            # noinspection PyUnresolvedReferences
             return await interaction.response.send_message(
                 "When entering a modifier, please also provide the modifier type.",
                 ephemeral=True,
             )
+        # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         selected_mod_type = mod_type if mod_type is not None else ""
         modifier_value = modifier if modifier is not None else ""
@@ -158,6 +164,7 @@ class Rng(commands.Cog, name="RNG"):
             colour=DTbot.DTBOT_COLOUR,
             description=f"{first} and {second}? `{shipping:.2f}%` shippable. {emote_choice}",
         )
+        # noinspection PyUnresolvedReferences
         await interaction.response.send_message(embed=embed)
 
 
