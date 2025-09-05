@@ -30,14 +30,15 @@ class Dev(commands.GroupCog):
             # If not provided, run with a heartbeat
             self.heartbeat.start()
 
-    async def interaction_check(self, interaction: discord.Interaction[DTbot], /) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction[discord.Client], /) -> bool:
         bot: DTbot = interaction.client  # type: ignore
         return await bot.is_owner(interaction.user)
 
     async def cog_unload(self):
+        # noinspection PyBroadException
         try:
             self.heartbeat.stop()
-        except:
+        except Exception:
             pass
 
     @tasks.loop(seconds=HB_FREQ)
@@ -93,7 +94,7 @@ class Dev(commands.GroupCog):
             self.bot.log.info(f"Heartbeat stopped by user {interaction.user}.")
             await interaction.followup.send(f"Heartbeat stopped by user {interaction.user}.", ephemeral=True)
         else:
-            await interaction.followup.send(f"Invalid code.", ephemeral=True)
+            await interaction.followup.send("Invalid code.", ephemeral=True)
 
     @heart.command(description="Starts the heartbeat of DTbot.")
     async def start(self, interaction: discord.Interaction[DTbot], code: str):
@@ -103,7 +104,7 @@ class Dev(commands.GroupCog):
             self.bot.log.info(f"Heartbeat started by user {interaction.user}.")
             await interaction.followup.send(f"Heartbeat started by user {interaction.user}.", ephemeral=True)
         else:
-            await interaction.followup.send(f"Invalid code.", ephemeral=True)
+            await interaction.followup.send("Invalid code.", ephemeral=True)
 
     @app_commands.command(description="Load an extension. Optionally syncs Slash Commands.")
     async def load(
@@ -205,16 +206,19 @@ class Dev(commands.GroupCog):
             caption = f"Check /announcements (v. {dtbot_version})"
         self.bot.log.info("Updating Rich Presence")
         await self.bot.change_presence(activity=discord.Game(name=caption))
-        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")  # type: ignore
+
+        assert self.bot.user is not None  # _technically_ Optional, but never None when the bot is actually running
+        self.bot.log.info(f"{self.bot.user.name}'s Rich Presence was updated to '{caption}' by {interaction.user}")
         await interaction.followup.send(f"Successfully updated Rich Presence to: {caption}", ephemeral=True)
 
     @app_commands.command(description="Shutdown command for DTbot.")
     async def shutdownbot(self, interaction: discord.Interaction[DTbot], passcode: str):
         await interaction.response.defer(ephemeral=True)
         if passcode == self.SDB_CODE:
+            # noinspection PyBroadException
             try:
                 self.heartbeat.stop()
-            except:
+            except Exception:
                 pass
             await interaction.followup.send("Shutting down...", ephemeral=True)
             await sleep(1)  # race condition can cause the bot to close before it reponds, a short wait prevents this

@@ -11,8 +11,8 @@ from discord.ext import commands
 from DTbot import DTbot
 from linklist import changelog_link
 from util.AniListMediaQuery import AniListMediaQuery
-from util.PaginatorSession import PaginatorSession
 from util.database_utils import DBProcedure, dbcallprocedure
+from util.PaginatorSession import PaginatorSession
 from util.utils import even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
@@ -38,7 +38,16 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
     async def on_submit(self, interaction: discord.Interaction[discord.Client]):
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
         embed = discord.Embed(title=f"Requested: {self.functionality.value}", description=self.description.value)
-        req_hall: discord.TextChannel = self.bot.get_channel(self.bot.bot_config.getint("General", "REQHALL"))  # type: ignore
+
+        req_hall = self.bot.get_channel(self.bot.bot_config.getint("General", "REQHALL"))
+        if not isinstance(req_hall, discord.TextChannel):
+            self.bot.log.error(f"REQHALL was {req_hall.__class__}, needed discord.TextChannel!")
+            self.bot.log.info(
+                f"REQHALL failure!! Logging request as a fallback: User {interaction.user} requested "
+                f"'{self.functionality.value}' with the following description: '{self.description.value}'"
+            )
+            return
+
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
     async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception):
@@ -114,7 +123,7 @@ class General(commands.Cog):
                 )
                 embed.set_image(url=changelog_link)
                 embed.add_field(
-                    name=f"Latest Commit",
+                    name="Latest Commit",
                     value=f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
                     f"{latest_commit['commit']['message']}",
                 )

@@ -359,7 +359,7 @@ def make_embed(
         return embed
 
     chosen = random.choice(links)
-    embed.description = f"{embed.description}" + (f"\n\n" if description else "") + f"[Image link]({chosen})"
+    embed.description = f"{embed.description}" + ("\n\n" if description else "") + f"[Image link]({chosen})"
     embed.set_image(url=f"{chosen}")
     return embed
 
