@@ -49,7 +49,7 @@ class Rng(commands.Cog, name="RNG"):
             'Nope', 'YES', 'Kind of', 'HELL NO', 'What if?',
             'It is certain.', 'Ask again later.',
             "Don't count on it", 'Without a doubt.',
-            'Reply hazy, try again later'
+            'Reply hazy, try again later',
         ]
         # fmt: on
         await interaction.response.send_message(random.choice(possible_responses))
@@ -76,10 +76,10 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.describe(dice_sides="How many sides the die should have (enter 20 to roll a d20, etc.)")
     @app_commands.describe(options="Drop lowest roll / Drop highest / Keep lowest / Keep highest")
     @app_commands.describe(
-        mod_type="What kind of modifier (+, -, *) to apply to the dice rolls (must specify `modifier` as well)"
+        mod_type="What kind of modifier (+, -, *) to apply to the dice rolls (must specify `modifier` as well)",
     )
     @app_commands.describe(
-        modifier="The modifier to add/subtract/multipy with the result (must specify `mod_type` as well)"
+        modifier="The modifier to add/subtract/multipy with the result (must specify `mod_type` as well)",
     )
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def roll(
@@ -93,11 +93,13 @@ class Rng(commands.Cog, name="RNG"):
     ):
         if mod_type is not None and modifier is None:
             return await interaction.response.send_message(
-                "When selecting a modifier type, please also provide the value for said modifier.", ephemeral=True
+                "When selecting a modifier type, please also provide the value for said modifier.",
+                ephemeral=True,
             )
         elif mod_type is None and modifier is not None:
             return await interaction.response.send_message(
-                "When entering a modifier, please also provide the modifier type.", ephemeral=True
+                "When entering a modifier, please also provide the modifier type.",
+                ephemeral=True,
             )
         await interaction.response.defer()
         selected_mod_type = mod_type if mod_type is not None else ""

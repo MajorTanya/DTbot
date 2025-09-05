@@ -44,7 +44,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
             self.bot.log.error(f"REQHALL was {req_hall.__class__}, needed discord.TextChannel!")
             self.bot.log.info(
                 f"REQHALL failure!! Logging request as a fallback: User {interaction.user} requested "
-                f"'{self.functionality.value}' with the following description: '{self.description.value}'"
+                f"'{self.functionality.value}' with the following description: '{self.description.value}'",
             )
             return
 

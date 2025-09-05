@@ -180,7 +180,7 @@ def _filter_staff_entries(staff: list[dict[str, Any]] | None) -> list[AniListMed
                             displayed_role[1].value,
                             member["node"]["name"]["userPreferred"],
                             member["role"],
-                        )
+                        ),
                     )
                     break
     filtered_staff.sort(key=lambda x: x.role_order)
