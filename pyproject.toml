@@ -11,8 +11,8 @@ authors = [
 
 dependencies = [
     "discord.py==2.6.3",
-    "mariadb==1.1.13",
-    "aiohttp>=3.12.15",
+    "mariadb==1.1.14",
+    "aiohttp>=3.13.0",
     "python-dotenv==1.1.1"
 ]
 
@@ -24,17 +24,17 @@ Issues = "https://github.com/MajorTanya/DTbot/issues"
 
 [dependency-groups]
 dev = [
-    "black==25.1.0",
+    "black==25.9.0",
     "flake8==7.3.0",
-    "isort==6.0.1",
+    "isort==6.1.0",
     "pre-commit==4.3.0",
-    "pyright==1.1.405"
+    "pyright==1.1.406"
 ]
 
 ## ------ BLACK -------
 
 [tool.black]
-target-version = ['py313']
+target-version = ['py313', 'py314']
 line-length = 120
 
 ## ------ ISORT -------
@@ -46,7 +46,7 @@ py_version = 313
 ## ----- PYRIGHT ------
 
 [tool.pyright]
-pythonVersion = "3.13"
+pythonVersion = "3.14"
 ignore = [".venv"]
 venvPath = "."
 venv = ".venv"
