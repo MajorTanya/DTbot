@@ -10,10 +10,10 @@ authors = [
 ]
 
 dependencies = [
-    "discord.py==2.6.3",
+    "discord.py==2.6.4",
     "mariadb==1.1.14",
-    "aiohttp>=3.13.0",
-    "python-dotenv==1.1.1"
+    "aiohttp>=3.13.2",
+    "python-dotenv==1.2.1"
 ]
 
 [project.urls]
@@ -22,26 +22,26 @@ Issues = "https://github.com/MajorTanya/DTbot/issues"
 "Bot Privacy Policy" = "https://majortanya.eu/dtbot_privacy_policy.html"
 "Bot Terms and Conditions" = "https://majortanya.eu/dtbot_terms_and_conditions.html"
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
-    "black==25.9.0",
+    "black==25.11.0",
     "flake8==7.3.0",
-    "isort==6.1.0",
-    "pre-commit==4.3.0",
-    "pyright==1.1.406"
+    "isort==7.0.0",
+    "pre-commit==4.5.0",
+    "pyright==1.1.407"
 ]
 
 ## ------ BLACK -------
 
 [tool.black]
-target-version = ['py313', 'py314']
+target-version = ['py314']
 line-length = 120
 
 ## ------ ISORT -------
 
 [tool.isort]
 profile = "black"
-py_version = 313
+py_version = 314
 
 ## ----- PYRIGHT ------
 

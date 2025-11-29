@@ -6,7 +6,7 @@
 #
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.0
+aiohttp==3.13.2
     # via
     #   DTbot (pyproject.toml)
     #   discord-py
@@ -16,13 +16,13 @@ attrs==25.4.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
-discord-py==2.6.3
+discord-py==2.6.4
     # via DTbot (pyproject.toml)
 frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-idna==3.10
+idna==3.11
     # via yarl
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
@@ -32,11 +32,11 @@ multidict==6.7.0
     #   yarl
 packaging==25.0
     # via mariadb
-propcache==0.4.0
+propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-python-dotenv==1.1.1
+python-dotenv==1.2.1
     # via DTbot (pyproject.toml)
 yarl==1.22.0
     # via aiohttp
