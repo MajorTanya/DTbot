@@ -16,7 +16,7 @@ attrs==25.4.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
-black==25.11.0
+black==25.12.0
     # via DTbot (pyproject.toml)
 cfgv==3.5.0
     # via pre-commit
@@ -28,7 +28,7 @@ discord-py==2.6.4
     # via DTbot (pyproject.toml)
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.0
+filelock==3.20.1
     # via virtualenv
 flake8==7.3.0
     # via DTbot (pyproject.toml)
@@ -62,11 +62,11 @@ packaging==25.0
     #   mariadb
 pathspec==0.12.1
     # via black
-platformdirs==4.5.0
+platformdirs==4.5.1
     # via
     #   black
     #   virtualenv
-pre-commit==4.5.0
+pre-commit==4.5.1
     # via DTbot (pyproject.toml)
 propcache==0.4.1
     # via
