@@ -86,7 +86,7 @@ pyyaml==6.0.3
     # via pre-commit
 typing-extensions==4.15.0
     # via pyright
-virtualenv==20.35.4
+virtualenv==20.36.1
     # via pre-commit
 yarl==1.22.0
     # via aiohttp
