@@ -28,7 +28,7 @@ discord-py==2.6.4
     # via DTbot (pyproject.toml)
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.1
+filelock==3.20.3
     # via virtualenv
 flake8==7.3.0
     # via DTbot (pyproject.toml)
