@@ -109,7 +109,8 @@ class AniListMediaQuery:
         if dto.format:
             embed.add_field(name="Format", value=dto.format)
 
-        if entries_strs := _make_entries_string(dto):
+        entries_strs = _make_entries_string(dto)
+        if entries_strs is not None:
             heading = "Runtime" if dto.format == "Movie" else "Episodes"
             embed.add_field(name="Chapters" if dto.is_manga else heading, value=entries_strs)
 

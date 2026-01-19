@@ -221,4 +221,6 @@ def _make_date(date: dict[str, int | None]) -> str | None:
     year = date["year"] if date["year"] else "????"
     month = date["month"] if date["month"] else "??"
     day = date["day"] if date["day"] else "??"
-    return full_date if (full_date := f"{year}-{month:02}-{day:02}") != "????-??-??" else None
+
+    full_date = f"{year}-{month:02}-{day:02}"
+    return full_date if full_date != "????-??-??" else None

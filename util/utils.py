@@ -59,4 +59,6 @@ def even_out_embed_fields(embed: discord.Embed):
 
 def rint(value: int | float, digits: int = 2) -> int | float:
     """Round to [digits] (default: 2) digits. Returns int if rounded float has only zeroes after the decimal point."""
-    return int_value if (rounded := round(value, digits)) == (int_value := int(rounded)) else rounded
+    rounded = round(value, digits)
+    int_value = int(rounded)
+    return int_value if rounded == int_value else rounded
