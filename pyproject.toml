@@ -34,19 +34,19 @@ dev = [
 ## ------ BLACK -------
 
 [tool.black]
-target-version = ['py314']
+target-version = ['py313', 'py314']
 line-length = 120
 
 ## ------ ISORT -------
 
 [tool.isort]
 profile = "black"
-py_version = 314
+py_version = 313
 
 ## ----- PYRIGHT ------
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.13"
 ignore = [".venv"]
 venvPath = "."
 venv = ".venv"
