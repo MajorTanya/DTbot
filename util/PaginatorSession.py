@@ -66,7 +66,7 @@ class NavButtonView(discord.ui.View):
         self.stop()
 
 
-class PaginatorSession(object):
+class PaginatorSession:
     def __init__(self, *, pages: list[discord.Embed] | None = None):
         super().__init__()
         self.callbacks: dict[str, Callable[[discord.Interaction[discord.Client]], Coroutine[Any, Any, None]]] = {

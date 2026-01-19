@@ -24,7 +24,7 @@ def get_file_handler(
 
     If no startup_time is provided, it will be generated based on the time of calling this method."""
     if startup_time is None:
-        now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        now = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
         date_str = now.strftime("%Y-%m-%d (%H-%M-%S %Z)")
     else:
         date_str = startup_time.strftime("%Y-%m-%d (%H-%M-%S %Z)")

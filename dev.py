@@ -51,7 +51,7 @@ class Dev(commands.GroupCog):
     @tasks.loop(seconds=HB_FREQ)
     async def heartbeat(self):
         if not self.bot.is_closed():
-            now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+            now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
             now_ts = int(now_dt.timestamp())
             startup_ts = int(self.bot.bot_startup.timestamp())
             uptime = now_dt - self.bot.bot_startup
@@ -211,7 +211,7 @@ class Dev(commands.GroupCog):
             self.bot.bot_config = ConfigParser()
             self.bot.bot_config.read("./config/config.ini")
 
-            with open("./pyproject.toml", mode="r", encoding="utf8") as f:
+            with open("./pyproject.toml", encoding="utf8") as f:
                 parsed_pyproject = tomllib.loads(f.read())
                 self.bot.dtbot_version = parsed_pyproject["project"]["version"]
 

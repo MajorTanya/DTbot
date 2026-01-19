@@ -94,7 +94,7 @@ def main():
     bot_config = ConfigParser()
     bot_config.read("./config/config.ini")
 
-    with open("./pyproject.toml", mode="r", encoding="utf8") as f:
+    with open("./pyproject.toml", encoding="utf8") as f:
         parsed_pyproject = tomllib.loads(f.read())
         dtbot_version = parsed_pyproject["project"]["version"]
 

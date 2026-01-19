@@ -148,7 +148,7 @@ class General(commands.Cog):
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     async def info(self, interaction: discord.Interaction[DTbot]):
-        now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
@@ -256,7 +256,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Gives the bot's uptime since the last restart.")
     async def uptime(self, interaction: discord.Interaction[DTbot]):
-        now_dt = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")  # type: ignore
