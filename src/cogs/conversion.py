@@ -38,14 +38,14 @@ class Conversion(commands.Cog):
     async def cmin(self, interaction: discord.Interaction[DTbot], centimeters: float):
         inches = rint(centimeters / CM_IN_INCH)
         # noinspection PyUnresolvedReferences
-        await interaction.response.send_message(f"{rint(centimeters)} cm  = {inches} inch")
+        await interaction.response.send_message(f"{rint(centimeters)} cm = {inches} inch")
 
     @app_commands.command(description="Converts Inches to Centimeters")
     @app_commands.describe(inches="The value in Inches")
     async def incm(self, interaction: discord.Interaction[DTbot], inches: float):
         centimeters = rint(inches * CM_IN_INCH)
         # noinspection PyUnresolvedReferences
-        await interaction.response.send_message(f"{rint(inches)} inch  = {centimeters} cm")
+        await interaction.response.send_message(f"{rint(inches)} inch = {centimeters} cm")
 
     @app_commands.command(description="Converts from Centimeters to Feet")
     @app_commands.describe(centimeters="The value in Centimeters")
