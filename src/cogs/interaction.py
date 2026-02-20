@@ -104,8 +104,8 @@ class Interaction(commands.Cog):
         # Remove None and the bot itself
         raw_dancers = [user1, user2, user3, user4, user5]
         dancers = [dancer for dancer in raw_dancers if dancer is not None]
-        if interaction.guild is not None and interaction.guild.me in dancers:
-            dancers.remove(interaction.guild.me)
+        if not isinstance(interaction.user, discord.User) and interaction.user in dancers:
+            dancers.remove(interaction.user)
 
         msg = f"{interaction.user.mention} started dancing by themselves! Everyone, come and join them! DANCE PARTY!"
         if len(dancers) > 0:
