@@ -2,12 +2,13 @@ import datetime
 import itertools
 import math
 from platform import python_version
-from typing import override
+from typing import TypedDict, override
 
 import aiohttp
 import discord
 from discord import app_commands
 from discord.ext import commands
+from discord.utils import format_dt
 
 from src.dtbot import DTbot
 from src.util.animanga import AniListMediaQuery
@@ -17,6 +18,21 @@ from src.util.paginator import PaginatorSession
 from src.util.utils import even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
+
+
+class PartialGHCommitter(TypedDict):
+    date: str
+
+
+class PartialGHCommit(TypedDict):
+    message: str
+    committer: PartialGHCommitter
+
+
+class PartialGHCommitMetaData(TypedDict):
+    sha: str
+    commit: PartialGHCommit
+    html_url: str
 
 
 class RequestModal(discord.ui.Modal, title="Request for DTbot"):
@@ -127,22 +143,25 @@ class General(commands.Cog):
         last_updated = self.bot.bot_config.get("Info", "last_updated")
         async with aiohttp.ClientSession() as session:
             async with session.get(self.COMMITS_URL) as r:
-                response = await r.json()
-                latest_commit = response[0]
-                embed = discord.Embed(
-                    colour=DTbot.DTBOT_COLOUR,
-                    description=(
-                        f"__Recent changes to DTbot:__\nNewest version: {self.bot.dtbot_version} ({last_updated})"
-                    ),
+                recent_commits: list[PartialGHCommitMetaData] = await r.json()
+                embed = discord.Embed(colour=DTbot.DTBOT_COLOUR)
+                embed.description = (
+                    f"__Recent changes to DTbot:__\n"
+                    f"Newest version: {self.bot.dtbot_version} ({last_updated})\n"
+                    f"### Latest Commits\n"
                 )
                 embed.set_image(url=changelog_link)
-                embed.add_field(
-                    name="Latest Commit",
-                    value=(
-                        f"[`{latest_commit['sha'][:7]}`]({latest_commit['html_url']})\t"
-                        f"{latest_commit['commit']['message']}"
-                    ),
-                )
+                for commit in recent_commits[:10]:
+                    commit_dt = datetime.datetime.fromisoformat(commit["commit"]["committer"]["date"])
+                    sha_link = f"[`{commit['sha'][:7]}`]({commit['html_url']})"
+                    # TODO: remove suppressions once d.py ships the "s" style officially
+                    # (we can force it now because d.py just inserts it directly)
+                    # noinspection PyTypeChecker
+                    embed.description += (
+                        f"- {sha_link} ({format_dt(commit_dt, style="s")}): "  # pyright: ignore [reportArgumentType]
+                        f"{commit['commit']['message'].splitlines()[0]}\n"
+                    )
+                embed.description = embed.description.strip()
                 await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
