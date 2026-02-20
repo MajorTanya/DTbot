@@ -28,7 +28,7 @@ discord-py==2.6.4
     # via DTbot (pyproject.toml)
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.3
+filelock==3.24.3
     # via virtualenv
 flake8==7.3.0
     # via DTbot (pyproject.toml)
@@ -40,13 +40,13 @@ identify==2.6.16
     # via pre-commit
 idna==3.11
     # via yarl
-isort==7.0.0
+isort==8.0.0
     # via DTbot (pyproject.toml)
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
 mccabe==0.7.0
     # via flake8
-multidict==6.7.0
+multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
@@ -56,13 +56,13 @@ nodeenv==1.10.0
     # via
     #   pre-commit
     #   pyright
-packaging==25.0
+packaging==26.0
     # via
     #   black
     #   mariadb
-pathspec==1.0.3
+pathspec==1.0.4
     # via black
-platformdirs==4.5.1
+platformdirs==4.9.2
     # via
     #   black
     #   virtualenv
@@ -80,13 +80,13 @@ pyright==1.1.408
     # via DTbot (pyproject.toml)
 python-dotenv==1.2.1
     # via DTbot (pyproject.toml)
-pytokens==0.4.0
+pytokens==0.4.1
     # via black
 pyyaml==6.0.3
     # via pre-commit
 typing-extensions==4.15.0
     # via pyright
-virtualenv==20.36.1
+virtualenv==20.38.0
     # via pre-commit
 yarl==1.22.0
     # via aiohttp

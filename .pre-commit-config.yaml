@@ -13,7 +13,7 @@ repos:
       - id: pyright
 
   - repo: https://github.com/jazzband/pip-tools
-    rev: v7.5.2
+    rev: v7.5.3
     hooks:
       - id: pip-compile
         name: pip-compile requirements-dev.txt
@@ -39,7 +39,7 @@ repos:
       - id: add-trailing-comma
 
   - repo: https://github.com/pycqa/isort
-    rev: 7.0.0
+    rev: 8.0.0
     hooks:
       - id: isort
         args: [ "--profile", "black", "--filter-files" ]

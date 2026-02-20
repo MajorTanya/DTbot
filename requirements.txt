@@ -26,11 +26,11 @@ idna==3.11
     # via yarl
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
-multidict==6.7.0
+multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-packaging==25.0
+packaging==26.0
     # via mariadb
 propcache==0.4.1
     # via
