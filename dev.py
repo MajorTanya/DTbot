@@ -11,7 +11,7 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from DTbot import DTbot
+from dtbot import DTbot
 from util.database_utils import DBProcedure, dbcallprocedure
 
 

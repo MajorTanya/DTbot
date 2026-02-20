@@ -4,9 +4,9 @@ import urllib.parse
 import aiohttp
 import discord
 
-from DTbot import DTbot
-from util.AniListResponseDTO import AniListResponseDTO
-from util.AniMangaLookupError import AniMangaLookupError
+from dtbot import DTbot
+from util.anilist_response import AniListResponseDTO
+from util.errors import AniMangaLookupError
 
 AL_EMOTE = "<:AniList:742063839259918336>"
 KITSU_EMOTE = "<:Kitsu:742063838555275337>"

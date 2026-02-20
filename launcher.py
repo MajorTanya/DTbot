@@ -10,7 +10,7 @@ import mariadb
 from dotenv import load_dotenv
 from mariadb.constants import CLIENT
 
-from DTbot import DTbot
+from dtbot import DTbot
 from util.utils import get_file_handler, get_stream_handler
 
 

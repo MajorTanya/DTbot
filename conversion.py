@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from DTbot import DTbot
+from dtbot import DTbot
 from util.utils import rint
 
 CM_IN_INCH = 2.54
