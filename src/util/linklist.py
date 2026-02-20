@@ -1,4 +1,4 @@
-changelog_link = "https://i.imgur.com/LkBjSEE.png"
+changelog_link: str | None = None
 
 
 class InteractionLinks:

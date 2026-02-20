@@ -150,7 +150,10 @@ class General(commands.Cog):
                     f"Newest version: {self.bot.dtbot_version} ({last_updated})\n"
                     f"### Latest Commits\n"
                 )
-                embed.set_image(url=changelog_link)
+
+                if changelog_link is not None:
+                    embed.set_image(url=changelog_link)
+
                 for commit in recent_commits[:10]:
                     commit_dt = datetime.datetime.fromisoformat(commit["commit"]["committer"]["date"])
                     sha_link = f"[`{commit['sha'][:7]}`]({commit['html_url']})"
