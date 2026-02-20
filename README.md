@@ -21,7 +21,7 @@ With our array of command modules, DTbot provides:
     * All Conversion commands are written as `/FromUnitToUnit`
         * We currently support:
             * Kilometers <> Miles (`/kmmi` & `/mikm`), Meters <> Feet (`/mft` & `/ftm`), Meters <> Feet & Inches
-              (`/mftin` & `/ftinm`), Centimeters <> Feet (`/cmft` & `/ftcm`), Centimeters <> Inches  (`/cmin` & `/incm`)
+              (`/mftin` & `/ftinm`), Centimeters <> Feet (`/cmft` & `/ftcm`), Centimeters <> Inches (`/cmin` & `/incm`)
             * Celsius <> Fahrenheit (`/cf` & `/fc`)
             * Liters <> US Gallons (`/lgal` & `/gall`), Milliliters <> US Fluid Ounces (`/mlfloz` & `/flozml`)
             * Kilograms <> US Pounds (`/kglbs` & `/lbskg`)
