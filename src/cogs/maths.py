@@ -6,8 +6,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dtbot import DTbot
-from util.utils import rint
+from src.dtbot import DTbot
+from src.util.utils import rint
 
 
 class Maths(commands.GroupCog):

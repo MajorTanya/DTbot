@@ -8,7 +8,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dtbot import DTbot
+from src.dtbot import DTbot
 
 TCritDice = Literal["x", "X", "k", "K", ""]
 TRollModTypes = Literal["+", "-", "*"]

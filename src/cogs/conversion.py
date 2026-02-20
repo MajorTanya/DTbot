@@ -2,8 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dtbot import DTbot
-from util.utils import rint
+from src.dtbot import DTbot
+from src.util.utils import rint
 
 CM_IN_INCH = 2.54
 KM_IN_MI = 1.609344

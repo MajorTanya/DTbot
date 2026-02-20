@@ -8,7 +8,7 @@ import mariadb
 from discord import app_commands
 from discord.ext import commands
 
-from util.database_utils import DBProcedure, checkdbforuser, dbcallprocedure
+from src.util.database_utils import DBProcedure, checkdbforuser, dbcallprocedure
 
 intents = discord.Intents.default()
 intents.members = True
@@ -45,11 +45,12 @@ class DTbot(commands.Bot):
     @override
     async def setup_hook(self):
         for _, extension in self.bot_config.items("Extensions"):
+            load_path = f"src.cogs.{extension}"
             try:
-                await self.load_extension(extension)
-                self.log.debug(f"Successfully loaded extension {extension}.")
+                await self.load_extension(load_path)
+                self.log.debug(f"Successfully loaded extension {load_path}.")
             except Exception as e:
-                self.log.error(f"Failed to load extension {extension}\n{type(e).__name__}: {e}.")
+                self.log.error(f"Failed to load extension {load_path}\n{type(e).__name__}: {e}.")
         if not self._in_dev_mode:
             await self.tree.sync(guild=DTbot.DEV_GUILD)
             await self.tree.sync()

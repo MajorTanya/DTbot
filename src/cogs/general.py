@@ -9,12 +9,12 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dtbot import DTbot
-from linklist import changelog_link
-from util.anilist_query import AniListMediaQuery
-from util.database_utils import DBProcedure, dbcallprocedure
-from util.paginator import PaginatorSession
-from util.utils import even_out_embed_fields
+from src.dtbot import DTbot
+from src.util.animanga import AniListMediaQuery
+from src.util.database_utils import DBProcedure, dbcallprocedure
+from src.util.linklist import changelog_link
+from src.util.paginator import PaginatorSession
+from src.util.utils import even_out_embed_fields
 
 anilist_cooldown = app_commands.Cooldown(80, 60)
 

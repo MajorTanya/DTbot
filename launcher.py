@@ -10,8 +10,8 @@ import mariadb
 from dotenv import load_dotenv
 from mariadb.constants import CLIENT
 
-from dtbot import DTbot
-from util.utils import get_file_handler, get_stream_handler
+from src.dtbot import DTbot
+from src.util.utils import get_file_handler, get_stream_handler
 
 
 def main():
@@ -64,19 +64,19 @@ def main():
     ) as cnx:
         try:
             with cnx.cursor() as cursor:
-                with open("./database_scripts/database_and_tables.sql", encoding="utf-8") as definitions_file:
+                with open("./src/database_scripts/database_and_tables.sql", encoding="utf-8") as definitions_file:
                     logger.debug(f"Running {definitions_file.name}")
                     cursor.execute(definitions_file.read())
                     logger.debug(f"Successfully ran {definitions_file.name}")
 
             with cnx.cursor() as cursor:
-                with open("./database_scripts/migrations.sql", encoding="utf-8") as migrations_file:
+                with open("./src/database_scripts/migrations.sql", encoding="utf-8") as migrations_file:
                     logger.debug(f"Running {migrations_file.name}")
                     cursor.execute(migrations_file.read())
                     logger.debug(f"Successfully ran {migrations_file.name}")
 
             with cnx.cursor() as cursor:
-                with open("./database_scripts/procedures.sql", encoding="utf-8") as procedures_file:
+                with open("./src/database_scripts/procedures.sql", encoding="utf-8") as procedures_file:
                     logger.debug(f"Running {procedures_file.name}")
                     cursor.execute(procedures_file.read())
                     logger.debug(f"Successfully ran {procedures_file.name}")

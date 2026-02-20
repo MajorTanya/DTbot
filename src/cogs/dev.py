@@ -11,8 +11,8 @@ from discord import app_commands
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from dtbot import DTbot
-from util.database_utils import DBProcedure, dbcallprocedure
+from src.dtbot import DTbot
+from src.util.database_utils import DBProcedure, dbcallprocedure
 
 
 @app_commands.guilds(DTbot.DEV_GUILD)
@@ -124,13 +124,14 @@ class Dev(commands.GroupCog):
     ):
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
+        load_path = f"src.cogs.{extension_name}"
         try:
-            await self.bot.load_extension(extension_name)
+            await self.bot.load_extension(load_path)
             await self.sync(dev_sync=dev_sync, global_sync=global_sync)
-            self.bot.log.info(f"Module `{extension_name}` loaded by user {interaction.user}.")
-            await interaction.followup.send(f"Module `{extension_name}` loaded successfully.")
+            self.bot.log.info(f"Module `{load_path}` loaded by user {interaction.user}.")
+            await interaction.followup.send(f"Module `{load_path}` loaded successfully.")
         except commands.ExtensionError as e:
-            self.bot.log.error(f"Error loading Module {extension_name}:", exc_info=e)
+            self.bot.log.error(f"Error loading Module {load_path}:", exc_info=e)
             await interaction.followup.send(f"{type(e).__name__}", ephemeral=True)
 
     @load.autocomplete("extension_name")
@@ -157,13 +158,14 @@ class Dev(commands.GroupCog):
     ):
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
+        load_path = f"src.cogs.{extension_name}"
         try:
-            await self.bot.unload_extension(extension_name)
+            await self.bot.unload_extension(load_path)
             await self.sync(dev_sync=dev_sync, global_sync=global_sync)
-            self.bot.log.info(f"Module `{extension_name}` unloaded by user {interaction.user}.")
-            await interaction.followup.send(f"Module `{extension_name}` unloaded successfully.")
+            self.bot.log.info(f"Module `{load_path}` unloaded by user {interaction.user}.")
+            await interaction.followup.send(f"Module `{load_path}` unloaded successfully.")
         except commands.ExtensionError as e:
-            self.bot.log.error(f"Error unloading Module {extension_name}:", exc_info=e)
+            self.bot.log.error(f"Error unloading Module {load_path}:", exc_info=e)
             await interaction.followup.send(f"{type(e).__name__}", ephemeral=True)
 
     @app_commands.command(description="Atomically reload an extension. Optionally syncs Slash Commands.")
@@ -176,13 +178,14 @@ class Dev(commands.GroupCog):
     ):
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
+        load_path = f"src.cogs.{extension_name}"
         try:
-            await self.bot.reload_extension(extension_name)
+            await self.bot.reload_extension(load_path)
             await self.sync(dev_sync=dev_sync, global_sync=global_sync)
-            self.bot.log.info(f"Module `{extension_name}` reloaded by user {interaction.user}.")
-            await interaction.followup.send(f"Module `{extension_name}` reloaded successfully.")
+            self.bot.log.info(f"Module `{load_path}` reloaded by user {interaction.user}.")
+            await interaction.followup.send(f"Module `{load_path}` reloaded successfully.")
         except commands.ExtensionError as e:
-            self.bot.log.error(f"Error reloading Module {extension_name}:", exc_info=e)
+            self.bot.log.error(f"Error reloading Module {load_path}:", exc_info=e)
             await interaction.followup.send(f"{type(e).__name__}", ephemeral=True)
 
     @unload.autocomplete("extension_name")

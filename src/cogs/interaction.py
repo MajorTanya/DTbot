@@ -4,8 +4,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from dtbot import DTbot
-from linklist import InteractionLinks
+from src.dtbot import DTbot
+from src.util.linklist import InteractionLinks
 
 
 class Interaction(commands.Cog):
