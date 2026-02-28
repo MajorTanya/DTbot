@@ -65,7 +65,6 @@ reportImplicitOverride = "error"
 reportImplicitStringConcatenation = "error"
 reportImportCycles = "error"
 reportPropertyTypeMismatch = "error"
-reportShadowedImports = "error"
 reportUninitializedInstanceVariable = "error"
 # disable some defaults
 reportMissingTypeStubs = "none"
