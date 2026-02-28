@@ -16,7 +16,7 @@ attrs==25.4.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
-discord-py==2.6.4
+discord-py==2.7.0
     # via DTbot (pyproject.toml)
 frozenlist==1.8.0
     # via

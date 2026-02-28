@@ -161,11 +161,8 @@ class General(commands.Cog):
                 for commit in recent_commits[:10]:
                     commit_dt = datetime.datetime.fromisoformat(commit["commit"]["committer"]["date"])
                     sha_link = f"[`{commit['sha'][:7]}`]({commit['html_url']})"
-                    # TODO: remove suppressions once d.py ships the "s" style officially
-                    # (we can force it now because d.py just inserts it directly)
-                    # noinspection PyTypeChecker
                     embed.description += (
-                        f"- {sha_link} ({format_dt(commit_dt, style="s")}): "  # pyright: ignore [reportArgumentType]
+                        f"- {sha_link} ({format_dt(commit_dt, style="s")}): "
                         f"{commit['commit']['message'].splitlines()[0]}\n"
                     )
                 embed.description = embed.description.strip()
