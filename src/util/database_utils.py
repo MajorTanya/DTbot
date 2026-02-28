@@ -6,7 +6,7 @@ import time
 from typing import Any, Literal, overload
 
 import discord
-import mariadb
+import mariadb  # type: ignore[import-untyped]
 
 
 class DBProcedure(enum.StrEnum):
@@ -156,10 +156,12 @@ def dbcallprocedure(
                     result = cursor.fetchone()[0]
         pconn.commit()
     if returns and result is not None:
-        return result
+        return result  # type: ignore[no-any-return]  # return types of stored procedures are known and grouped above
+
+    return None
 
 
-def checkdbforuser(pool: mariadb.ConnectionPool, message: discord.Message):
+def checkdbforuser(pool: mariadb.ConnectionPool, message: discord.Message) -> None:
     result = dbcallprocedure(pool, DBProcedure.CheckUserExist, params=(message.author.id,))
     if result:
         # entry for this user ID exists, proceed to check for last XP gain time, possibly awarding some new XP

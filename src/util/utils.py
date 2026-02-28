@@ -47,7 +47,7 @@ def get_stream_handler(
     return stream_handler
 
 
-def even_out_embed_fields(embed: discord.Embed):
+def even_out_embed_fields(embed: discord.Embed) -> discord.Embed:
     """Evens out Embed fields to avoid a misaligned last row
     (does not account for inline=False being set on any field)"""
     if len(embed.fields) % 3 != 0:  # even out the last line of embed fields

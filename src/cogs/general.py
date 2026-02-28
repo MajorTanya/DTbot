@@ -36,17 +36,17 @@ class PartialGHCommitMetaData(TypedDict):
 
 
 class RequestModal(discord.ui.Modal, title="Request for DTbot"):
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         super().__init__()
         self.bot = bot
-        self.functionality = discord.ui.TextInput(
+        self.functionality: discord.ui.TextInput[RequestModal] = discord.ui.TextInput(
             label="Functionality",
             placeholder="Short description here",
             max_length=100,
         )
         # PyCharm having skill issues with the discord.TextStyle enum
         # noinspection PyTypeChecker
-        self.description = discord.ui.TextInput(
+        self.description: discord.ui.TextInput[RequestModal] = discord.ui.TextInput(
             label="Description",
             style=discord.TextStyle.long,
             placeholder="Describe the feature in more detail here",
@@ -55,7 +55,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         self.add_item(self.functionality).add_item(self.description)
 
     @override
-    async def on_submit(self, interaction: discord.Interaction[discord.Client]):
+    async def on_submit(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"Thank you for your request, {interaction.user.name}.", ephemeral=True)
         embed = discord.Embed(title=f"Requested: {self.functionality.value}", description=self.description.value)
@@ -74,7 +74,11 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
         await req_hall.send(f"{interaction.user} filed the following feature request:", embed=embed)
 
     @override
-    async def on_error(self, interaction: discord.Interaction[discord.Client], error: Exception):
+    async def on_error(  # type: ignore[override]
+        self,
+        interaction: discord.Interaction[discord.Client],
+        _: Exception,
+    ) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message("Something went wrong, please try again later.", ephemeral=True)
         raise
@@ -83,7 +87,7 @@ class RequestModal(discord.ui.Modal, title="Request for DTbot"):
 class General(commands.Cog):
     """General commands, like user info, uptime, anime/manga lookup, among others"""
 
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
         main_dev = self.bot.bot_config.get("Developers", "main")
         secondary_dev = self.bot.bot_config.get("Developers", "secondary")
@@ -103,7 +107,7 @@ class General(commands.Cog):
     @app_commands.describe(title="The title to look up")
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
-    async def anime(self, interaction: discord.Interaction[DTbot], title: str):
+    async def anime(self, interaction: discord.Interaction[DTbot], title: str) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
@@ -112,7 +116,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Current DTbot announcements")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def announcements(self, interaction: discord.Interaction[DTbot]):
+    async def announcements(self, interaction: discord.Interaction[DTbot]) -> None:
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             title="Announcement",
@@ -125,7 +129,7 @@ class General(commands.Cog):
     @app_commands.command(description="Shows the mentioned user's (server) avatar.")
     @app_commands.describe(user="The user whose avatar to show")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def avatar(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None):
+    async def avatar(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None) -> None:
         user = user if user else interaction.user
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
@@ -137,7 +141,7 @@ class General(commands.Cog):
 
     @app_commands.command(description="Shows an overview over the recentmost update of DTbot")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def changelog(self, interaction: discord.Interaction[DTbot]):
+    async def changelog(self, interaction: discord.Interaction[DTbot]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         last_updated = self.bot.bot_config.get("Info", "last_updated")
@@ -169,16 +173,18 @@ class General(commands.Cog):
 
     @app_commands.command(description="Info about me, DTbot. Please take a look.")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def info(self, interaction: discord.Interaction[DTbot]):
+    async def info(self, interaction: discord.Interaction[DTbot]) -> None:
         now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
-            title=f"{self.bot.user.name}'s info",  # type: ignore
-            description=f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "  # type: ignore
-            f"server.\n\nIf you have any command requests, use the `request` command.\n\n"
-            f"Thank you and have a good day.\n\n"
-            f"[__**{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})",  # type: ignore
+            title=f"{self.bot.user.name}'s info",  # type: ignore[union-attr]
+            description=(
+                f"Hello, I'm {self.bot.user.name}, a multipurpose bot for your Discord "  # type: ignore[union-attr]
+                f"server.\n\nIf you have any command requests, use the `request` command.\n\n"
+                f"Thank you and have a good day.\n\n"
+                f"[__**{self.bot.user.name} Support Server**__]({self.SUPPORT_LINK})"  # type: ignore[union-attr]
+            ),
         )
         embed.add_field(name="Authors", value=self.DTBOT_DEVS)
         embed.add_field(name="GitHub repository", value=f"Find me [here]({self.GH_LINK})")
@@ -203,7 +209,7 @@ class General(commands.Cog):
     @app_commands.describe(title="The title to look up")
     @app_commands.checks.bot_has_permissions(embed_links=True, use_external_emojis=True)
     @app_commands.checks.dynamic_cooldown(lambda x: anilist_cooldown)
-    async def manga(self, interaction: discord.Interaction[DTbot], title: str):
+    async def manga(self, interaction: discord.Interaction[DTbot], title: str) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         media_query = AniListMediaQuery(bot=self.bot)
@@ -213,7 +219,7 @@ class General(commands.Cog):
     @app_commands.command(description="Show the latency between DTbot and the Discord web servers")
     @app_commands.checks.bot_has_permissions(embed_links=True)
     @app_commands.checks.cooldown(3, 30.0, key=lambda i: i.guild_id)
-    async def ping(self, interaction: discord.Interaction[DTbot]):
+    async def ping(self, interaction: discord.Interaction[DTbot]) -> None:
         embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
             description=f":ping_pong:\n**Pong!** __**`{self.bot.latency * 1000:.2f} ms`**__",
@@ -223,13 +229,13 @@ class General(commands.Cog):
 
     @app_commands.command(description="Request some new functionality for DTbot. Limited to twice per day, per user.")
     @app_commands.checks.cooldown(2, 86400, key=lambda i: i.user.id)  # 86400 seconds = 60 * 60 * 24
-    async def request(self, interaction: discord.Interaction[DTbot]):
+    async def request(self, interaction: discord.Interaction[DTbot]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.send_modal(RequestModal(self.bot))
 
     @app_commands.command(description="Shows details on this server, such as Name, Member amounts, Role count, etc.")
     @app_commands.guild_only()
-    async def serverinfo(self, interaction: discord.Interaction[DTbot]):
+    async def serverinfo(self, interaction: discord.Interaction[DTbot]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         guild: discord.Guild = interaction.guild  # type: ignore # the command is set as guild_only, guild will exist
@@ -277,16 +283,18 @@ class General(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(description="Gives the bot's uptime since the last restart.")
-    async def uptime(self, interaction: discord.Interaction[DTbot]):
+    async def uptime(self, interaction: discord.Interaction[DTbot]) -> None:
         now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
         uptime = now_dt - self.bot.bot_startup
         # noinspection PyUnresolvedReferences
-        await interaction.response.send_message(f"{self.bot.user.name}'s uptime is: `{uptime}`")  # type: ignore
+        await interaction.response.send_message(
+            f"{self.bot.user.name}'s uptime is: `{uptime}`",  # type: ignore[union-attr]
+        )
 
     @app_commands.command(description="Shows details on a user, such as Name, Join Date, or Highest Role")
     @app_commands.describe(user="The user to get some info on")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def userinfo(self, interaction: discord.Interaction[DTbot], user: discord.Member | None):
+    async def userinfo(self, interaction: discord.Interaction[DTbot], user: discord.Member | None) -> None:
         target: discord.Member | discord.User = user if user else interaction.user
         created_ts = int(target.created_at.timestamp())
         embed = discord.Embed(title=f"{target}'s info", description="Here is what I could find:")
@@ -311,7 +319,7 @@ class General(commands.Cog):
     @app_commands.command(description="Shows how many users have a particular role (max. 15 pages)")
     @app_commands.describe(role="The role to check out")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def whohas(self, interaction: discord.Interaction[DTbot], role: discord.Role):
+    async def whohas(self, interaction: discord.Interaction[DTbot], role: discord.Role) -> None:
         if len(role.members) == 0:
             embed = discord.Embed(
                 colour=role.colour,
@@ -319,7 +327,8 @@ class General(commands.Cog):
                 description=f"No members with the role {role.mention} exist.",
             )
             # noinspection PyUnresolvedReferences
-            return await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed)
+            return None
 
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
@@ -358,11 +367,12 @@ class General(commands.Cog):
 
     @app_commands.command(description="Shows a user's XP points. Defaults to command user.")
     @app_commands.describe(user="The user whose XP to check")
-    async def xp(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None):
+    async def xp(self, interaction: discord.Interaction[DTbot], user: discord.Member | discord.User | None) -> None:
         user = user if user else interaction.user
         if user.bot:
             # noinspection PyUnresolvedReferences
-            return await interaction.response.send_message("Bots don't get XP. :robot:")
+            await interaction.response.send_message("Bots don't get XP. :robot:")
+            return None
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         xp = dbcallprocedure(self.bot.db_cnx, DBProcedure.GetUserXp, params=(user.id,))
@@ -372,5 +382,5 @@ class General(commands.Cog):
             await interaction.followup.send("User hasn't talked yet.")
 
 
-async def setup(bot: DTbot):
+async def setup(bot: DTbot) -> None:
     await bot.add_cog(General(bot))

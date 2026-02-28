@@ -38,13 +38,13 @@ option_to_critdice: dict[RollOptions | None, TCritDice] = {
 class Rng(commands.Cog, name="RNG"):
     """Randomness-based commands, such as rolling dice"""
 
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
 
     @app_commands.command(name="8ball", description="Ask any questions and receive an answer from the Great Beyond")
     @app_commands.describe(_question="The question you wish to get answered")
     @app_commands.rename(_question="question")
-    async def _eightball(self, interaction: discord.Interaction[DTbot], _question: str | None):
+    async def _eightball(self, interaction: discord.Interaction[DTbot], _question: str | None) -> None:
         # fmt: off
         possible_responses = [
             'Yes', 'Maybe', 'No', 'Probably', 'Nah', 'No way',
@@ -66,13 +66,13 @@ class Rng(commands.Cog, name="RNG"):
         option3: str | None,
         option4: str | None,
         option5: str | None,
-    ):
+    ) -> None:
         choices = [choice for choice in [option1, option2, option3, option4, option5] if choice is not None]
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"I choose: __{random.choice(choices)}__")
 
     @app_commands.command(description="Flips a coin")
-    async def coinflip(self, interaction: discord.Interaction[DTbot]):
+    async def coinflip(self, interaction: discord.Interaction[DTbot]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(random.choice(["Heads", "Tails"]))
 
@@ -95,19 +95,21 @@ class Rng(commands.Cog, name="RNG"):
         options: TRollOptions | None,
         mod_type: TRollModTypes | None,
         modifier: int | None,
-    ):
+    ) -> None:
         if mod_type is not None and modifier is None:
             # noinspection PyUnresolvedReferences
-            return await interaction.response.send_message(
+            await interaction.response.send_message(
                 "When selecting a modifier type, please also provide the value for said modifier.",
                 ephemeral=True,
             )
+            return None
         elif mod_type is None and modifier is not None:
             # noinspection PyUnresolvedReferences
-            return await interaction.response.send_message(
+            await interaction.response.send_message(
                 "When entering a modifier, please also provide the modifier type.",
                 ephemeral=True,
             )
+            return None
         # noinspection PyUnresolvedReferences
         await interaction.response.defer()
         selected_mod_type = mod_type if mod_type is not None else ""
@@ -134,11 +136,11 @@ class Rng(commands.Cog, name="RNG"):
 
         match selected_mod_type:
             case "+":
-                result = total_rolled + modifier_value if modifier_value != "" else 0
+                result = total_rolled + (modifier_value if isinstance(modifier_value, int) else 0)
             case "-":
-                result = total_rolled - modifier_value if modifier_value != "" else 0
+                result = total_rolled - (modifier_value if isinstance(modifier_value, int) else 0)
             case "*":
-                result = total_rolled * modifier_value if modifier_value != "" else 1
+                result = total_rolled * (modifier_value if isinstance(modifier_value, int) else 1)
             case _:
                 result = total_rolled
 
@@ -157,7 +159,7 @@ class Rng(commands.Cog, name="RNG"):
     @app_commands.describe(first="The first half of your ship")
     @app_commands.describe(second="The second half of your ship")
     @app_commands.checks.bot_has_permissions(embed_links=True)
-    async def ship(self, interaction: discord.Interaction[DTbot], first: str, second: str):
+    async def ship(self, interaction: discord.Interaction[DTbot], first: str, second: str) -> None:
         shipping = random.random() * 100
         emote_choice = ":broken_heart:" if shipping < 50 else ":heart:"
         embed = discord.Embed(
@@ -168,5 +170,5 @@ class Rng(commands.Cog, name="RNG"):
         await interaction.response.send_message(embed=embed)
 
 
-async def setup(bot: DTbot):
+async def setup(bot: DTbot) -> None:
     await bot.add_cog(Rng(bot))

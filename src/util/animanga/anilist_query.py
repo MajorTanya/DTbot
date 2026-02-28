@@ -15,7 +15,7 @@ MAL_EMOTE = "<:MyAnimeList:742063838760927323>"
 
 
 class AniListMediaResultView(discord.ui.View):
-    def __init__(self, *, anilist: str, kitsu: str | None = None, mal: str | None = None):
+    def __init__(self, *, anilist: str, kitsu: str | None = None, mal: str | None = None) -> None:
         super().__init__()
         self.add_item(discord.ui.Button(label="AniList", url=anilist, emoji=AL_EMOTE))
         self.add_item(discord.ui.Button(label="Kitsu", disabled=kitsu is None, url=kitsu, emoji=KITSU_EMOTE))
@@ -23,7 +23,7 @@ class AniListMediaResultView(discord.ui.View):
 
 
 class AniListMediaQuery:
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
         self._AniList: str
         self._MyAnimeList: str | None = None

@@ -27,6 +27,7 @@ dev = [
     "black==26.1.0",
     "flake8==7.3.0",
     "isort==8.0.0",
+    "mypy==1.19.1",
     "pre-commit==4.5.1",
     "pyright==1.1.408"
 ]
@@ -42,6 +43,11 @@ line-length = 120
 [tool.isort]
 profile = "black"
 py_version = 313
+
+## ------ MYPY -------
+
+[tool.mypy]
+strict = true
 
 ## ----- PYRIGHT ------
 

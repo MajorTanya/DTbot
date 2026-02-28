@@ -42,6 +42,8 @@ idna==3.11
     # via yarl
 isort==8.0.0
     # via DTbot (pyproject.toml)
+librt==0.8.1
+    # via mypy
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
 mccabe==0.7.0
@@ -50,8 +52,12 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
+mypy==1.19.1
+    # via DTbot (pyproject.toml)
 mypy-extensions==1.1.0
-    # via black
+    # via
+    #   black
+    #   mypy
 nodeenv==1.10.0
     # via
     #   pre-commit
@@ -61,7 +67,9 @@ packaging==26.0
     #   black
     #   mariadb
 pathspec==1.0.4
-    # via black
+    # via
+    #   black
+    #   mypy
 platformdirs==4.9.2
     # via
     #   black
@@ -85,7 +93,9 @@ pytokens==0.4.1
 pyyaml==6.0.3
     # via pre-commit
 typing-extensions==4.15.0
-    # via pyright
+    # via
+    #   mypy
+    #   pyright
 virtualenv==20.38.0
     # via pre-commit
 yarl==1.22.0

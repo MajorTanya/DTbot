@@ -21,7 +21,7 @@ class Dev(commands.GroupCog):
 
     HB_FREQ: float = 60
 
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
         Dev.HB_FREQ = self.bot.bot_config.getint("Heartbeat", "hb_freq")
         self.H_CODE = os.environ.get("DTBOT_HEARTBEAT_CODE")
@@ -36,12 +36,12 @@ class Dev(commands.GroupCog):
     @override
     async def interaction_check(  # pyright: ignore [reportIncompatibleMethodOverride]
         self,
-        interaction: discord.Interaction[DTbot],  # will always be DTbot at runtime
+        interaction: discord.Interaction[DTbot],  # type: ignore[override] # will always be DTbot at runtime
     ) -> bool:
         return await interaction.client.is_owner(interaction.user)
 
     @override
-    async def cog_unload(self):
+    async def cog_unload(self) -> None:
         # noinspection PyBroadException
         try:
             self.heartbeat.stop()
@@ -49,7 +49,7 @@ class Dev(commands.GroupCog):
             pass
 
     @tasks.loop(seconds=HB_FREQ)
-    async def heartbeat(self):
+    async def heartbeat(self) -> None:
         if not self.bot.is_closed():
             now_dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0)
             now_ts = int(now_dt.timestamp())
@@ -57,8 +57,8 @@ class Dev(commands.GroupCog):
             uptime = now_dt - self.bot.bot_startup
             beat_embed = discord.Embed(
                 colour=DTbot.DTBOT_COLOUR,
-                title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore
-                description=f"{self.bot.user.name} is still alive and running!",  # type: ignore
+                title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore[union-attr]
+                description=f"{self.bot.user.name} is still alive and running!",  # type: ignore[union-attr]
             )
             beat_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
             beat_embed.add_field(name="Time now:", value=f"<t:{now_ts}:D> - <t:{now_ts}:T>", inline=False)
@@ -69,23 +69,25 @@ class Dev(commands.GroupCog):
                 await msg.delete(delay=Dev.HB_FREQ)
 
     @heartbeat.before_loop
-    async def before_heartbeat(self):
+    async def before_heartbeat(self) -> None:
         await self.bot.wait_until_ready()
         self.heartbeat.change_interval(seconds=Dev.HB_FREQ)  # apply the config value
         startup_ts = int(self.bot.bot_startup.timestamp())
-        self.hb_chamber = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))  # type: ignore
+        hb_channel = self.bot.get_channel(self.bot.bot_config.getint("Heartbeat", "hb_chamber"))
+        assert isinstance(hb_channel, discord.TextChannel)
+        self.hb_chamber = hb_channel
         startup_embed = discord.Embed(
             colour=DTbot.DTBOT_COLOUR,
-            title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore
-            description=f"{self.bot.user.name} is starting up!",  # type: ignore
+            title=f"{self.bot.user.name}'s Heartbeat",  # type: ignore[union-attr]
+            description=f"{self.bot.user.name} is starting up!",  # type: ignore[union-attr]
         )
         startup_embed.add_field(name="Startup time:", value=f"<t:{startup_ts}:D> - <t:{startup_ts}:T>")
         startup_embed.set_footer(text=f"DTbot v. {self.bot.dtbot_version}")
         if self.hb_chamber:
-            await self.hb_chamber.send(embed=startup_embed)  # type: ignore
+            await self.hb_chamber.send(embed=startup_embed)
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         await self.bot.change_presence(
             activity=discord.Game(name=f"Check /announcements (v. {self.bot.dtbot_version})"),
         )
@@ -93,7 +95,7 @@ class Dev(commands.GroupCog):
     heart = app_commands.Group(name="heart", description="Manages the heartbeat of DTbot.")
 
     @heart.command(description="Stops the heartbeat of DTbot.")
-    async def stop(self, interaction: discord.Interaction[DTbot], code: str):
+    async def stop(self, interaction: discord.Interaction[DTbot], code: str) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
@@ -104,7 +106,7 @@ class Dev(commands.GroupCog):
             await interaction.followup.send("Invalid code.", ephemeral=True)
 
     @heart.command(description="Starts the heartbeat of DTbot.")
-    async def start(self, interaction: discord.Interaction[DTbot], code: str):
+    async def start(self, interaction: discord.Interaction[DTbot], code: str) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if code == self.H_CODE:
@@ -121,7 +123,7 @@ class Dev(commands.GroupCog):
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
-    ):
+    ) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         load_path = f"src.cogs.{extension_name}"
@@ -155,7 +157,7 @@ class Dev(commands.GroupCog):
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
-    ):
+    ) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         load_path = f"src.cogs.{extension_name}"
@@ -175,7 +177,7 @@ class Dev(commands.GroupCog):
         extension_name: str,
         dev_sync: bool = False,
         global_sync: bool = False,
-    ):
+    ) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         load_path = f"src.cogs.{extension_name}"
@@ -205,7 +207,12 @@ class Dev(commands.GroupCog):
         ]
 
     @app_commands.command(description="Update / Refresh DTbot's Rich Presence. No Syncing.")
-    async def updaterp(self, interaction: discord.Interaction[DTbot], caption: str = "", reload_config: bool = False):
+    async def updaterp(
+        self,
+        interaction: discord.Interaction[DTbot],
+        caption: str = "",
+        reload_config: bool = False,
+    ) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
 
@@ -233,7 +240,7 @@ class Dev(commands.GroupCog):
         await interaction.followup.send(f"Successfully updated Rich Presence to: {caption}", ephemeral=True)
 
     @app_commands.command(description="Shutdown command for DTbot.")
-    async def shutdownbot(self, interaction: discord.Interaction[DTbot], passcode: str):
+    async def shutdownbot(self, interaction: discord.Interaction[DTbot], passcode: str) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         if passcode == self.SDB_CODE:
@@ -249,7 +256,7 @@ class Dev(commands.GroupCog):
             await interaction.followup.send("No.", ephemeral=True)
 
     @app_commands.command(description="Manually cycles through all servers to refresh the database.")
-    async def refreshservers(self, interaction: discord.Interaction[DTbot]):
+    async def refreshservers(self, interaction: discord.Interaction[DTbot]) -> None:
         # noinspection PyUnresolvedReferences
         await interaction.response.defer(ephemeral=True)
         stored_guild_ids: list[int] = [g["server_id"] for g in dbcallprocedure(self.bot.db_cnx, DBProcedure.GetServers)]
@@ -263,12 +270,12 @@ class Dev(commands.GroupCog):
                 dbcallprocedure(self.bot.db_cnx, DBProcedure.AddNewServer, params=params)
         await interaction.followup.send("Server list refreshed", ephemeral=True)
 
-    async def sync(self, *, dev_sync: bool = False, global_sync: bool = False):
+    async def sync(self, *, dev_sync: bool = False, global_sync: bool = False) -> None:
         if dev_sync:
             await self.bot.tree.sync(guild=DTbot.DEV_GUILD)
         if global_sync:
             await self.bot.tree.sync()
 
 
-async def setup(bot: DTbot):
+async def setup(bot: DTbot) -> None:
     await bot.add_cog(Dev(bot), guild=DTbot.DEV_GUILD)

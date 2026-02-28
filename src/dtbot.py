@@ -4,7 +4,7 @@ from logging import Logger
 from typing import Any, override
 
 import discord
-import mariadb
+import mariadb  # type: ignore[import-untyped]
 from discord import app_commands
 from discord.ext import commands
 
@@ -15,7 +15,7 @@ intents.members = True
 
 
 class DTbot(commands.Bot):
-    DEV_GUILD: discord.Object = None  # type: ignore
+    DEV_GUILD: discord.Object = None  # type: ignore[assignment]  # late init
     DTBOT_COLOUR: discord.Colour = discord.Colour(0x5E51A8)
 
     def __init__(
@@ -27,7 +27,7 @@ class DTbot(commands.Bot):
         in_dev_mode: bool,
         logger: Logger,
         startup_time: datetime,
-    ):
+    ) -> None:
         super().__init__(
             case_insensitive=True,
             command_prefix=commands.when_mentioned,
@@ -43,7 +43,7 @@ class DTbot(commands.Bot):
         self.log = logger
 
     @override
-    async def setup_hook(self):
+    async def setup_hook(self) -> None:
         for _, extension in self.bot_config.items("Extensions"):
             load_path = f"src.cogs.{extension}"
             try:
@@ -55,11 +55,11 @@ class DTbot(commands.Bot):
             await self.tree.sync(guild=DTbot.DEV_GUILD)
             await self.tree.sync()
 
-    async def on_guild_join(self, guild: discord.Guild):
+    async def on_guild_join(self, guild: discord.Guild) -> None:
         dbcallprocedure(self.db_cnx, DBProcedure.AddNewServer, params=(guild.id, guild.member_count))
 
     @override
-    async def on_message(self, message: discord.Message):
+    async def on_message(self, message: discord.Message) -> None:
         if (message.author == self.user) or message.author.bot:
             return
 
@@ -69,7 +69,7 @@ class DTbot(commands.Bot):
         self,
         _: discord.Interaction[discord.Client],
         command: app_commands.Command[Any, ..., Any],
-    ):
+    ) -> None:
         result = dbcallprocedure(self.db_cnx, DBProcedure.CheckAppCommandExist, params=(command.qualified_name,))
         if result:
             dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
@@ -78,9 +78,9 @@ class DTbot(commands.Bot):
             # because the command was used this one time, we increment the default value (0) by 1
             dbcallprocedure(self.db_cnx, DBProcedure.IncrementAppCommandUsage, params=(command.qualified_name,))
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         # online confimation
         print("Logged in as")
-        print(self.user.name)  # type: ignore
-        print(self.user.id)  # type: ignore
+        print(self.user.name)  # type: ignore[union-attr]
+        print(self.user.id)  # type: ignore[union-attr]
         print("------")

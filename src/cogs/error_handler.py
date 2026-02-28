@@ -11,17 +11,21 @@ from src.util.animanga import AniMangaLookupError
 class ErrorHandler(commands.Cog):
     """Handles and logs DTbot's errors and exceptions"""
 
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
         self.PERMSEXPL = self.bot.bot_config.get("General", "PERMSEXPL")
         self._std_on_error = self.bot.tree.on_error
-        self.bot.tree.on_error = self.on_app_command_error
+        self.bot.tree.on_error = self.on_app_command_error  # type: ignore[method-assign]
 
     @override
-    async def cog_unload(self):
-        self.bot.tree.on_error = self._std_on_error
+    async def cog_unload(self) -> None:
+        self.bot.tree.on_error = self._std_on_error  # type: ignore[method-assign]
 
-    async def on_app_command_error(self, interaction: discord.Interaction[DTbot], error: app_commands.AppCommandError):
+    async def on_app_command_error(
+        self,
+        interaction: discord.Interaction[DTbot],
+        error: app_commands.AppCommandError,
+    ) -> None:
         # noinspection PyUnresolvedReferences
         send = interaction.response.send_message if not interaction.response.is_done() else interaction.followup.send
         command = interaction.command.qualified_name if interaction.command else "This command"
@@ -44,5 +48,5 @@ class ErrorHandler(commands.Cog):
             self.bot.log.error(f"Command '{command}' raised the following error: '{error}'")
 
 
-async def setup(bot: DTbot):
+async def setup(bot: DTbot) -> None:
     await bot.add_cog(ErrorHandler(bot))

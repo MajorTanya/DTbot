@@ -13,7 +13,7 @@ from src.util.utils import rint
 class Maths(commands.GroupCog):
     """Some mathematical commands"""
 
-    def __init__(self, bot: DTbot):
+    def __init__(self, bot: DTbot) -> None:
         self.bot = bot
 
     @app_commands.command(description="Add two or more numbers together")
@@ -25,7 +25,7 @@ class Maths(commands.GroupCog):
         third: float | None,
         fourth: float | None,
         fifth: float | None,
-    ):
+    ) -> None:
         raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
@@ -42,7 +42,7 @@ class Maths(commands.GroupCog):
         third: float | None,
         fourth: float | None,
         fifth: float | None,
-    ):
+    ) -> None:
         raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
@@ -59,7 +59,7 @@ class Maths(commands.GroupCog):
         third: float | None,
         fourth: float | None,
         fifth: float | None,
-    ):
+    ) -> None:
         raw_inputs: list[float | None] = [first, second, third, fourth, fifth]
         numbers = [rint(num, digits=3) for num in raw_inputs if num is not None]
         strs = [f"({i:,})" if i < 0 else f"{i:,}" for i in numbers]
@@ -69,7 +69,7 @@ class Maths(commands.GroupCog):
         await interaction.response.send_message(f"{escaped_asterisk.join(strs)} = {result:,}")
 
     @app_commands.command(description="Divide a number by another number")
-    async def divide(self, interaction: discord.Interaction[DTbot], dividend: float, divisor: float):
+    async def divide(self, interaction: discord.Interaction[DTbot], dividend: float, divisor: float) -> None:
         if divisor == 0:
             # noinspection PyUnresolvedReferences
             await interaction.response.send_message("Division by 0 is not allowed.", ephemeral=True)
@@ -81,14 +81,14 @@ class Maths(commands.GroupCog):
             await interaction.response.send_message(f"{dividend:,} / {divisor:,} = {result:,}")
 
     @app_commands.command(description="Calculates the square of a number")
-    async def square(self, interaction: discord.Interaction[DTbot], number: float):
+    async def square(self, interaction: discord.Interaction[DTbot], number: float) -> None:
         number = rint(number, digits=3)
         result = rint(pow(number, 2), digits=3)
         # noinspection PyUnresolvedReferences
         await interaction.response.send_message(f"{number:,}² = {result:,}")
 
     @app_commands.command(description="Calculate a percentage (15 apples of 60? It's 25%)")
-    async def percentage(self, interaction: discord.Interaction[DTbot], part: float, whole: float):
+    async def percentage(self, interaction: discord.Interaction[DTbot], part: float, whole: float) -> None:
         if whole == 0:
             # noinspection PyUnresolvedReferences
             await interaction.response.send_message("Can't have a percentage of an empty whole")
@@ -100,7 +100,7 @@ class Maths(commands.GroupCog):
             await interaction.response.send_message(f"{part:,} / {whole:,} = {result:,.2%}")
 
     @app_commands.command(description="Calculate how much a percentage equates to (25% of 60? It's 15)")
-    async def percentof(self, interaction: discord.Interaction[DTbot], percentage: float, whole: float):
+    async def percentof(self, interaction: discord.Interaction[DTbot], percentage: float, whole: float) -> None:
         percentage = rint(percentage, digits=3)
         whole = rint(whole, digits=3)
         result = rint((percentage / 100) * whole, digits=3)
@@ -108,5 +108,5 @@ class Maths(commands.GroupCog):
         await interaction.response.send_message(f"{percentage:,}% of {whole:,} = {result:,}")
 
 
-async def setup(bot: DTbot):
+async def setup(bot: DTbot) -> None:
     await bot.add_cog(Maths(bot))

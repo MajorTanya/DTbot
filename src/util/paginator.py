@@ -31,7 +31,7 @@ class NavButton(discord.ui.Button["NavButtonView"]):
         url: str | None = None,
         emoji: str | discord.Emoji | discord.PartialEmoji | None = None,
         row: int | None = None,
-    ):
+    ) -> None:
         super().__init__(
             style=style,
             label=label,
@@ -51,12 +51,12 @@ class NavButton(discord.ui.Button["NavButtonView"]):
 class NavButtonView(discord.ui.View):
     """Custom subclass that handles a timeout by clearing the interaction's view"""
 
-    def __init__(self, *, interaction: discord.Interaction, timeout: float | None = 180.0):
+    def __init__(self, *, interaction: discord.Interaction, timeout: float | None = 180.0) -> None:
         super().__init__(timeout=timeout)
         self.interaction = interaction
 
     @override
-    async def on_timeout(self):
+    async def on_timeout(self) -> None:
         if self.interaction:
             # noinspection PyUnresolvedReferences
             if not self.interaction.response.is_done():
@@ -67,7 +67,7 @@ class NavButtonView(discord.ui.View):
 
 
 class PaginatorSession:
-    def __init__(self, *, pages: list[discord.Embed] | None = None):
+    def __init__(self, *, pages: list[discord.Embed] | None = None) -> None:
         super().__init__()
         self.callbacks: dict[str, Callable[[discord.Interaction[discord.Client]], Coroutine[Any, Any, None]]] = {
             FIRST_PAGE: self.first_page,
@@ -82,7 +82,7 @@ class PaginatorSession:
         self.current = 0
         self.view: NavButtonView | None = None
 
-    async def start(self, interaction: discord.Interaction[discord.Client]):
+    async def start(self, interaction: discord.Interaction[discord.Client]) -> None:
         # add buttons manually, so we have first/last page skippers and normal next/prev/stop buttons only when needed
         self.view = NavButtonView(interaction=interaction)  # default timeout of 180 seconds (3 minutes)
         skippers_needed = len(self.pages) > CUTOFFS[FIRST_PAGE]
@@ -97,7 +97,7 @@ class PaginatorSession:
             self.view.add_item(NavButton(callback=self.callbacks[LAST_PAGE], emoji=LAST_PAGE))
         await interaction.edit_original_response(content=None, embed=self.pages[0], view=self.view)
 
-    async def first_page(self, interaction: discord.Interaction[discord.Client]):
+    async def first_page(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
             # noinspection PyUnresolvedReferences
@@ -105,7 +105,7 @@ class PaginatorSession:
         self.current = 0
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def prev_page(self, interaction: discord.Interaction[discord.Client]):
+    async def prev_page(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
             # noinspection PyUnresolvedReferences
@@ -113,7 +113,7 @@ class PaginatorSession:
         self.current = (self.current - 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def stop_session(self, interaction: discord.Interaction[discord.Client]):
+    async def stop_session(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
             # noinspection PyUnresolvedReferences
@@ -122,7 +122,7 @@ class PaginatorSession:
         if self.view:
             self.view.stop()
 
-    async def next_page(self, interaction: discord.Interaction[discord.Client]):
+    async def next_page(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
             # noinspection PyUnresolvedReferences
@@ -130,7 +130,7 @@ class PaginatorSession:
         self.current = (self.current + 1) % len(self.pages)
         await interaction.edit_original_response(embed=self.pages[self.current])
 
-    async def last_page(self, interaction: discord.Interaction[discord.Client]):
+    async def last_page(self, interaction: discord.Interaction[discord.Client]) -> None:
         # noinspection PyUnresolvedReferences
         if not interaction.response.is_done():
             # noinspection PyUnresolvedReferences

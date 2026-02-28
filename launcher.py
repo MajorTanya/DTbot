@@ -6,15 +6,15 @@ from configparser import ConfigParser
 from datetime import UTC, datetime
 
 import discord.utils
-import mariadb
+import mariadb  # type: ignore[import-untyped]
 from dotenv import load_dotenv
-from mariadb.constants import CLIENT
+from mariadb.constants import CLIENT  # type: ignore[import-untyped]
 
 from src.dtbot import DTbot
 from src.util.utils import get_file_handler, get_stream_handler
 
 
-def main():
+def main() -> int:
     load_dotenv(dotenv_path="./config/.env", override=True)
 
     token = os.environ.get("DTBOT_TOKEN")
@@ -108,6 +108,8 @@ def main():
     )
 
     bot.run(token, log_handler=file_handler)
+
+    return 0
 
 
 if __name__ == "__main__":
