@@ -29,7 +29,9 @@ discord-py==2.7.0
 distlib==0.4.0
     # via virtualenv
 filelock==3.24.3
-    # via virtualenv
+    # via
+    #   python-discovery
+    #   virtualenv
 flake8==7.3.0
     # via DTbot (pyproject.toml)
 frozenlist==1.8.0
@@ -73,6 +75,7 @@ pathspec==1.0.4
 platformdirs==4.9.2
     # via
     #   black
+    #   python-discovery
     #   virtualenv
 pre-commit==4.5.1
     # via DTbot (pyproject.toml)
@@ -86,6 +89,8 @@ pyflakes==3.4.0
     # via flake8
 pyright==1.1.408
     # via DTbot (pyproject.toml)
+python-discovery==1.1.0
+    # via virtualenv
 python-dotenv==1.2.1
     # via DTbot (pyproject.toml)
 pytokens==0.4.1
@@ -96,7 +101,7 @@ typing-extensions==4.15.0
     # via
     #   mypy
     #   pyright
-virtualenv==20.38.0
+virtualenv==21.1.0
     # via pre-commit
 yarl==1.22.0
     # via aiohttp
