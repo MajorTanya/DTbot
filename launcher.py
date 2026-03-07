@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from mariadb.constants import CLIENT  # type: ignore[import-untyped]
 
 from src.dtbot import DTbot
-from src.util.utils import get_file_handler, get_stream_handler
+from src.util.utils import archive_old_log_files, get_file_handler, get_stream_handler
 
 
 def main() -> int:
@@ -32,8 +32,10 @@ def main() -> int:
         file_handler = discord.utils.MISSING
     else:
         stream_handler = get_stream_handler()
+        archive_old_log_files(logs_folder="./logs")
         file_handler = get_file_handler(logs_folder="./logs", startup_time=startup_time)
         logger.addHandler(file_handler)
+
     logger.addHandler(stream_handler)
     # endregion
 
