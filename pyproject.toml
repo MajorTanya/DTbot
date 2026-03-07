@@ -1,6 +1,6 @@
 [project]
 name = "DTbot"
-version = "3.7.26"
+version = "3.7.27"
 description = "A versatile Discord bot for your server, written with discord.py"
 requires-python = ">= 3.13"
 license = "MIT"
