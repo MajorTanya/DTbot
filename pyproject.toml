@@ -10,10 +10,10 @@ authors = [
 ]
 
 dependencies = [
-    "discord.py==2.7.0",
+    "discord.py==2.7.1",
     "mariadb==1.1.14",
     "aiohttp>=3.13.3",
-    "python-dotenv==1.2.1"
+    "python-dotenv==1.2.2"
 ]
 
 [project.urls]
@@ -24,9 +24,9 @@ Issues = "https://github.com/MajorTanya/DTbot/issues"
 
 [project.optional-dependencies]
 dev = [
-    "black==26.1.0",
+    "black==26.3.0",
     "flake8==7.3.0",
-    "isort==8.0.0",
+    "isort==8.0.1",
     "mypy==1.19.1",
     "pre-commit==4.5.1",
     "pyright==1.1.408"

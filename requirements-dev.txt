@@ -16,7 +16,7 @@ attrs==25.4.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
-black==26.1.0
+black==26.3.0
     # via DTbot (pyproject.toml)
 cfgv==3.5.0
     # via pre-commit
@@ -24,11 +24,11 @@ click==8.3.1
     # via black
 colorama==0.4.6
     # via click
-discord-py==2.7.0
+discord-py==2.7.1
     # via DTbot (pyproject.toml)
 distlib==0.4.0
     # via virtualenv
-filelock==3.24.3
+filelock==3.25.0
     # via
     #   python-discovery
     #   virtualenv
@@ -38,11 +38,11 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-identify==2.6.16
+identify==2.6.17
     # via pre-commit
 idna==3.11
     # via yarl
-isort==8.0.0
+isort==8.0.1
     # via DTbot (pyproject.toml)
 librt==0.8.1
     # via mypy
@@ -72,7 +72,7 @@ pathspec==1.0.4
     # via
     #   black
     #   mypy
-platformdirs==4.9.2
+platformdirs==4.9.4
     # via
     #   black
     #   python-discovery
@@ -89,9 +89,9 @@ pyflakes==3.4.0
     # via flake8
 pyright==1.1.408
     # via DTbot (pyproject.toml)
-python-discovery==1.1.0
+python-discovery==1.1.1
     # via virtualenv
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via DTbot (pyproject.toml)
 pytokens==0.4.1
     # via black
@@ -103,5 +103,5 @@ typing-extensions==4.15.0
     #   pyright
 virtualenv==21.1.0
     # via pre-commit
-yarl==1.22.0
+yarl==1.23.0
     # via aiohttp

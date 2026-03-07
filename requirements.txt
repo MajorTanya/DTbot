@@ -16,7 +16,7 @@ attrs==25.4.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
-discord-py==2.7.0
+discord-py==2.7.1
     # via DTbot (pyproject.toml)
 frozenlist==1.8.0
     # via
@@ -36,7 +36,7 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via DTbot (pyproject.toml)
-yarl==1.22.0
+yarl==1.23.0
     # via aiohttp
