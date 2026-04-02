@@ -6,13 +6,13 @@
 #
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.3
+aiohttp==3.13.5
     # via
     #   DTbot (pyproject.toml)
     #   discord-py
 aiosignal==1.4.0
     # via aiohttp
-attrs==25.4.0
+attrs==26.1.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py

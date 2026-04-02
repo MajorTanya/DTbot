@@ -6,13 +6,13 @@
 #
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.13.3
+aiohttp==3.13.5
     # via
     #   DTbot (pyproject.toml)
     #   discord-py
 aiosignal==1.4.0
     # via aiohttp
-attrs==25.4.0
+attrs==26.1.0
     # via aiohttp
 audioop-lts==0.2.2
     # via discord-py
@@ -28,7 +28,7 @@ discord-py==2.7.1
     # via DTbot (pyproject.toml)
 distlib==0.4.0
     # via virtualenv
-filelock==3.25.0
+filelock==3.25.2
     # via
     #   python-discovery
     #   virtualenv
@@ -38,7 +38,7 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-identify==2.6.17
+identify==2.6.18
     # via pre-commit
 idna==3.11
     # via yarl
@@ -54,7 +54,7 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-mypy==1.19.1
+mypy==1.20.0
     # via DTbot (pyproject.toml)
 mypy-extensions==1.1.0
     # via
@@ -89,7 +89,7 @@ pyflakes==3.4.0
     # via flake8
 pyright==1.1.408
     # via DTbot (pyproject.toml)
-python-discovery==1.1.1
+python-discovery==1.2.1
     # via virtualenv
 python-dotenv==1.2.2
     # via DTbot (pyproject.toml)
@@ -101,7 +101,7 @@ typing-extensions==4.15.0
     # via
     #   mypy
     #   pyright
-virtualenv==21.1.0
+virtualenv==21.2.0
     # via pre-commit
 yarl==1.23.0
     # via aiohttp
