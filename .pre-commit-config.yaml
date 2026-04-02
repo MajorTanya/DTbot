@@ -1,29 +1,6 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-        additional_dependencies: [ flake8-walrus==1.2.0 ]
-
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.408
-    hooks:
-      - id: pyright
-
-  - repo: https://github.com/jazzband/pip-tools
-    rev: v7.5.3
-    hooks:
-      - id: pip-compile
-        name: pip-compile requirements-dev.txt
-        args: [ --quiet, --extra=dev, --output-file=requirements-dev.txt, --strip-extras, pyproject.toml ]
-        files: ^pyproject\.toml$
-      - id: pip-compile
-        name: pip-compile requirements.txt
-        args: [ --quiet, --output-file=requirements.txt, --strip-extras, pyproject.toml ]
-        files: ^pyproject\.toml$
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -49,3 +26,26 @@ repos:
     hooks:
       - id: black
         language_version: python3.13
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [ flake8-walrus==1.2.0 ]
+
+  - repo: https://github.com/jazzband/pip-tools
+    rev: v7.5.3
+    hooks:
+      - id: pip-compile
+        name: pip-compile requirements-dev.txt
+        args: [ --quiet, --extra=dev, --output-file=requirements-dev.txt, --strip-extras, pyproject.toml ]
+        files: ^pyproject\.toml$
+      - id: pip-compile
+        name: pip-compile requirements.txt
+        args: [ --quiet, --output-file=requirements.txt, --strip-extras, pyproject.toml ]
+        files: ^pyproject\.toml$
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.408
+    hooks:
+      - id: pyright
