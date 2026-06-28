@@ -22,15 +22,15 @@ black==26.5.1
     # via DTbot (pyproject.toml)
 cfgv==3.5.0
     # via pre-commit
-click==8.4.1
+click==8.4.2
     # via black
 colorama==0.4.6
     # via click
 discord-py==2.7.1
     # via DTbot (pyproject.toml)
-distlib==0.4.2
+distlib==0.4.3
     # via virtualenv
-filelock==3.29.1
+filelock==3.29.4
     # via
     #   python-discovery
     #   virtualenv
@@ -89,9 +89,9 @@ pycodestyle==2.14.0
     # via flake8
 pyflakes==3.4.0
     # via flake8
-pyright==1.1.410
+pyright==1.1.411
     # via DTbot (pyproject.toml)
-python-discovery==1.4.0
+python-discovery==1.4.2
     # via virtualenv
 python-dotenv==1.2.2
     # via DTbot (pyproject.toml)
@@ -103,7 +103,7 @@ typing-extensions==4.15.0
     # via
     #   mypy
     #   pyright
-virtualenv==21.4.2
+virtualenv==21.5.1
     # via pre-commit
 yarl==1.24.2
     # via aiohttp
