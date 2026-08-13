@@ -40,7 +40,7 @@ repos:
         additional_dependencies: [ flake8-walrus==1.2.0 ]
 
   - repo: https://github.com/jazzband/pip-tools
-    rev: v7.6.0
+    rev: v7.6.1
     hooks:
       - id: pip-compile
         name: pip-compile requirements-dev.txt

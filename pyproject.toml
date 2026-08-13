@@ -28,7 +28,7 @@ dev = [
     "flake8==7.3.0",
     "isort==8.0.1",
     "mypy==2.3.0",
-    "pre-commit==4.6.1",
+    "pre-commit==4.6.2",
     "pyright==1.1.411"
 ]
 
