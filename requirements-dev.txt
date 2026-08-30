@@ -22,15 +22,13 @@ black==26.5.1
     # via DTbot (pyproject.toml)
 cfgv==3.5.0
     # via pre-commit
-click==8.4.2
+click==8.5.0
     # via black
-colorama==0.4.6
-    # via click
 discord-py==2.7.1
     # via DTbot (pyproject.toml)
 distlib==0.4.3
     # via virtualenv
-filelock==3.32.2
+filelock==3.32.4
     # via
     #   python-discovery
     #   virtualenv
@@ -42,9 +40,9 @@ frozenlist==1.8.0
     #   aiosignal
 identify==2.6.19
     # via pre-commit
-idna==3.18
+idna==3.19
     # via yarl
-isort==8.0.1
+isort==9.0.1
     # via DTbot (pyproject.toml)
 librt==0.15.0
     # via mypy
@@ -56,11 +54,12 @@ multidict==6.7.1
     # via
     #   aiohttp
     #   yarl
-mypy==2.3.0
+mypy==2.3.1
     # via DTbot (pyproject.toml)
 mypy-extensions==1.1.0
     # via
     #   black
+    #   isort
     #   mypy
 nodeenv==1.10.0
     # via
@@ -74,7 +73,7 @@ pathspec==1.1.1
     # via
     #   black
     #   mypy
-platformdirs==4.11.2
+platformdirs==4.11.5
     # via
     #   black
     #   virtualenv
@@ -90,9 +89,9 @@ pyflakes==3.4.0
     # via flake8
 pyright==1.1.411
     # via DTbot (pyproject.toml)
-python-discovery==1.5.2
+python-discovery==1.6.0
     # via virtualenv
-python-dotenv==1.2.2
+python-dotenv==1.2.3
     # via DTbot (pyproject.toml)
 pytokens==0.4.1
     # via black
@@ -102,7 +101,7 @@ typing-extensions==4.16.0
     # via
     #   mypy
     #   pyright
-virtualenv==21.7.4
+virtualenv==21.7.7
     # via pre-commit
 yarl==1.24.5
     # via aiohttp

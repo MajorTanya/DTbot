@@ -13,7 +13,7 @@ dependencies = [
     "discord.py==2.7.1",
     "mariadb==1.1.14",
     "aiohttp>=3.14.3",
-    "python-dotenv==1.2.2"
+    "python-dotenv==1.2.3"
 ]
 
 [project.urls]
@@ -26,8 +26,8 @@ Issues = "https://github.com/MajorTanya/DTbot/issues"
 dev = [
     "black==26.5.1",
     "flake8==7.3.0",
-    "isort==8.0.1",
-    "mypy==2.3.0",
+    "isort==9.0.1",
+    "mypy==2.3.1",
     "pre-commit==4.6.2",
     "pyright==1.1.411"
 ]

@@ -22,7 +22,7 @@ frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-idna==3.18
+idna==3.19
     # via yarl
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
@@ -36,7 +36,7 @@ propcache==0.5.2
     # via
     #   aiohttp
     #   yarl
-python-dotenv==1.2.2
+python-dotenv==1.2.3
     # via DTbot (pyproject.toml)
 yarl==1.24.5
     # via aiohttp
