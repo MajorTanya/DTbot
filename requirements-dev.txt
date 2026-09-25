@@ -32,8 +32,6 @@ filelock==3.32.4
     # via
     #   python-discovery
     #   virtualenv
-flake8==7.3.0
-    # via DTbot (pyproject.toml)
 frozenlist==1.8.0
     # via
     #   aiohttp
@@ -48,8 +46,6 @@ librt==0.15.0
     # via mypy
 mariadb==1.1.14
     # via DTbot (pyproject.toml)
-mccabe==0.7.0
-    # via flake8
 multidict==6.7.1
     # via
     #   aiohttp
@@ -83,10 +79,6 @@ propcache==0.5.2
     # via
     #   aiohttp
     #   yarl
-pycodestyle==2.14.0
-    # via flake8
-pyflakes==3.4.0
-    # via flake8
 pyright==1.1.411
     # via DTbot (pyproject.toml)
 python-discovery==1.6.0
