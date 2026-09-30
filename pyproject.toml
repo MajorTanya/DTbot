@@ -25,7 +25,7 @@ Issues = "https://github.com/MajorTanya/DTbot/issues"
 [project.optional-dependencies]
 dev = [
     "black==26.5.1",
-    "isort==9.0.1",
+    "isort==9.0.2",
     "mypy==2.3.1",
     "pre-commit==4.6.2",
     "pyright==1.1.414"
