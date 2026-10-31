@@ -94,7 +94,7 @@ typing-extensions==4.16.0
     # via
     #   mypy
     #   pyright
-virtualenv==21.14.12
+virtualenv==21.14.13
     # via pre-commit
 yarl==1.25.1
     # via aiohttp
